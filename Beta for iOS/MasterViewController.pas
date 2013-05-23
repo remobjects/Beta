@@ -9,7 +9,7 @@ uses
 
 type
   [IBObject]
-  MasterViewController = public class (UITableViewController)
+  MasterViewController = public class (UITableViewController, IUITableViewDelegate)
   private
     var fBetaDownloads: NSArray;
     var fRTMDownloads: NSArray;
@@ -32,6 +32,7 @@ type
 
     method tableView(tableView: UITableView) cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell;
     method tableView(tableView: UITableView) numberOfRowsInSection(section: Integer): Integer;
+    method tableView(tableView: UITableView) shouldHighlightRowAtIndexPath(indexPath: NSIndexPath): Boolean;
     {$ENDREGION}
 
     {$REGION Table view delegate}
@@ -207,12 +208,18 @@ end;
 
 {$REGION  Table view delegate}
 
+method MasterViewController.tableView(tableView: UITableView) shouldHighlightRowAtIndexPath(indexPath: NSIndexPath): Boolean;
+begin
+  result := false;
+end;
+
 method MasterViewController.tableView(tableView: UITableView) didSelectRowAtIndexPath(indexPath: NSIndexPath);
 begin
   if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
   //  var lObject := fObjects[indexPath.row];
   //  detailViewController.detailItem := lObject;
   end;
+  tableView.deselectRowAtIndexPath(indexPath) animated(true); 
 end;
 
 {$ENDREGION}

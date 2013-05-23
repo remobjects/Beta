@@ -9,6 +9,7 @@ type
   [IBObject]
   AppDelegate = class(IUIApplicationDelegate, IDataAccessDelegate)
   private
+    method downloadsChanged(aNotification: NSNotification);
   public
     property window: UIWindow;
 
@@ -36,9 +37,18 @@ type
 
 implementation
 
+method AppDelegate.downloadsChanged(aNotification: NSNotification);
+begin
+  UIApplication.sharedApplication.applicationIconBadgeNumber := 0;
+end;
+
 method AppDelegate.application(application: UIApplication) didFinishLaunchingWithOptions(launchOptions: NSDictionary): Boolean;
 begin
   DataAccess.sharedInstance.delegate := self;
+  NSNotificationCenter.defaultCenter.addObserver(self) 
+                                     &selector(selector(downloadsChanged:))
+                                     name(DataAccess.NOTIFICATION_DOWNLOADS_CHANGED) 
+                                     object(DataAccess.sharedInstance);
 
   var lTintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
   UINavigationBar.appearance.tintColor := lTintColor;
@@ -103,7 +113,14 @@ end;
 
 method AppDelegate.application(application: UIKit.UIApplication) didReceiveRemoteNotification(userInfo: Foundation.NSDictionary);
 begin
+  NSLog('application:didReceiveRemoteNotification:%@', userInfo);
 
+  var lLocalNotification := new UILocalNotification;
+  lLocalNotification.alertBody := 'New downloads are available. Refreshing.';
+  lLocalNotification.applicationIconBadgeNumber := 1;      
+  UIApplication.sharedApplication.presentLocalNotificationNow(lLocalNotification);
+
+  DataAccess.sharedInstance.beginGetData();
 end;
 {$ENDREGION}
 

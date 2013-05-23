@@ -110,7 +110,7 @@ begin
 
     var lMessage := 'New beta downloads for ';
     for each p in lUniqueProducts index i do begin
-      if i = lUniqueProducts.Count-1 then 
+      if (i = lUniqueProducts.Count-1) and (lUniqueProducts.Count > 1) then 
         lMessage := lMessage+' and '
       else if i > 0 then 
         lMessage := lMessage+', ';
@@ -121,7 +121,7 @@ begin
     Log(lMessage);
 
     for each d in PushManager.Instance.DeviceManager.Devices do
-      fPushConnect.PushMessageNotification(d, lMessage);
+      fPushConnect.PushMessageAndBadgeNotification(d, lMessage, lUniqueProducts.Count);
     Log('Done sending Push notifications');
     SaveCache();
 
