@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Beta</RootNamespace>
     <ProjectGuid>480657f7-06ad-4a0c-b214-a9f3bf6bd4e5</ProjectGuid>
-    <OutputType>executable</OutputType>
+    <OutputType>Executable</OutputType>
     <AssemblyName>Beta</AssemblyName>
     <AllowGlobals>False</AllowGlobals>
     <AllowLegacyWith>False</AllowLegacyWith>
@@ -16,6 +16,10 @@
     <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
     <DeploymentTargetVersion>5.0</DeploymentTargetVersion>
     <Name>Beta</Name>
+    <DefaultUses />
+    <StartupClass />
+    <CreateHeaderFile>False</CreateHeaderFile>
+    <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
@@ -26,8 +30,8 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-    <ProvisioningProfile>647CA68C-FCA6-4C8D-93B5-B09F859B8E76</ProvisioningProfile>
-    <ProvisioningProfileName>iOS Team Provisioning Profile: Wildcard AppID</ProvisioningProfileName>
+    <ProvisioningProfile>98711760-6542-4078-A9EB-260F478E9708</ProvisioningProfile>
+    <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -56,6 +60,7 @@
     <Compile Include="LoginViewController.pas" />
     <Compile Include="MasterViewController.pas" />
     <Compile Include="Program.pas" />
+    <Compile Include="PushProvider_Intf.pas" />
     <Compile Include="Z:\Code\git\bc7public\iOS\BaseCell.pas" />
     <Compile Include="Z:\Code\git\bc7public\iOS\BaseCellView.pas" />
     <Compile Include="Z:\Code\git\bc7public\iOS\HeaderView.pas" />

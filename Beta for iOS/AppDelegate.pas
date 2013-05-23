@@ -29,6 +29,7 @@ type
 
     {$REGION IDataAccessDelegate}
     method askForLogin;
+    method alertErrorWithTitle(aTitle: String) message(aMessage: String);
     {$ENDREGION}
 
   end;
@@ -73,6 +74,7 @@ end;
 
 method AppDelegate.applicationDidBecomeActive(application: UIApplication);
 begin
+  DataAccess.sharedInstance.beginGetData();
   // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 end;
 
@@ -107,6 +109,12 @@ end;
 method AppDelegate.askForLogin;
 begin
   self.window.rootViewController.presentViewController(new LoginViewController) animated(true) completion(nil); 
+end;
+
+method AppDelegate.alertErrorWithTitle(aTitle: String) message(aMessage: String);
+begin
+  var lAlert := new UIAlertView withTitle(aTitle) message(aMessage) &delegate(nil) cancelButtonTitle('OK') otherButtonTitles(nil);
+  lAlert.show();
 end;
 {$ENDREGION}
 

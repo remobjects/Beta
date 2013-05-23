@@ -90,7 +90,7 @@ end;
 
 method MasterViewController.numberOfSectionsInTableView(tableView: UITableView): Integer;
 begin
-  result := 2;
+  result := if fRTMDownloads.count > 0 then 2 else 1;
 end;
 
 method MasterViewController.tableView(tableView: UITableView) viewForHeaderInSection(section: Integer): UIView;
@@ -136,7 +136,7 @@ begin
     result.detailTextLabel.backgroundColor := UIColor.clearColor;
     result.detailTextLabel.font := UIFont.systemFontOfSize(10);
 
-    if NSDate.date().timeIntervalSinceDate(lDownload['date']) < 60*60*24*7 then begin
+    if NSDate.date().timeIntervalSinceDate(lDownload['date']) < 60*60*24*3 {3 days} then begin
       var lNew := new UIImageView withImage(UIImage.imageNamed('New'));
       lNew.frame := CGRectMake(22, 4, lNew.image.size.width, lNew.image.size.height);
       result.addSubview(lNew);
