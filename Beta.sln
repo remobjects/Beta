@@ -3,16 +3,42 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta", "Beta for iOS\Beta.oxygene", "{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}"
 EndProject
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "BetaServer", "Beta Server\BetaServer.oxygene", "{36699322-22F5-4FEE-B484-653042F48FB8}"
+EndProject
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "RemObjects.SDK.Push", "Push\RemObjects.SDK.Push\RemObjects.SDK.Push.oxygene", "{6EE56252-1979-48FA-8409-3DCED05426C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Default = Debug|Default
-		Release|Default = Release|Default
+		Debug|AnyCPU = Debug|AnyCPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Release|AnyCPU = Release|AnyCPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|Default.ActiveCfg = Debug
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|Default.Build.0 = Debug
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|Default.ActiveCfg = Release
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|Default.Build.0 = Release
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|AnyCPU.ActiveCfg = Debug
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|AnyCPU.Build.0 = Debug
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|Mixed Platforms.Build.0 = Debug
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|AnyCPU.ActiveCfg = Release
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|AnyCPU.Build.0 = Release
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|Mixed Platforms.ActiveCfg = Release
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|Mixed Platforms.Build.0 = Release
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.ActiveCfg = Debug
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.Build.0 = Debug
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|Mixed Platforms.Build.0 = Debug
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.ActiveCfg = Release
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.Build.0 = Release
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|Mixed Platforms.ActiveCfg = Release
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|Mixed Platforms.Build.0 = Release
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|Mixed Platforms.ActiveCfg = Debug|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|Mixed Platforms.Build.0 = Debug|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.Build.0 = Release|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|Mixed Platforms.ActiveCfg = Release|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|Mixed Platforms.Build.0 = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

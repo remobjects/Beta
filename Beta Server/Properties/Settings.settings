@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BetaServer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ReferenceUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mh</Value>
+    </Setting>
+    <Setting Name="ReferenceUserToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BADTOKEN</Value>
+    </Setting>
+    <Setting Name="DownloadInfoURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://secure.remobjects.com/api/downloads?name={0}&amp;token={1}&amp;appid={2}&amp;clientid={3}</Value>
+    </Setting>
+    <Setting Name="ServerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8098</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

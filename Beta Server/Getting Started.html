@@ -1,0 +1,84 @@
+<style>
+body, table, tr, td
+{
+margin: 15px;
+font-family: Tahoma, Verdana, sans-serif;
+font-size: 10pt;
+background-color: #f7f7f7;
+}
+p { margin-bottom: 0.75em; margin-top: 0; }
+p.h1, p.h2, p.h3
+{
+margin-top: 1em;
+margin-bottom: 0;
+padding-bottom: 0;
+}
+a { text-decoration: none }
+.h1 { font-size: 13pt; font-weight: bold; }
+.h2 { font-size: 11pt; font-weight: bold; }
+.h2-nogap { font-size: 11pt; font-weight: bold; margin-top: 0; margin-bottom: 0; padding-bottom: 0; }
+.h3 { font-size: 10pt; font-weight: bold; }
+ul { margin-top: 5px; margin-bottom: 3px; }
+pre { margin: 0 }
+.box { border: 1px solid #a0a0a0; background-color: #e0e0e0; padding-left: 10px; padding-top: 10px; padding-right: 10px; }
+.spaced
+{
+letter-spacing: 1px;
+color: #000060;
+}
+</style>
+
+<img src="C:\Program Files (x86)\RemObjects Software\RemObjects SDK for .NET\ro.png" align="right" />
+<p class="h1">Getting Started with your RemObjects SDK Command Line Server</p>
+
+<p>
+  This readme will help you to get started with creating your Command Line Server project. Once you're familiar with the RemObjects SDK and your project is well under way, feel free to remove this file from the project.
+</p>
+
+<p class="h2">Defining Your Service</p>
+<p>
+  A RODL file has been added to your project that defines your service(s) and related types. You can launch the Service Builder
+  to edit your RODL file at any time by double-clicking the RODL in your solution, by clicking the RODL button on top of
+  Solution Explorer or by selecting <i>Edit Service Library</i> from the <i>RemObjects</i> menu.
+</p>
+<p>
+  Inside Service Builder, you can define your service or services as well as any custom types needed for your service interface. Once you close Service Builder, the RemObjects SDK's CodeGen will generate three or more source files for you and add them to your project:
+</p>
+<ul>
+  <li>One _Intf file that defines the interfaces and types from your RODL in native .NET code (in your current project's language).</li>
+  <li>One _Invk file that implements invoker classes for each of your services.</li>
+  <li>One for each service for which you defined a _Impl file that contains a base skeleton implementation for your service - you will later expand these files with your service logic</li>
+</ul>
+<p>
+  Note: If you launch Service Builder again at a later time, the _Intf and _invk files will be automatically regenerated to match your changes, therefore you should not make any modifications to these files.
+</p>
+<p class="h2">Implementing Your Service</p>
+<p>
+  The _Impl file (or files) now provides an empty skeleton class with the methods that you defined in your service. You will fill these stubs with your own code to implement your service.
+</p>
+
+<div class="box">
+<p class="h2-nogap">Project Settings for WWDCNotifyServer</p>
+<p>
+  You selected the following settings when creating your project:
+</p>
+<p>
+  Library Name: <kbd>WWDCNotifyServerLibrary</kbd><br />
+  Service Name: <kbd>WWDCNotifyServerService</kbd><br />
+  <br />
+  Message Class: <kbd>RemObjects.SDK.BinMessage</kbd><br />
+  Server Channel Class: <kbd>RemObjects.SDK.Server.IpHttpServerChannel</kbd><br />
+  <br />
+  RemObjects Assembly Folder : <kbd>C:\Program Files (x86)\RemObjects Software\RemObjects SDK for .NET\Bin</kbd><br />
+</p>
+</div>
+<p class="h2">Creating a Smart Service</p>
+<p>
+  You can always add additional Server or Message types manually, by creating additional server and message components in your code. For example, add an IpTcpServerChannel in addition to an IpHttpServerChannel component to make your service accessible via both HTTP and raw TCP. When creating new server channel components, be sure to set up the dispatchers for that channel.
+</p>
+
+<hr width="25%" align="left" style="color: black; height: 1px;"/>
+
+<a href="http://www.remobjects.com">http://www.remobjects.com</a></p>
+
+
