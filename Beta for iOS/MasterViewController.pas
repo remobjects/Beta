@@ -35,6 +35,8 @@ type
     {$REGION Table view delegate}
     method tableView(tableView: UITableView) didSelectRowAtIndexPath(indexPath: NSIndexPath);
     {$ENDREGION}
+
+    method refresh(aSender: id);
   end;
 
 implementation
@@ -52,6 +54,7 @@ method MasterViewController.downloadsChanged(aNotification: NSNotification);
 begin
   fBetaDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"'));
   fRTMDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"'));
+  refreshControl:endRefreshing();
   tableView.reloadData();
 end;
 
@@ -60,6 +63,12 @@ begin
   inherited viewDidLoad;
  
   title := 'Betas';
+
+
+  refreshControl := new UIRefreshControl;
+  refreshControl.addTarget(self) 
+                 action(selector(refresh:))
+                 forControlEvents(UIControlEvents.UIControlEventValueChanged);
 
   tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
   tableView.separatorStyle := UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone;
@@ -145,6 +154,12 @@ begin
 
   result.textLabel.text := lDownload['product'];
   result.detailTextLabel.text :=lDownload['version']+' ('+lDownload['date'].relativeDateString+')' ;
+
+  if DataAccess.sharedInstance.dataIsStale then begin
+    result.textLabel.textColor := result.detailTextLabel.textColor;
+    result.imageView.alpha := 0.5;
+  end;
+
   if not assigned(lDownload["image"]) then begin
 
     result.imageView.image := UIImage.imageNamed('EmptyAppLogo');
@@ -193,6 +208,11 @@ begin
  //   segue.destinationViewController.setDetailItem(lObject);
  //   (segue.destinationViewController as  DetailViewController).setDetailItem(lObject);
   end;
+end;
+
+method MasterViewController.refresh(aSender: id);
+begin
+  DataAccess.sharedInstance.beginGetData();
 end;
 
 end.

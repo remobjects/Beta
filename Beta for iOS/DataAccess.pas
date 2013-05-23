@@ -25,6 +25,7 @@ type
 
     const KEY_USERNAME = 'Username';
     const KEY_TOKEN = 'Token';
+    const KEY_CACHED_DATA = 'Downloads';
   
     {$REGION INSXMLParserDelegate}
     method parser(parser: NSXMLParser) didStartElement(elementName: NSString) namespaceURI(namespaceURI: NSString) qualifiedName(qName: NSString) attributes(attributeDict: NSDictionary);
@@ -43,6 +44,7 @@ type
     method init: id; override;
 
     property downloads: NSArray := new NSMutableArray;
+    property dataIsStale: Boolean;
     property pushDeviceToken: NSData read fPushDeviceToken write setPushDeviceToken;
 
     method beginLogin;
@@ -66,6 +68,13 @@ method DataAccess.init: id;
 begin
   fUsername := NSUserDefaults.standardUserDefaults.objectForKey(KEY_USERNAME);
   fUserToken := NSUserDefaults.standardUserDefaults.objectForKey(KEY_TOKEN);
+
+  var lCacheData := NSUserDefaults.standardUserDefaults.objectForKey(KEY_CACHED_DATA) as NSArray;
+  if assigned(lCacheData) then begin
+    NSMutableArray(downloads).addObjectsFromArray(lCacheData);
+    NSLog('cache data %@', lCacheData);
+    dataIsStale := true;
+  end;
 end;
 
 class method DataAccess.sharedInstance: DataAccess;
@@ -93,7 +102,9 @@ begin
                                    timeoutInterval(30); 
       var lResponse: NSURLResponse;
       var lError: NSError;
+      UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(true);
       var lData := NSURLConnection.sendSynchronousRequest(lRequest) returningResponse(var lResponse) error(var lError); 
+      UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(false);
 
       if assigned(lError) then
         NSLog('error: %@', lError);
@@ -124,6 +135,9 @@ begin
               NSLog('got xml data');
               lXml.delegate := self;
               lXml.parse();
+              NSUserDefaults.standardUserDefaults.setObject(downloads) forKey(KEY_CACHED_DATA);
+              NSUserDefaults.standardUserDefaults.synchronize();
+              dataIsStale := false;
               dispatch_async(dispatch_get_main_queue(), -> gotData());
             end 
             else begin
@@ -166,7 +180,6 @@ method DataAccess.gotData;
 begin
   NSNotificationCenter.defaultCenter.postNotificationName(NOTIFICATION_DOWNLOADS_CHANGED) object(self); 
 end;
-
 
 method DataAccess.beginLoginWithUsername(aUsername: String) password(aPassword: String) completion(aCompletion: block (aSUccess: Boolean));
 begin

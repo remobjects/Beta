@@ -14,7 +14,7 @@
     <SDK>iOS</SDK>
     <CreateAppBundle>True</CreateAppBundle>
     <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
-    <DeploymentTargetVersion>5.0</DeploymentTargetVersion>
+    <DeploymentTargetVersion>6.0</DeploymentTargetVersion>
     <Name>Beta</Name>
     <DefaultUses />
     <StartupClass />
@@ -33,6 +33,7 @@
     <ProvisioningProfile>98711760-6542-4078-A9EB-260F478E9708</ProvisioningProfile>
     <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
+    <CreateIPA>True</CreateIPA>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>

@@ -40,8 +40,10 @@ method AppDelegate.application(application: UIApplication) didFinishLaunchingWit
 begin
   DataAccess.sharedInstance.delegate := self;
 
-  UINavigationBar.appearance.tintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
-  
+  var lTintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
+  UINavigationBar.appearance.tintColor := lTintColor;
+  UIRefreshControl.appearance.tintColor := lTintColor;
+
   if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
     var lSplitViewController := self.window.rootViewController as UISplitViewController;
     var navigationController := lSplitViewController.viewControllers.lastObject;
