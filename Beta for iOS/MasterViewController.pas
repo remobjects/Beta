@@ -13,6 +13,8 @@ type
   private
     var fBetaDownloads: NSArray;
     var fRTMDownloads: NSArray;
+    //62454: Nougat: Internal Compiler error on scope issue #2
+    var fIconCache: NSMutableDictionary{<String, UIImage>} := new NSMutableDictionary{<String, UIImage>};
     method downloadsChanged(aNotification: NSNotification);
   protected
   public
@@ -52,8 +54,12 @@ end;
 
 method MasterViewController.downloadsChanged(aNotification: NSNotification);
 begin
-  fBetaDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"'));
-  fRTMDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"'));
+  var lSorting: NSArray := [new NSSortDescriptor withKey('date') ascending(false),
+                            new NSSortDescriptor withKey('product') ascending(true)];
+  fBetaDownloads := distinctArrayWithKey(DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')), 'product')
+                                                       .sortedArrayUsingDescriptors(lSorting);
+  fRTMDownloads := distinctArrayWithKey(DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')), 'product')
+                                                       .sortedArrayUsingDescriptors(lSorting);
   refreshControl:endRefreshing();
   tableView.reloadData();
 end;
@@ -160,23 +166,36 @@ begin
     result.imageView.alpha := 0.5;
   end;
 
+  //62454: Nougat: Internal Compiler error on scope issue
+  var lLogoName := lDownload['logo'];
+  
   if not assigned(lDownload["image"]) then begin
 
-    result.imageView.image := UIImage.imageNamed('EmptyAppLogo');
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
-        var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+'-64.png'));
-        if assigned(lData) then begin
-          var lImage := UIImage.imageWithData(lData) scale(2.0);
-          lDownload["image"] := lImage;
-          dispatch_async(dispatch_get_main_queue(), method begin
+    var lImage := fIconCache[lLogoName];
+    if assigned(lImage) then begin
+      result.imageView.image := lImage;
+    end
+    else begin
+
+      result.imageView.image := UIImage.imageNamed('EmptyAppLogo');
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
+
+          var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+'-64.png'));
+          if assigned(lData) then begin
+            var lImage2 := UIImage.imageWithData(lData) scale(2.0);
+            lDownload["image"] := lImage2;
+            fIconCache[lLogoName] := lImage2;
+            dispatch_async(dispatch_get_main_queue(), method begin
  
-              tableView.reloadRowsAtIndexPaths(NSArray.arrayWithObject(indexPath)) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
-              //tableView.reloadRowsAtIndexPaths([indexPath]) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
+                tableView.reloadRowsAtIndexPaths(NSArray.arrayWithObject(indexPath)) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
+                //tableView.reloadRowsAtIndexPaths([indexPath]) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
 
-            end);
-        end;
-      end);
+              end);
+          end;
+        end);
+
+    end;
 
   end
   else begin

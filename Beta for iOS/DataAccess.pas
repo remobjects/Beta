@@ -125,7 +125,7 @@ begin
     exit;
   end;
 
-  var lURL := new NSURL withString(API_URL+API_DOWNLOADS+'?name=mh&token='+fUserToken);
+  var lURL := new NSURL withString(API_URL+API_DOWNLOADS+'?name='+fUsername+'&token='+fUserToken);
   beginGetDataFromURL(lURL) completion(method (aData: NSData; aResponse: NSHTTPURLResponse) begin 
 
       case aResponse.statusCode of
@@ -134,6 +134,7 @@ begin
             if assigned(lXml) then begin
               NSLog('got xml data');
               lXml.delegate := self;
+              NSMutableArray(downloads).removeAllObjects();
               lXml.parse();
               NSUserDefaults.standardUserDefaults.setObject(downloads) forKey(KEY_CACHED_DATA);
               NSUserDefaults.standardUserDefaults.synchronize();

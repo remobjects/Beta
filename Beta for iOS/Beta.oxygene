@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.pas" />
-    <Compile Include="DateHelpers.pas" />
+    <Compile Include="Helpers.pas" />
     <Compile Include="DataAccess.pas" />
     <Compile Include="DetailViewController.pas" />
     <Compile Include="LoginViewController.pas" />
