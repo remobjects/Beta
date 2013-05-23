@@ -13,8 +13,7 @@ type
   private
     var fBetaDownloads: NSArray;
     var fRTMDownloads: NSArray;
-    //62454: Nougat: Internal Compiler error on scope issue #2
-    var fIconCache: NSMutableDictionary{<String, UIImage>} := new NSMutableDictionary{<String, UIImage>};
+    var fIconCache: NSMutableDictionary<String, UIImage> := new NSMutableDictionary<String, UIImage>;
     method downloadsChanged(aNotification: NSNotification);
   protected
   public
@@ -57,9 +56,9 @@ method MasterViewController.downloadsChanged(aNotification: NSNotification);
 begin
   var lSorting: NSArray := [new NSSortDescriptor withKey('date') ascending(false),
                             new NSSortDescriptor withKey('product') ascending(true)];
-  fBetaDownloads := distinctArrayWithKey(DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')), 'product')
+  fBetaDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')).distinctArrayWithKey('product')
                                                        .sortedArrayUsingDescriptors(lSorting);
-  fRTMDownloads := distinctArrayWithKey(DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')), 'product')
+  fRTMDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')).distinctArrayWithKey('product')
                                                        .sortedArrayUsingDescriptors(lSorting);
 
   // Pull to Refresh is not available on iOS5.

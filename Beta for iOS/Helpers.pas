@@ -5,31 +5,14 @@ interface
 uses
   Foundation;
 
-{$GLOBALS ON}
-
-//62452: Nougat: Internal Error on extension method
-//extension method NSArray.distinctArrayWithKey(aKey: String): NSArray;
-method distinctArrayWithKey(aArray: NSArray; aKey: String): NSArray;
+extension method NSArray.distinctArrayWithKey(aKey: String): NSArray;
 extension method NSDate.relativeDateString: String;
 
 implementation
 
-method distinctArrayWithKey(aArray: NSArray; aKey: String): NSArray;
+extension method NSArray.distinctArrayWithKey(aKey: String): NSArray;
 begin
   var keyValues := new NSMutableSet;
-  result := new NSMutableArray;
-  for each item in aArray do begin
-    var keyForItem := item.valueForKey(aKey);
-    if not keyValues.containsObject(keyForItem) then begin
-     NSMUtableArray(result).addObject(item);
-     keyValues.addObject(keyForItem);
-    end;
-  end;
-end;
-
-{extension method NSArray.distinctArrayWithKey(aKey: String): NSArray;
-begin
-{  var keyValues := new NSMutableSet;
   result := new NSMutableArray;
   for each item in self do begin
     var keyForItem := item.valueForKey(aKey);
@@ -37,8 +20,8 @@ begin
      NSMUtableArray(result).addObject(item);
      keyValues.addObject(keyForItem);
     end;
-  end
-end;}
+  end;
+end;
 
 extension method NSDate.relativeDateString: String;
 const SECOND = 1;
