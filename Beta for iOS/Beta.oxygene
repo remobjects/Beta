@@ -14,7 +14,7 @@
     <SDK>iOS</SDK>
     <CreateAppBundle>True</CreateAppBundle>
     <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
-    <DeploymentTargetVersion>6.0</DeploymentTargetVersion>
+    <DeploymentTargetVersion>5.0</DeploymentTargetVersion>
     <Name>Beta</Name>
     <DefaultUses />
     <StartupClass />

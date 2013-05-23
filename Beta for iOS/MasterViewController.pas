@@ -61,7 +61,11 @@ begin
                                                        .sortedArrayUsingDescriptors(lSorting);
   fRTMDownloads := distinctArrayWithKey(DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')), 'product')
                                                        .sortedArrayUsingDescriptors(lSorting);
-  refreshControl:endRefreshing();
+
+  // Pull to Refresh is not available on iOS5.
+  if self.respondsToSelector(selector(refreshControl)) then
+    refreshControl:endRefreshing();
+
   tableView.reloadData();
 end;
 
@@ -71,11 +75,14 @@ begin
  
   title := 'Betas';
 
-
-  refreshControl := new UIRefreshControl;
-  refreshControl.addTarget(self) 
-                 action(selector(refresh:))
-                 forControlEvents(UIControlEvents.UIControlEventValueChanged);
+  // Pull to Refresh is not available on iOS5.
+  if self.respondsToSelector(selector(refreshControl)) then begin
+    refreshControl := NSClassFromString('UIRefreshControl').alloc.init;
+    refreshControl.addTarget(self) 
+                   action(selector(refresh:))
+                   forControlEvents(UIControlEvents.UIControlEventValueChanged);
+  end;
+  //62457: Nougat: Class gets linked in hard, even though only referenced via NSClassFromString
 
   tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
   tableView.separatorStyle := UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone;
