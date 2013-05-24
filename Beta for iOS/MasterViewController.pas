@@ -56,10 +56,13 @@ method MasterViewController.downloadsChanged(aNotification: NSNotification);
 begin
   var lSorting: NSArray := [new NSSortDescriptor withKey('date') ascending(false),
                             new NSSortDescriptor withKey('product') ascending(true)];
-  fBetaDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')).distinctArrayWithKey('product')
-                                                       .sortedArrayUsingDescriptors(lSorting);
-  fRTMDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')).distinctArrayWithKey('product')
-                                                       .sortedArrayUsingDescriptors(lSorting);
+  
+  locking DataAccess.sharedInstance do begin
+    fBetaDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')).distinctArrayWithKey('product')
+                                                         .sortedArrayUsingDescriptors(lSorting);
+    fRTMDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')).distinctArrayWithKey('product')
+                                                         .sortedArrayUsingDescriptors(lSorting);
+  end;
 
   // Pull to Refresh is not available on iOS5.
   if self.respondsToSelector(selector(refreshControl)) then

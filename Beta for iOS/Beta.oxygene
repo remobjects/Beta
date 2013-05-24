@@ -30,6 +30,20 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <ProvisioningProfile>CBBA6E8F-EEEF-4501-9903-4130AC37867C</ProvisioningProfile>
+    <ProvisioningProfileName>Beta Develop</ProvisioningProfileName>
+    <CodesignCertificateName>iPhone Developer: marc hoffman (K2YTD84U6W)</CodesignCertificateName>
+    <Architecture>armv7</Architecture>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\AdHoc\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <GenerateDebugInfo>True</GenerateDebugInfo>
+    <EnableAsserts>True</EnableAsserts>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <CaptureConsoleOutput>False</CaptureConsoleOutput>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
     <ProvisioningProfile>98711760-6542-4078-A9EB-260F478E9708</ProvisioningProfile>
     <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>

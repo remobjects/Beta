@@ -30,6 +30,8 @@ type
     {$REGION INSXMLParserDelegate}
     method parser(parser: NSXMLParser) didStartElement(elementName: NSString) namespaceURI(namespaceURI: NSString) qualifiedName(qName: NSString) attributes(attributeDict: NSDictionary);
     {$ENDREGION}
+    var fDownloads: NSMutableArray := new NSMutableArray;
+    var fTempDownloads: NSMutableArray;
 
     method beginGetDataFromURL(aURL: NSURL) completion(aCompletion: block (aData: NSData; aResponse: NSHTTPURLResponse));
 
@@ -43,7 +45,7 @@ type
 
     method init: id; override;
 
-    property downloads: NSArray := new NSMutableArray;
+    property downloads: NSArray read fDownloads;
     property dataIsStale: Boolean;
     property pushDeviceToken: NSData read fPushDeviceToken write setPushDeviceToken;
 
@@ -71,8 +73,7 @@ begin
 
   var lCacheData := NSUserDefaults.standardUserDefaults.objectForKey(KEY_CACHED_DATA) as NSArray;
   if assigned(lCacheData) then begin
-    NSMutableArray(downloads).addObjectsFromArray(lCacheData);
-    NSLog('cache data %@', lCacheData);
+    fDownloads.addObjectsFromArray(lCacheData);
     dataIsStale := true;
   end;
 end;
@@ -132,10 +133,16 @@ begin
         200: begin
             var lXml := new NSXMLParser withData(aData);
             if assigned(lXml) then begin
-              NSLog('got xml data');
+
               lXml.delegate := self;
-              NSMutableArray(downloads).removeAllObjects();
+
+              fTempDownloads := new NSMutableArray;
               lXml.parse();
+              locking self do begin
+                fDownloads := fTempDownloads;
+              end;
+              fTempDownloads := nil;
+
               NSUserDefaults.standardUserDefaults.setObject(downloads) forKey(KEY_CACHED_DATA);
               NSUserDefaults.standardUserDefaults.synchronize();
               dataIsStale := false;
@@ -171,7 +178,7 @@ begin
     lDateFormatter.dateFormat := 'yyyy-MM-dd';
     lDict['date'] := lDateFormatter.dateFromString(lDict['date']);
 
-    NSMutableArray(downloads).addObject(lDict);
+    fTempDownloads.addObject(lDict);
   end;
 end;
 {$ENDREGION}

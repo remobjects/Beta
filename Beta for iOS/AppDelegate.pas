@@ -44,6 +44,8 @@ end;
 
 method AppDelegate.application(application: UIApplication) didFinishLaunchingWithOptions(launchOptions: NSDictionary): Boolean;
 begin
+  NSLog('application:didFinishLaunchingWithOptions:%@', launchOptions);
+
   DataAccess.sharedInstance.delegate := self;
   NSNotificationCenter.defaultCenter.addObserver(self) 
                                      &selector(selector(downloadsChanged:))
@@ -117,10 +119,20 @@ method AppDelegate.application(application: UIKit.UIApplication) didReceiveRemot
 begin
   NSLog('application:didReceiveRemoteNotification:%@', userInfo);
 
-  var lLocalNotification := new UILocalNotification;
-  lLocalNotification.alertBody := 'New downloads are available. Refreshing.';
-  lLocalNotification.applicationIconBadgeNumber := 1;      
-  UIApplication.sharedApplication.presentLocalNotificationNow(lLocalNotification);
+  var lAPS := userInfo['aps'];
+  if assigned(lAPS) then begin
+    var lAlert := lAPS['alert'];
+    var lBadge := lAPS['badge'];
+
+    if assigned(lBadge) then
+      UIApplication.sharedApplication.applicationIconBadgeNumber := lBadge.intValue; 
+
+    if assigned(lAlert) then begin
+      var lLocalNotification := new UILocalNotification;
+      lLocalNotification.alertBody := lAlert;
+      UIApplication.sharedApplication.presentLocalNotificationNow(lLocalNotification);
+    end;
+  end;
 
   DataAccess.sharedInstance.beginGetData();
 end;
