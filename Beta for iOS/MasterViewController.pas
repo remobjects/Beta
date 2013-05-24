@@ -77,6 +77,8 @@ begin
   // Pull to Refresh is not available on iOS5.
   if self.respondsToSelector(selector(refreshControl)) then begin
     refreshControl := NSClassFromString('UIRefreshControl').alloc.init;
+    //62469: Nougat: No member "appearance" on type "Class" and "id"
+    refreshControl .tintColor := navigationController.navigationBar.tintColor;
     refreshControl.addTarget(self) 
                    action(selector(refresh:))
                    forControlEvents(UIControlEvents.UIControlEventValueChanged);

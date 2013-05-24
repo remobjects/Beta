@@ -14,7 +14,7 @@
     <SDK>iOS</SDK>
     <CreateAppBundle>True</CreateAppBundle>
     <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
-    <DeploymentTargetVersion>5.0</DeploymentTargetVersion>
+    <DeploymentTargetVersion>6.0</DeploymentTargetVersion>
     <Name>Beta</Name>
     <DefaultUses />
     <StartupClass />
@@ -44,6 +44,9 @@
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
     <CreateIPA>True</CreateIPA>
+    <ProvisioningProfile>6EFBFEDC-C774-40BF-8FBC-FD192CFA7815</ProvisioningProfile>
+    <ProvisioningProfileName>Beta App Store</ProvisioningProfileName>
+    <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CoreGraphics.fx" />

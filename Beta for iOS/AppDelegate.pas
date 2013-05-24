@@ -52,7 +52,9 @@ begin
 
   var lTintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
   UINavigationBar.appearance.tintColor := lTintColor;
-  UIRefreshControl.appearance.tintColor := lTintColor;
+  //NSClassFromString('UIRefreshControl').appearance.tintColor := lTintColor;
+  // Pull to Refresh is not available on iOS5.
+  //62469: Nougat: No member "appearance" on type "Class" and "id"
 
   if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
     var lSplitViewController := self.window.rootViewController as UISplitViewController;

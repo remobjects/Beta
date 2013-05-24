@@ -169,7 +169,6 @@ begin
 
     var lDateFormatter := new NSDateFormatter;
     lDateFormatter.dateFormat := 'yyyy-MM-dd';
-    NSLog('date: %@', lDict['date']);
     lDict['date'] := lDateFormatter.dateFromString(lDict['date']);
 
     NSMutableArray(downloads).addObject(lDict);
