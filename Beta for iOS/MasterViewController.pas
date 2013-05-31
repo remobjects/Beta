@@ -180,7 +180,9 @@ begin
 
   //62454: Nougat: Internal Compiler error on scope issue
   var lLogoName := lDownload['logo'];
-  
+
+  var lIsRetina := UIScreen.mainScreen.scale > 1;
+
   if not assigned(lDownload["image"]) then begin
 
 
@@ -193,9 +195,9 @@ begin
       result.imageView.image := UIImage.imageNamed('EmptyAppLogo');
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
-          var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+'-64.png'));
+          var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+(if lIsRetina then '-64.png' else '-32.png')));
           if assigned(lData) then begin
-            var lImage2 := UIImage.imageWithData(lData) scale(2.0);
+            var lImage2 := UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0);
             lDownload["image"] := lImage2;
             fIconCache[lLogoName] := lImage2;
             dispatch_async(dispatch_get_main_queue(), method begin
