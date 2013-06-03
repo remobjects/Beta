@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ReferenceUsername" Type="System.String" Scope="User">
-      <Value Profile="(Default)">mh</Value>
+      <Value Profile="(Default)">BADUSERNAME</Value>
     </Setting>
     <Setting Name="ReferenceUserToken" Type="System.String" Scope="User">
       <Value Profile="(Default)">BADTOKEN</Value>
@@ -13,6 +13,9 @@
     </Setting>
     <Setting Name="ServerPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8098</Value>
+    </Setting>
+    <Setting Name="GCMSenderApiKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BADKEY</Value>
     </Setting>
   </Settings>
 </SettingsFile>
