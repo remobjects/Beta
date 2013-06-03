@@ -123,15 +123,21 @@ end;
 method MasterViewController.tableView(tableView: UITableView) viewForHeaderInSection(section: Integer): UIView;
 begin
   var lCaption := case section of
-                    0: 'Beta Downloads';
+                    0: if fBetaDownloads.count > 0 then 'Beta Downloads';
                     1: 'Release Downloads';
                   end;
-  result := new HeaderView withWidth(tableView.frame.size.width) caption(lCaption);
+  result := if assigned(lCaption) then 
+              new HeaderView withWidth(tableView.frame.size.width) caption(lCaption);
 end;
 
 method MasterViewController.tableView(tableView: UITableView) heightForHeaderInSection(section: Integer): CGFloat;
 begin
-  result := HeaderView.headerHeight;
+
+  result := case section of
+              0: if fBetaDownloads.count > 0 then HeaderView.headerHeight else 0;
+              1: HeaderView.headerHeight;
+              else 0;
+            end;
 end;
 
 method MasterViewController.tableView(tableView: UITableView) numberOfRowsInSection(section: Integer): Integer;

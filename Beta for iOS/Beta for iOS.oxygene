@@ -15,7 +15,7 @@
     <CreateAppBundle>True</CreateAppBundle>
     <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
     <DeploymentTargetVersion>5.0</DeploymentTargetVersion>
-    <Name>Beta</Name>
+    <Name>Beta for iOS</Name>
     <DefaultUses />
     <StartupClass />
     <CreateHeaderFile>False</CreateHeaderFile>
