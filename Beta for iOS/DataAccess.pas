@@ -178,6 +178,10 @@ begin
     lDateFormatter.dateFormat := 'yyyy-MM-dd';
     lDict['date'] := lDateFormatter.dateFromString(lDict['date']);
 
+    var p := lDict['product'].rangeOfString('(').location;
+    if p <> NSNotFound then
+      lDict['product'] := lDict['product'].substringToIndex(p).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet);
+
     fTempDownloads.addObject(lDict);
   end;
 end;
