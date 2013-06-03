@@ -27,7 +27,8 @@ type
     fPushConnect: GenericPushConnect := new GenericPushConnect;
 
     fBetaProducts: Dictionary<String,String> := new Dictionary<String,String>;
-    fBetaProductsFile: String;
+    fRTMProducts: Dictionary<String,String> := new Dictionary<String,String>;
+    fBetaProductsFile, fRTMProductsFile: String;
 
     method LoadCache;
     method SaveCache;
@@ -35,6 +36,9 @@ type
     const PING_TIME = 5*60*1000; // we check the website every 5 mins
 
     method TimerElapsed(sender: Object; e: System.Timers.ElapsedEventArgs);
+    method GetUniqueProducts(aProducts: Dictionary<String, String>): List<String>;
+    method GetProductMessage(aProducts: List<String>): String;
+    method LoadFileToDictionary(aFile: String; aDictionary: Dictionary<String, String>);
   protected
   public
     constructor;
@@ -50,6 +54,7 @@ constructor Notifier;
 begin
   try
     fBetaProductsFile := Path.ChangeExtension(typeOf(self).Assembly.Location, 'beta.products.txt');
+    fRTMProductsFile := Path.ChangeExtension(typeOf(self).Assembly.Location, 'rtm.products.txt');
     LoadCache();
 
     var lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'iOS.p12');
@@ -69,13 +74,36 @@ begin
 end;
 {$ENDREGION}
 
+method Notifier.GetUniqueProducts(aProducts: Dictionary<String, String>): List<String>;
+begin
+  result:= aProducts.Keys.Select(method (aProductName: String): String begin
+
+                                     result := aProductName;
+                                     var p := result.IndexOf(' for');
+                                     if p > 0 then result := result.Substring(0, p);
+ 
+                                   end).Distinct().ToList().OrderBy(p -> p).ToList();
+end;
+
+method Notifier.GetProductMessage(aProducts: List<String>): String;
+begin
+  for each p in aProducts index i do begin
+    if (i = aProducts.Count-1) and (aProducts.Count > 1) then 
+      result := result+' and '
+    else if i > 0 then 
+      result := result+', ';
+    result := result+p;
+  end;
+end;
+
 method Notifier.TimerElapsed(sender: Object; e: System.Timers.ElapsedEventArgs);
 begin
   if fInTimer then exit;
   fInTimer := true;
   try
 
-    var lNewProducts := new Dictionary<String, String>;
+    var lNewBetaProducts := new Dictionary<String, String>;
+    var lNewRTMProducts := new Dictionary<String, String>;
 
     var lUrl := String.Format(Settings.Default.DownloadInfoURL, Settings.Default.ReferenceUsername, 
                                                                 Settings.Default.ReferenceUserToken,
@@ -84,47 +112,55 @@ begin
     Log('checking '+lUrl);
     var lXml := XDocument.Load(lUrl);
     for each lDownload in lXml.Root.Elements('download') do begin
-      if lDownload.Attribute('prerelease'):Value ≠ 'true' then continue;
 
       var lProduct := lDownload.Attribute('product'):Value;
       var lVersion := lDownload.Attribute('version'):Value;
       if not assigned(lProduct) or not assigned(lVersion) then continue;
 
-      if (not fBetaProducts.ContainsKey(lProduct)) or (fBetaProducts[lProduct] <> lVersion) then begin
-        fBetaProducts[lProduct] := lVersion;
-        lNewProducts[lProduct] := lVersion;
+      if lDownload.Attribute('prerelease'):Value ≠ 'true' then begin
+        
+        if (not fRTMProducts.ContainsKey(lProduct)) or (fRTMProducts[lProduct] <> lVersion) then begin
+          fRTMProducts[lProduct] := lVersion;
+          lNewRTMProducts[lProduct] := lVersion;
+        end;
+        
+      end 
+      else begin
+
+        if (not fBetaProducts.ContainsKey(lProduct)) or (fBetaProducts[lProduct] <> lVersion) then begin
+          fBetaProducts[lProduct] := lVersion;
+          lNewBetaProducts[lProduct] := lVersion;
+        end;
       end;
 
     end;
 
-    if lNewProducts.Count = 0 then begin
-      Log('no changes. done.');
-      exit;
+    var lUniqueBetaProducts := GetUniqueProducts(lNewBetaProducts);
+    var lUniqueRTMProducts := GetUniqueProducts(lNewRTMProducts);
+    var lCount := lUniqueBetaProducts.Count+lUniqueRTMProducts.Count;
+
+    if lNewBetaProducts.Count > 0 then begin
+
+      var lMessage := 'New beta downloads for '+GetProductMessage(lUniqueBetaProducts)+' are available now.';
+      Log(lMessage);
+
+      for each d in PushManager.Instance.DeviceManager.Devices do
+        fPushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+      Log('Done sending Push notifications for Beta');
+
     end;
 
-    var lUniqueProducts := lNewProducts.Keys.Select(method (aProductName: String): String begin
+    if lNewRTMProducts.Count > 0 then begin
 
-                                                      result := aProductName;
-                                                      var p := result.IndexOf(' for');
-                                                      if p > 0 then result := result.Substring(0, p);
+      var lMessage := 'New RTM downloads for '+GetProductMessage(lUniqueRTMProducts)+' are available now.';
+      Log(lMessage);
 
-                                                    end).Distinct().ToList().OrderBy(p -> p);
+      for each d in PushManager.Instance.DeviceManager.Devices do
+        fPushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+      Log('Done sending Push notifications for RTM');
 
-    var lMessage := 'New beta downloads for ';
-    for each p in lUniqueProducts index i do begin
-      if (i = lUniqueProducts.Count-1) and (lUniqueProducts.Count > 1) then 
-        lMessage := lMessage+' and '
-      else if i > 0 then 
-        lMessage := lMessage+', ';
-      lMessage := lMessage+p;
     end;
-    lMessage := lMessage+' are available.';
 
-    Log(lMessage);
-
-    for each d in PushManager.Instance.DeviceManager.Devices do
-      fPushConnect.PushMessageAndBadgeNotification(d, lMessage, lUniqueProducts.Count);
-    Log('Done sending Push notifications');
     SaveCache();
 
   except
@@ -138,8 +174,6 @@ end;
 
 method Notifier.Start;
 begin
-  //for each d in PushManager.Instance.DeviceManager.Devices do
-  //  fPushConnect.PushMessageNotification(d, 'False alarm. WWDCNotify Server was just restarted');
   fTimer.Enabled := true;
   TimerElapsed(nil, nil);
 end;
@@ -149,22 +183,29 @@ begin
   fTimer.Enabled := false;
 end;
 
-class method Notifier.LoadCache;
+class method Notifier.LoadFileToDictionary(aFile: String; aDictionary: Dictionary<String, String>);
 begin
-  fBetaProducts.Clear();
-  if File.Exists(fBetaProductsFile) then begin
-    var lLines := File.ReadAllLines(fBetaProductsFile);
+  aDictionary.Clear();
+  if File.Exists(aFile) then begin
+    var lLines := File.ReadAllLines(aFile);
     for each l in lLines do begin
       var lParts := l.Split('|');
       if lParts.Length = 2 then
-        fBetaProducts[lParts[0]] := lParts[1];
+        aDictionary[lParts[0]] := lParts[1];
     end;
   end;
+end;
+
+class method Notifier.LoadCache;
+begin
+  LoadFileToDictionary(fBetaProductsFile, fBetaProducts);
+  LoadFileToDictionary(fRTMProductsFile, fRTMProducts);
 end;
 
 class method Notifier.SaveCache;
 begin
   File.WriteAllLines(fBetaProductsFile, fBetaProducts.Keys.Select(k -> k+'|'+fBetaProducts[k]).ToArray());
+  File.WriteAllLines(fRTMProductsFile, fRTMProducts.Keys.Select(k -> k+'|'+fRTMProducts[k]).ToArray());
 end;
 
 end.
