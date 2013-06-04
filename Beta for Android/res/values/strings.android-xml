@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">Simple Sample</string>
+  <string name="app_name">Beta</string>
   <string name="menu_settings">Settings</string>
   <string name="menu_add">Add</string>
   <string name="menu_load">Reload</string>
   <string name="menu_update">Update</string>
   <string name="menu_context_delete">Delete Client</string>
   <string name="clients_list_empty">Data not loaded yet. Use "Reload" menu item to retrieve clients list.</string>
-  <string name="activity_title">Simple</string>
+  <string name="activity_title">RemObjects Beta</string>
   <string name="activity_subtitle_login">Login</string>
   <string name="activity_subtitle_edit_add">Add client</string>
   <string name="activity_subtitle_edit_update">Edit client</string>

@@ -7,9 +7,9 @@
     <Platform Condition="'$(Platform)' == ''">Android</Platform>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <AllowLegacyCreate>False</AllowLegacyCreate>
-    <Name>com.remobjects.dataabstract.simple</Name>
+    <Name>Beta for Android</Name>
     <RootNamespace>com.remobjects.beta</RootNamespace>
-    <AssemblyName>com.remobjects.beta</AssemblyName>
+    <AssemblyName>com.remobjects.everwood.beta</AssemblyName>
     <AndroidSDKPath />
     <AndroidPlatformName>
     </AndroidPlatformName>

@@ -7,6 +7,8 @@ Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "BetaServer", "Beta Server\B
 EndProject
 Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "RemObjects.SDK.Push", "Push\RemObjects.SDK.Push\RemObjects.SDK.Push.oxygene", "{6EE56252-1979-48FA-8409-3DCED05426C3}"
 EndProject
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta for Android", "Beta for Android\Beta for Android.oxygene", "{A963AE56-1B2B-4831-AA93-18A68A023C61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AdHoc|AnyCPU = AdHoc|AnyCPU
@@ -49,6 +51,18 @@ Global
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.Build.0 = Release|AnyCPU
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|Mixed Platforms.ActiveCfg = Release|AnyCPU
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|Mixed Platforms.Build.0 = Release|AnyCPU
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|AnyCPU.ActiveCfg = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|AnyCPU.Build.0 = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|Mixed Platforms.ActiveCfg = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|Mixed Platforms.Build.0 = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|AnyCPU.ActiveCfg = Debug
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|AnyCPU.Build.0 = Debug
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|Mixed Platforms.Build.0 = Debug
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|AnyCPU.ActiveCfg = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|AnyCPU.Build.0 = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|Mixed Platforms.ActiveCfg = Release
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|Mixed Platforms.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
