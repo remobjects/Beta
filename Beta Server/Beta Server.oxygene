@@ -12,7 +12,7 @@
     <ApplicationIcon>Properties\App.ico</ApplicationIcon>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <Name>WWDCNotifyServer</Name>
+    <Name>Beta Server</Name>
     <DefaultUses />
     <StartupClass />
     <InternalAssemblyName />

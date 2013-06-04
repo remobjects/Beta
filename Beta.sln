@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta for iOS", "Beta for iOS\Beta for iOS.oxygene", "{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}"
 EndProject
-Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "BetaServer", "Beta Server\BetaServer.oxygene", "{36699322-22F5-4FEE-B484-653042F48FB8}"
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta Server", "Beta Server\Beta Server.oxygene", "{36699322-22F5-4FEE-B484-653042F48FB8}"
 EndProject
 Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "RemObjects.SDK.Push", "Push\RemObjects.SDK.Push\RemObjects.SDK.Push.oxygene", "{6EE56252-1979-48FA-8409-3DCED05426C3}"
 EndProject
