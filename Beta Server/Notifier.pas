@@ -59,9 +59,9 @@ begin
 
     var lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'iOS.p12');
     fPushConnect.APSConnect.iOSCertificateFile := lCertificatePath;
-    Log('Loaded ZApple iOS Push Certificate from '+lCertificatePath);
+    Log('Loaded Apple iOS Push Certificate from '+lCertificatePath);
 
-    fPushConnect.GCMConnect.SenderApiKey := Settings.Default.GCMSenderApiKey;
+    fPushConnect.GCMConnect.ApiKey := Settings.Default.GCMSenderApiKey;
 
     fTimer := new System.Timers.Timer;
     fTimer.Interval := PING_TIME;
