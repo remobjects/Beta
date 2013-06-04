@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  android:id="@+id/widget36"
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               xmlns:android="http://schemas.android.com/apk/res/android"
+               android:orientation="vertical">
+  <TextView  android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:text="Login:" />
+  <EditText  android:id="@+id/act_login_tb_login"
+             android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:textSize="18sp" />
+  <TextView  android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Password:" />
+  <EditText  android:id="@+id/act_login_tb_password"
+             android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:password="true"
+             android:textSize="18sp" />
+  <CheckBox  android:id="@+id/act_login_check_remember"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Remember Password"
+             android:checked="false"/>
+  <AbsoluteLayout  android:layout_width="fill_parent"
+                   android:layout_height="80px"
+                   xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button    android:id="@+id/act_login_bt_ok"
+               android:layout_width="130px"
+               android:layout_height="wrap_content"
+               android:text="OK"
+               android:layout_x="10px"
+               android:layout_y="10px"
+               android:onClick="buttonOkClick"/>
+    <Button    android:id="@+id/act_login_bt_cancel"
+               android:layout_width="150px"
+               android:layout_height="wrap_content"
+               android:text="Cancel"
+               android:layout_x="150px"
+               android:layout_y="10px"
+               android:onClick="buttonCancelClick"/>
+  </AbsoluteLayout>
+</LinearLayout>
