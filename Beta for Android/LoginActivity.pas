@@ -77,7 +77,7 @@ begin
       end
       else begin
         var lMessage := 'Login failed for ' + lLogin + '.';
-        if (not lRes) then
+        if (lRes = DataAccess.RequestStatus.NetworkError) then
           lMessage := lMessage + ' Check network connection.';
         Toast.makeText(self, lMessage, Toast.LENGTH_SHORT).show();
         btLogin.Text := 'Try Again';

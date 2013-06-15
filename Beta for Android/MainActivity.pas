@@ -90,13 +90,14 @@ begin
   fAdapter := new ProductsListAdapter(self);
   fListView.setAdapter(fAdapter);
 
-  self.fDataAccess.loginAsync(self, ()-> begin
-    if (fDataAccess.IsAuthorized) then begin
-      ensureGCMRegistration();
-      self.loadServerData();
-    end;
-  end);  
-
+  self.fDataAccess.loginAsync(self, new interface DataAccess.RequestCallback(
+    gotLogin := method(aStatus: DataAccess.RequestStatus; aUser, aPassword: String) begin
+      if (fDataAccess.IsAuthorized) then begin
+        ensureGCMRegistration();
+        self.loadServerData();
+      end;
+    end
+  ));
 end;
 
 method MainActivity.onDestroy;
@@ -196,8 +197,12 @@ end;
 
 method MainActivity.loadServerData();
 begin
-  fDataAccess.getDataAsync(self, ()->begin
-      if (fDataAccess.IsAuthorized) then begin
+  fDataAccess.getDataAsync(self, new interface DataAccess.RequestCallback(
+    gotData := method(aStatus: DataAccess.RequestStatus) begin
+      if (aStatus = DataAccess.RequestStatus.NetworkError) then begin
+        Toast.makeText(self, 'Loading failed. Check network connection.', Toast.LENGTH_SHORT).show();
+      end
+      else if (fDataAccess.IsAuthorized) then begin
         Toast.makeText(self, 'loading of data completed', Toast.LENGTH_SHORT).show();
         fAdapter.notifyDataSetChanged();
       end
@@ -205,7 +210,8 @@ begin
         Toast.makeText(self, 'login failed. try to relogin.', Toast.LENGTH_SHORT).show();
         fDataAccess.loginAsync(self);
       end;      
-  end);
+    end
+  ));
 end;
 
 

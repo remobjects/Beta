@@ -43,10 +43,10 @@ type
     var fIsAuthorizing: Boolean := false;
 
   public
-    method getDataAsync(aContext: MainActivity; aCallback: Runnable);
+    method getDataAsync(aContext: MainActivity; aCallback: RequestCallback);
     method loginAsync(aContext: MainActivity): Boolean;
-    method loginAsync(aContext: MainActivity; aCallback: Runnable): Boolean;
-    method retrieveAndSaveToken(aUsername, aPassword: String): Boolean;
+    method loginAsync(aContext: MainActivity; aCallback: RequestCallback): Boolean;
+    method retrieveAndSaveToken(aUsername, aPassword: String): RequestStatus;
     property Token: String read app_userToken;
     property UserName: String read app_loginName;
     property IsAuthorized: Boolean read (length(app_userToken) > 0) and (length(app_loginName) > 0);
@@ -75,10 +75,12 @@ type
     method onSharedPreferenceChanged(prefs: android.content.SharedPreferences; key: java.lang.String);
   end;
 
-  DataCallback = interface
-    method gotLogin(aSuccess: Boolean; aUser, aToken: String);
-    method gotData(aData: List<Map<String, Object>>);
+  RequestCallback nested in DataAccess = interface
+    method gotLogin(aStatus: RequestStatus; aUser, aToken: String);
+    method gotData(aStatus: RequestStatus);
   end;
+
+  RequestStatus nested in DataAccess = public enum (Ok, Failed, NetworkError);
 
   KeyPredicate<T> = interface
     method getKey(aValue: T): String;
@@ -171,56 +173,49 @@ begin
   exit (loginAsync(aContext, nil));
 end;
 
-method DataAccess.loginAsync(aContext: MainActivity; aCallback: Runnable): Boolean;
+method DataAccess.loginAsync(aContext: MainActivity; aCallback: RequestCallback): Boolean;
 begin
   if (fIsAuthorizing) then
     exit (false);
-  try
-    fIsAuthorizing := true;
-    var prefs := aContext.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
+  fIsAuthorizing := true;
+  var prefs := aContext.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
 
-    // maybe we have token stored
-    if (prefs.contains(CommonUtilities.PREFS_LOGIN_TOKEN)) then begin
-      app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-      app_userToken := prefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, '');
-      fIsAuthorizing := false;
-      if (aCallback <> nil) then
-        aCallback.run();
-      exit (true);
-    end;
-
-    // check if we have login/password stored
-    if (prefs.contains(CommonUtilities.PREFS_LOGIN_PASSWORD)) then begin
-      app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-      app_loginPassword := prefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, '');
-    
-      // perform async http call to get token
-      fExecutor.execute(()->begin
-
-        var lRes := self.retrieveAndSaveToken(app_loginName, app_loginPassword);
-        if (not lRes) then begin // network error
-          fIsAuthorizing := false;
-          exit;
-        end;
-        if (self.IsAuthorized) then begin              
-          fIsAuthorizing := false;
-          if (aCallback <> nil) then
-            aContext.runOnUiThread(aCallback);
-        end
-        else begin
-          self.showLogin(aContext);
-        end;
-      end);
-
-      exit (false);
-    end;
-
-    // show login screen to get login/password
-    // login activity itself can retrieve token.
-    // and return result back to main activity only on success
-    self.showLogin(aContext);
-  finally
+  // maybe we have token stored
+  if (prefs.contains(CommonUtilities.PREFS_LOGIN_TOKEN)) then begin
+    app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
+    app_userToken := prefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, '');
+    fIsAuthorizing := false;
+    if (aCallback <> nil) then
+      aCallback.gotLogin(RequestStatus.Ok, app_loginName, app_userToken);
+    exit (true);
   end;
+
+  // check if we have login/password stored
+  if (prefs.contains(CommonUtilities.PREFS_LOGIN_PASSWORD)) then begin
+    app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
+    app_loginPassword := prefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, '');
+    
+    // perform async http call to get token
+    fExecutor.execute(()->begin
+
+      var lRes := self.retrieveAndSaveToken(app_loginName, app_loginPassword);
+      if (self.IsAuthorized) then begin              
+        fIsAuthorizing := false;
+        if (aCallback <> nil) then
+          aContext.runOnUiThread(()-> aCallback.gotLogin(lRes, app_loginName, app_userToken));
+      end
+      else begin
+        self.showLogin(aContext);
+      end;
+    end);
+
+    exit (false);
+  end;
+
+  // show login screen to get login/password
+  // login activity itself can retrieve token.
+  // and return result back to main activity only on success
+  self.showLogin(aContext);
 end;
 
 method DataAccess.dropAutorizing;
@@ -229,7 +224,7 @@ begin
 end;
 
 
-method DataAccess.retrieveAndSaveToken(aUsername: String; aPassword: String): Boolean;
+method DataAccess.retrieveAndSaveToken(aUsername: String; aPassword: String): RequestStatus;
 begin  
   java.net.HttpURLConnection.FollowRedirects := true;
 
@@ -239,37 +234,45 @@ begin
   var lResponseCode := self.readStringFromUrl(lURL, lResponse);
   var lResponseString := lResponse.Value;
 
-  if (lResponseCode = 200) then begin
-    app_loginName := aUsername;
-    app_userToken := lResponseString;
+  case (lResponseCode) of
+    200: begin
+      app_loginName := aUsername;
+      app_userToken := lResponseString;
 
-    Log.i(TAG, 'got token: ' + app_userToken);
+      Log.i(TAG, 'got token: ' + app_userToken);
 
-    {$REGION save fine token to preferences}
-    var prefs := self.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
-    prefs.edit()
-         .putString(CommonUtilities.PREFS_LOGIN_TOKEN, app_userToken)
-         .commit();
-    {$ENDREGION }
-
-    exit (true);
-  end
-  else begin
-    Log.e(TAG, java.lang.String.format('didnt get token: status %d', lResponseCode));
-    Log.e(TAG, java.lang.String.format('response was: %s', lResponseString));
-    exit (false);
+      {$REGION save fine token to preferences}
+      var prefs := self.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
+      prefs.edit()
+           .putString(CommonUtilities.PREFS_LOGIN_TOKEN, app_userToken)
+           .commit();
+      {$ENDREGION }
+      exit (RequestStatus.Ok);
+    end;
+    501: begin // login failed
+      Log.e(TAG, java.lang.String.format('didnt get token: status %d', lResponseCode));
+      Log.e(TAG, java.lang.String.format('response was: %s', lResponseString));
+      exit (RequestStatus.Failed);
+    end;
+    503: begin
+      Log.e(TAG, java.lang.String.format('didnt get token: status %d', lResponseCode));
+      Log.e(TAG, java.lang.String.format('response was: %s', lResponseString));
+      exit (RequestStatus.NetworkError);
+    end;
   end;
 end;
 
 
-method DataAccess.getDataAsync(aContext: MainActivity; aCallback: Runnable);
+method DataAccess.getDataAsync(aContext: MainActivity; aCallback: RequestCallback);
 begin  
   fExecutor.execute(()->begin    
       var lURL := new java.net.URI(API_URL + API_DOWNLOADS + '?name=' + app_loginName + '&token=' + app_userToken);
 
       var lResponse := new ReferenceType<String>();
       var lResponseCode := self.readStringFromUrl(lURL, lResponse);
-      var lResponseString := lResponse.Value;      
+      var lResponseString := lResponse.Value;
+  
+      var lResponseStatus : RequestStatus;
 
       case lResponseCode of
         200: begin
@@ -328,8 +331,6 @@ begin
             end
           );
 
-
-
           var lBetaProducts:=  new ArrayList<Map<String, Object>>();
           getUniques(lProducts, lBetaProducts, (val) -> begin
             if ( not 'true'.equals(val.get('prerelease')) )  then
@@ -362,19 +363,22 @@ begin
           end;
 
           {$ENDREGION }
+
+          lResponseStatus := RequestStatus.Ok;
         end;        
         501: begin // 501
           Log.w(TAG, "bad login");
           app_userToken := nil;
-          loginAsync(aContext);
+          lResponseStatus := RequestStatus.Failed;
         end;
         else begin
           Log.e(TAG, java.lang.String.format("other error: %d", lResponseCode));
+          lResponseStatus := RequestStatus.NetworkError;
         end;
       end;
 
       if (assigned(aCallback)) then
-        aContext.runOnUiThread(aCallback);
+        aContext.runOnUiThread(()-> aCallback.gotData(lResponseStatus));
   end);
 end;
 
