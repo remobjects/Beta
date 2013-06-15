@@ -1,6 +1,4 @@
-namespace com.remobjects.beta;
-{$DEFINE USE_ASYNC}
-//{$DEFINE EVENTS}
+п»їnamespace com.remobjects.everwood.beta;
 interface
 
 uses
@@ -18,10 +16,6 @@ type
   MainActivity = public class(Activity)
   {$region Constants}
   public
-    class var PREFS_NAME: String := 'com.remobjects.dataabstract.sample'; readonly;
-    const USER_ID_KEY: String = 'Name';
-    const USER_PWD_KEY: String = 'Password';
-
     const ATTRIBUTE_NAME_TEXT = "name";
     const ATTRIBUTE_NAME_ICON = "icon";
     const ATTRIBUTE_NAME_NEW = "new";
@@ -34,19 +28,22 @@ type
     var fDataAccess: DataAccess;
     fHandleMessageReceiver: BroadcastReceiver;
     fListView: ListView;
-    fDisplay: TextView;
     fRegisterTask: AsyncTask<Void, Void, Void>;
-    fAdapter: BaseAdapter;
+    fAdapter: ProductsListAdapter;
   {$endregion}
 
   private
+    method ensureGCMRegistration();
+    method registerReceiver();
+    method loadServerData();
 
   public
     method onCreate(savedInstanceState: Bundle); override;
+    method onDestroy(); override;
+    method onActivityResult(requestCode, resultCode: Integer; data: Intent); override;
     method onCreateOptionsMenu(aMenu: Menu): Boolean; override;
     method onMenuItemSelected(aFeatureId: Integer; anItem: MenuItem): Boolean; override;
     method clearRegisterTask();
-    property LogTextView: TextView read fDisplay;
   end;
 
   MainBroadcastReceiver nested in MainActivity = assembly class(BroadcastReceiver)
@@ -85,11 +82,81 @@ begin
   fDataAccess := DataAccess.getInstance();
   fListView := ListView(findViewById(android.R.id.list));
   fListView.EmptyView := findViewById(android.R.id.empty);
-  fDisplay := TextView(findViewById(R.id.log_view));
 
-  fHandleMessageReceiver:= new MainBroadcastReceiver(self);
-  self.registerReceiver(fHandleMessageReceiver, new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION));
+  self.registerReceiver();  
 
+  //var lService := new GCMIntentService();
+
+  fAdapter := new ProductsListAdapter(self);
+  fListView.setAdapter(fAdapter);
+
+  self.fDataAccess.loginAsync(self, ()-> begin
+    if (fDataAccess.IsAuthorized) then begin
+      ensureGCMRegistration();
+      self.loadServerData();
+    end;
+  end);  
+
+end;
+
+method MainActivity.onDestroy;
+begin
+  if (assigned(fRegisterTask)) then begin
+    fRegisterTask.cancel(true);
+  end;
+
+  self.unregisterReceiver(fHandleMessageReceiver);
+  try
+    GCMRegistrar.onDestroy(self);
+  except
+
+  end;
+  inherited onDestroy();
+end;
+
+method MainActivity.onActivityResult(requestCode: Integer; resultCode: Integer; data: Intent);
+begin
+  if  (requestCode = LoginActivity.ACTIVITY_RESULT_LOGIN)  then  begin
+    if  (resultCode = RESULT_OK)  then  begin
+      ensureGCMRegistration();
+      loadServerData();
+    end
+    else  if  (resultCode = RESULT_CANCELED)  then  begin
+      Toast.makeText(self, 'Login cancelled', Toast.LENGTH_LONG).show();
+    end
+  end;
+  inherited onActivityResult(requestCode, resultCode, data);
+end;
+
+{$REGION  UI handlers }
+method MainActivity.onCreateOptionsMenu(aMenu: Menu): Boolean;
+begin
+  MenuInflater.inflate(R.menu.main, aMenu);  
+  exit  (true);
+end;
+
+method MainActivity.onMenuItemSelected(aFeatureId: Integer; anItem: MenuItem): Boolean;
+begin
+  case (anItem.ItemId) of
+    R.id.menu_load: begin
+      if (not fDataAccess.IsAuthorized) then begin
+        fDataAccess.loginAsync(self);
+        if (not fDataAccess.IsAuthorized) then
+          exit;
+      end
+      else
+        self.loadServerData();
+      exit (true);
+    end;
+    else
+      exit (inherited onMenuItemSelected(aFeatureId, anItem));
+  end;
+end;
+{$ENDREGION }
+
+
+method MainActivity.ensureGCMRegistration;
+begin
   var regId := GCMRegistrar.getRegistrationId(self);
 
   if  (regId.equals(''))  then  begin
@@ -101,7 +168,7 @@ begin
     if  (GCMRegistrar.isRegisteredOnServer(self))  then  begin
       //  Skips registration.
       // TODO: show in UI that device already registered
-      fDisplay.setText((getString(R.string.already_registered) + #10));
+      Toast.makeText(self, getString(R.string.already_registered), Toast.LENGTH_SHORT).show();
     end
     else
   begin
@@ -111,31 +178,37 @@ begin
       fRegisterTask := new RegisterAsyncTask(self, regId).execute(nil);
     end
   end;
-
-  //fListView.setAdapter(fAdapter);
-  
-  var load: array of Integer := [41, 48, 22, 35, 30, 67, 51, 88];
-  var data := new ArrayList<Map<String, Object>>(load.length);
-  var m: Map<String, Object>;
-  for i: Integer := 0 to high(load) do begin
-    m := new HashMap<String, Object>();
-    m.put(ATTRIBUTE_NAME_TEXT, "Product " + (i+1));
-    m.put(ATTRIBUTE_NAME_ICON, "http://remobjects.com/product_icon" + load[i] + ".png");
-    m.put(ATTRIBUTE_NAME_NEW, false);
-    data.add(m);
-  end;
-
-  // массив имен атрибутов, из которых будут читаться данные
-  var &from: array of String := [ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_ICON];
-  // массив ID View-компонентов, в которые будут вставлять данные
-  var &to: array of Integer := [R.id.twName, R.id.twAddress];
-  // создаем адаптер
-  var sAdapter: SimpleAdapter := new SimpleAdapter(self, data, R.layout.mainlist_item, &from, &to);
-  fListView.setAdapter(sAdapter);
-
-
-  registerForContextMenu(fListView);
 end;
+
+method MainActivity.registerReceiver;
+begin  
+  fHandleMessageReceiver:= new MainBroadcastReceiver(self);
+  var intFilter := new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION);
+  intFilter.addAction(CommonUtilities.DISPLAY_TOAST_ACTION);
+  self.registerReceiver(fHandleMessageReceiver, intFilter);
+end;
+
+
+method MainActivity.clearRegisterTask();
+begin
+  self.fRegisterTask := nil;
+end;
+
+method MainActivity.loadServerData();
+begin
+  fDataAccess.getDataAsync(self, ()->begin
+      if (fDataAccess.IsAuthorized) then begin
+        Toast.makeText(self, 'loading of data completed', Toast.LENGTH_SHORT).show();
+        fAdapter.notifyDataSetChanged();
+      end
+      else begin
+        Toast.makeText(self, 'login failed. try to relogin.', Toast.LENGTH_SHORT).show();
+        fDataAccess.loginAsync(self);
+      end;      
+  end);
+end;
+
+
 
 constructor MainActivity.RegisterAsyncTask(anOuter: MainActivity; aRegId: String);
 begin
@@ -167,46 +240,15 @@ begin
 end;
 
 method MainActivity.MainBroadcastReceiver.onReceive(ctx: Context; intent: Intent);
-begin
+begin  
   var newMessage: String := intent.getExtras().getString(CommonUtilities.EXTRA_MESSAGE);
-  fOuter.LogTextView.setText(newMessage + #10);
+
+  case (intent.Action) of
+    CommonUtilities.DISPLAY_MESSAGE_ACTION,
+    CommonUtilities.DISPLAY_TOAST_ACTION:
+      Toast.makeText(fOuter, newMessage, Toast.LENGTH_SHORT).show();
+  end;  
 end;
-
-method MainActivity.clearRegisterTask();
-begin
-  self.fRegisterTask := nil;
-end;
-
-{$REGION  UI handlers }
-method MainActivity.onCreateOptionsMenu(aMenu: Menu): Boolean;
-begin
-  MenuInflater.inflate(R.menu.main, aMenu);  
-  exit  (true);
-end;
-
-method MainActivity.onMenuItemSelected(aFeatureId: Integer; anItem: MenuItem): Boolean;
-begin
-  case (anItem.ItemId) of
-    R.id.menu_add: begin
-        exit  (true);
-    end;
-    R.id.menu_load: begin
-        exit  (true);
-    end;
-    R.id.menu_update: begin
-        exit  (true);
-    end;
-    R.id.menu_settings: begin
-      self.startActivity(new Intent(self, typeOf(SettingsActivity)));
-      exit true;
-    end;
-    else
-      exit (inherited onMenuItemSelected(aFeatureId, anItem));
-  end;
-end;
-{$ENDREGION }
-
-
 
 
 end.

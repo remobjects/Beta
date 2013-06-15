@@ -1,108 +1,54 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/pref_general_title" >
-        <EditTextPreference
-            android:capitalize="words"
-            android:defaultValue="@string/pref_default_general_server_url"
-            android:inputType="textCapWords"
-            android:key="server_target_url"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/pref_general_server_url" />
-      <EditTextPreference
-            android:capitalize="words"
-            android:defaultValue="@string/pref_default_general_max_records"
-            android:dialogMessage="number of records to load; -1 for All"
-            android:inputType="numberSigned"
-            android:key="max_records_to_load"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/pref_general_max_records" />
-
-        <PreferenceScreen android:title="@string/pref_ext_title" >
-            <EditTextPreference
-                android:capitalize="words"
-                android:defaultValue="@string/pref_default_ext_data_service_name"
-                android:inputType="textCapWords"
-                android:key="data_service_name"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:title="@string/pref_ext_data_service_name" />
-
-            <PreferenceCategory android:title="Login" >
-                <CheckBoxPreference
-                    android:defaultValue="@string/pref_default_ext_use_credentials"
-                    android:key="use_credentials"
-                    android:summary="Try to login on demand"
-                    android:title="Login" />
-
-                <EditTextPreference
-                    android:capitalize="words"
-                    android:defaultValue="@string/pref_default_ext_login_service_name"
-                    android:dependency="use_credentials"
-                    android:inputType="textCapWords"
-                    android:key="login_service_name"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:title="@string/pref_ext_login_service_name" />
-                <EditTextPreference
-                    android:capitalize="words"
-                    android:defaultValue="@string/pref_default_ext_login_name"
-                    android:dependency="use_credentials"
-                    android:inputType="textCapWords"
-                    android:key="login_name"
-                    android:maxLines="1"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:title="User name" />
-                <EditTextPreference
-                    android:capitalize="words"
-                    android:defaultValue="@string/pref_default_ext_login_password"
-                    android:dependency="use_credentials"
-                    android:inputType="textPassword"
-                    android:key="login_password"
-                    android:maxLines="1"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:title="Password" />
-            </PreferenceCategory>
-            <PreferenceCategory android:title="Encryption" >
-                <CheckBoxPreference
-                    android:defaultValue="@string/pref_default_ext_use_aes"
-                    android:key="use_aes"
-                    android:summary="Symmetric encryption of messages"
-                    android:title="AES" />
-
-                <EditTextPreference
-                    android:capitalize="words"
-                    android:defaultValue="@string/pref_default_ext_aes_password"
-                    android:dependency="use_aes"
-                    android:inputType="textVisiblePassword"
-                    android:key="aes_password"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:title="Password" />
-            </PreferenceCategory>
-        </PreferenceScreen>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_info_title" >
-        <Preference android:title="@string/pref_info_about" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/pref_info_about_url" />
-        </Preference>
-        <Preference android:title="@string/pref_info_more" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/pref_info_more_url" />
-        </Preference>
-        <Preference android:title="@string/pref_info_product" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/pref_info_product_url" />
-        </Preference>
-    </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_general_title" >
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_general_server_url"
+        android:inputType="textCapWords"
+        android:key="server_target_url"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_general_server_url" />
+  </PreferenceCategory>
+  <PreferenceCategory android:title="Login" >
+    <CheckBoxPreference
+        android:defaultValue="@string/pref_default_use_credentials"
+        android:key="use_credentials"
+        android:summary="Try to login on demand"
+        android:title="Login" />
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_login_name"
+        android:dependency="use_credentials"
+        android:inputType="textCapWords"
+        android:key="login_name"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="User name" />
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_login_password"
+        android:dependency="use_credentials"
+        android:inputType="textPassword"
+        android:key="login_password"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Password" />
+  </PreferenceCategory>
+  <PreferenceCategory android:title="@string/pref_info_title" >
+    <Preference android:title="@string/pref_info_about" >
+      <intent
+          android:action="android.intent.action.VIEW"
+          android:data="@string/pref_info_about_url" />
+    </Preference>
+    <Preference android:title="@string/pref_info_product" >
+      <intent
+          android:action="android.intent.action.VIEW"
+          android:data="@string/pref_info_product_url" />
+    </Preference>
+  </PreferenceCategory>
 
 </PreferenceScreen>

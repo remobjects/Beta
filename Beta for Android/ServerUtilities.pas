@@ -1,4 +1,4 @@
-namespace com.remobjects.beta;
+namespace com.remobjects.everwood.beta;
 
 interface
 uses
@@ -48,20 +48,19 @@ begin
   //  Once GCM returns a registration id, we need to register it in the
   //  RO+Push server. As the server might be down, we will retry it a couple
   //  times.
-  // TODO: Check continue in unwrapped java for loop 
-begin
+  begin
     var i: Integer := 1;
     while (i <= MAX_ATTEMPTS) do begin
-      Log.d(TAG, (('Attempt #' + i) + ' to register'));
+      Log.i(TAG, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
       try
-        CommonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
+        //CommonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
         fService.registerDevice(regId, typeOf(MainActivity).getPackage().getName());
         GCMRegistrar.setRegisteredOnServer(context, true);
+        Log.i(TAG, context.getString(R.string.server_registered));
         CommonUtilities.displayMessage(context, context.getString(R.string.server_registered));
         exit true;
       except
-        on e: Exception do 
-begin
+        on e: Exception do begin
           //  Here we are simplifying and retrying on any error; in a real
           //  application, it should retry only on unrecoverable errors
           //  (like HTTP error code 503).
@@ -73,26 +72,23 @@ begin
             Log.d(TAG, (('Sleeping for ' + backoff) + ' ms before retry'));
             Thread.sleep(backoff);
           except
-            on e1: InterruptedException do 
-begin
+            on e1: InterruptedException do begin
               //  Activity finished before we complete - exit.
               Log.d(TAG, 'Thread interrupted: abort remaining retries!');
               Thread.currentThread().interrupt();
-              exit false
+              exit false;
             end
-        
-end;
-        //  increase backoff exponentially
-        backoff := backoff * 2
-      end
-  
-end;
-  {postfix}inc(i)
-end
-end;
-var message: String := context.getString(R.string.server_register_error, MAX_ATTEMPTS);
-CommonUtilities.displayMessage(context, message);
-exit false
+          end;
+          //  increase backoff exponentially
+          backoff := backoff * 2
+        end;
+      end;
+      inc(i);
+    end;
+  end;
+  var message: String := context.getString(R.string.server_register_error, MAX_ATTEMPTS);
+  CommonUtilities.displayMessage(context, message);
+  exit false
 end;
 
 class method ServerUtilities.unregister(const context: Context; const regId: String);
@@ -104,8 +100,7 @@ begin
     var message: String := context.getString(R.string.server_unregistered);
     CommonUtilities.displayMessage(context, message);
   except
-    on e: Exception do 
-begin
+    on e: Exception do begin
       //  At this point the device is unregistered from GCM, but still
       //  registered in the server.
       //  We could try to unregister again, but it is not necessary:
@@ -113,9 +108,8 @@ begin
       //  a "NotRegistered" error message and should unregister the device.
       var message: String := context.getString(R.string.server_unregister_error, e.getMessage());
       CommonUtilities.displayMessage(context, message)
-    end
-
-end
+    end;
+  end;
 end;
 
 end.

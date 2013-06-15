@@ -1,4 +1,4 @@
-﻿namespace com.remobjects.dataabstract.simple;
+﻿namespace com.remobjects.everwood.beta;
 
 interface
 
@@ -9,17 +9,24 @@ uses
   android.os,
   android.util,
   android.view,
+  android.preference,
   android.widget;
 
 
 type
   LoginActivity = public class(Activity)
   public
-    class ACTIVITY_ACTION: Integer := RESULT_FIRST_USER + 3; readonly;
+    class var ACTIVITY_RESULT_LOGIN: Int32 := 1234; readonly;
+    
+    const EXTRA_KEY_USER_ID: String = 'Name';
+    const EXTRA_KEY_USER_PWD: String = 'Password';
 
   private
     etLogin, etPassword: EditText;
     cbSavePassword: CheckBox;
+    btLogin: Button;
+
+    fPrefs: SharedPreferences;
 
     method loadPreferences;
     method savePreferences;
@@ -29,8 +36,7 @@ type
     method onPause; override;
 
   public    
-    method buttonOkClick(aView: View);
-    method buttonCancelClick(aView: View);
+    method buttonLoginClick(aView: View);
   end;
 
 implementation
@@ -44,24 +50,40 @@ begin
 
   etLogin := EditText(findViewById(R.id.act_login_tb_login));
   etPassword := EditText(findViewById(R.id.act_login_tb_password));
+  btLogin := Button(findViewById(R.id.login_bt_ok));
   cbSavePassword := CheckBox(findViewById(R.id.act_login_check_remember));
+
+  fPrefs := self.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
 
   loadPreferences();
 end;
 
-method LoginActivity.buttonOkClick(aView: View);
+method LoginActivity.buttonLoginClick(aView: View);
 begin
-  var i := new Intent();
-  i.putExtra(MainActivity.USER_ID_KEY, etLogin.Text.toString);
-  i.putExtra(MainActivity.USER_PWD_KEY, etPassword.Text.toString);
-  self.setResult(RESULT_OK, i);
-  finish();
-end;
+  savePreferences();
+  var lAccess := DataAccess.getInstance();
 
-method LoginActivity.buttonCancelClick(aView: View);
-begin
-  self.setResult(RESULT_CANCELED);
-  finish();
+  var lLogin := etLogin.Text.toString;
+  var lPassword := etPassword.Text.toString;
+
+  lAccess.Executor.execute(()-> begin  
+    var lRes := lAccess.retrieveAndSaveToken(lLogin, lPassword);
+
+    self.runOnUiThread(()-> begin
+      if (lAccess.IsAuthorized) then begin
+        lAccess.dropAutorizing;
+        self.setResult(RESULT_OK);
+        self.finish();
+      end
+      else begin
+        var lMessage := 'Login failed for ' + lLogin + '.';
+        if (not lRes) then
+          lMessage := lMessage + ' Check network connection.';
+        Toast.makeText(self, lMessage, Toast.LENGTH_SHORT).show();
+        btLogin.Text := 'Try Again';
+      end;
+    end);    
+  end);
 end;
 
 method LoginActivity.onPause;
@@ -72,19 +94,17 @@ end;
 
 method LoginActivity.loadPreferences;
 begin
-  var lApplicationSettings := self.getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
-  etLogin.setText(lApplicationSettings.getString(MainActivity.USER_ID_KEY, ''));
-  etPassword.setText(lApplicationSettings.getString(MainActivity.USER_PWD_KEY, ''));
+  etLogin.setText(fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, ''));
+  etPassword.setText(fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, ''));
 end;
 
 method LoginActivity.savePreferences;
 begin
-  var lApplicationSettings := self.getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
-  var editor := lApplicationSettings.edit();
+  var editor := fPrefs.edit();
 
-  editor.putString(MainActivity.USER_ID_KEY, etLogin.Text.toString());
+  editor.putString(CommonUtilities.PREFS_LOGIN_NAME, etLogin.Text.toString());
   if  (cbSavePassword.isChecked)  then    
-    editor.putString(MainActivity.USER_PWD_KEY, etPassword.Text.toString());
+    editor.putString(CommonUtilities.PREFS_LOGIN_PASSWORD, etPassword.Text.toString());
   editor.commit();
 end;
 

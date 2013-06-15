@@ -1,4 +1,4 @@
-namespace com.remobjects.beta;
+namespace com.remobjects.everwood.beta;
 
 interface
 uses
@@ -14,101 +14,99 @@ type
   public
     constructor();
   protected
-    method onRegistered(context: Context; registrationId: String); override;
-    method onUnregistered(context: Context; registrationId: String); override;
-    method onMessage(context: Context; intent: Intent); override;
-    method onDeletedMessages(context: Context; total: Integer); override;
+    method onRegistered(aContext: Context; registrationId: String); override;
+    method onUnregistered(aContext: Context; registrationId: String); override;
+    method onMessage(aContext: Context; intent: Intent); override;
+    method onDeletedMessages(aContext: Context; total: Integer); override;
   public
-    method onError(context: Context; errorId: String); override;
+    method onError(aContext: Context; errorId: String); override;
   protected
-    method onRecoverableError(context: Context; errorId: String): Boolean; override;
+    method onRecoverableError(aContext: Context; errorId: String): Boolean; override;
   private
-    class method generateNotification(ctx: Context; message: String);
+    class method generateNotification(aContext: Context; message: String);
   end;
 
 implementation
 
 constructor GCMIntentService();
 begin
-  inherited constructor (CommonUtilities.SENDER_ID)
+  inherited constructor(CommonUtilities.SENDER_ID);
 end;
 
-method GCMIntentService.onRegistered(context: Context; registrationId: String);
+method GCMIntentService.onRegistered(aContext: Context; registrationId: String);
 begin
   //  get the registration id and pass it to the RO server to REGISTER
-  Log.i(TAG, ('Device registered: regId = ' + registrationId));
-  CommonUtilities.displayMessage(context, getString(R.string.gcm_registered));
-  ServerUtilities.&register(context, registrationId)
+  Log.i(TAG, (getString(R.string.gcm_registered) + '' + registrationId));
+  ServerUtilities.register(aContext, registrationId)
 end;
 
-method GCMIntentService.onUnregistered(context: Context; registrationId: String);
+method GCMIntentService.onUnregistered(aContext: Context; registrationId: String);
 begin
   //  get the registration id and pass it to the RO server to UNREGISTER
-  Log.i(TAG, 'Device unregistered');
-  CommonUtilities.displayMessage(context, getString(R.string.gcm_unregistered));
-  if GCMRegistrar.isRegisteredOnServer(context) then begin
-    ServerUtilities.unregister(context, registrationId)
+  Log.i(TAG, getString(R.string.gcm_unregistered));
+  if GCMRegistrar.isRegisteredOnServer(aContext) then begin
+    ServerUtilities.unregister(aContext, registrationId);
   end
-  else
-begin
+  else begin
     //  This callback results from the call to unregister made on
     //  ServerUtilities when the registration to the server failed.
     Log.i(TAG, 'Ignoring unregister callback')
-  end
+  end;
 end;
 
-method GCMIntentService.onMessage(context: Context; intent: Intent);
+method GCMIntentService.onMessage(aContext: Context; intent: Intent);
 begin
   //  Called when RO server sends a message to GCM, and GCM delivers it to the device.
   //  If the message has a payload, its contents are available as extras in the intent.
   Log.i(TAG, 'Received message');
   var message: String := getString(R.string.gcm_message);
-  var lServerMessage: String := intent.getStringExtra('server_message');
-  if (lServerMessage <> nil) then     message := message + (': ' + lServerMessage);
-  var lServerTime: String := intent.getStringExtra('server_time');
-  if (lServerTime <> nil) then     message := message + ('Server time is: ' + lServerTime);
-  CommonUtilities.displayMessage(context, message);
+  var lServerMessage: String := intent.getStringExtra(CommonUtilities.EXTRA_MESSAGE);
+  if (lServerMessage <> nil) then
+    message := message + (': ' + lServerMessage);
+  CommonUtilities.displayMessage(aContext, message);
   //  notifies user
-  generateNotification(context, message)
+  GCMIntentService.generateNotification(aContext, message)
 end;
 
-method GCMIntentService.onDeletedMessages(context: Context; total: Integer);
+method GCMIntentService.onDeletedMessages(aContext: Context; total: Integer);
 begin
-  Log.i(TAG, 'Received deleted messages notification');
-  var message: String := getString(R.string.gcm_deleted, total);
-  CommonUtilities.displayMessage(context, message);
-  //  notifies user
-  generateNotification(context, message)
+  Log.i(TAG, getString(R.string.gcm_deleted, total));
 end;
 
-method GCMIntentService.onError(context: Context; errorId: String);
+method GCMIntentService.onError(aContext: Context; errorId: String);
 begin
-  Log.i(TAG, ('Received error: ' + errorId));
-  CommonUtilities.displayMessage(context, getString(R.string.gcm_error, errorId))
+  Log.i(TAG, getString(R.string.gcm_error, errorId));
 end;
 
-method GCMIntentService.onRecoverableError(context: Context; errorId: String): Boolean;
+method GCMIntentService.onRecoverableError(aContext: Context; errorId: String): Boolean;
 begin
   //  log message
-  Log.i(TAG, ('Received recoverable error: ' + errorId));
-  CommonUtilities.displayMessage(context, getString(R.string.gcm_recoverable_error, errorId));
-  exit inherited onRecoverableError(context, errorId)
+  Log.i(TAG, getString(R.string.gcm_recoverable_error, errorId));
+  exit inherited onRecoverableError(aContext, errorId)
 end;
 
-class method GCMIntentService.generateNotification(ctx: Context; message: String);
+class method GCMIntentService.generateNotification(aContext: Context; message: String);
 begin
   var icon: Integer := R.drawable.ic_launcher;
-  var when: Int64 := System.currentTimeMillis();
-  var notificationManager: NotificationManager := NotificationManager(ctx.getSystemService(Context.NOTIFICATION_SERVICE));
-  var lPopup: Notification := new Notification(icon, message, when);
-  var title: String := ctx.getString(R.string.app_name);
-  var notificationIntent: Intent := new Intent(ctx, typeOf(MainActivity));
+  var when: Int64 := System.currentTimeMillis();  
+  var title: String := aContext.getString(R.string.app_name);
+  
+  var notificationIntent := new Intent(aContext, typeOf(MainActivity));
   //  set intent so it does not start a new activity
   notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP);
-  var intent: PendingIntent := PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
-  lPopup.setLatestEventInfo(ctx, title, message, intent);
-  lPopup.&flags := lPopup.&flags or Notification.FLAG_AUTO_CANCEL;
-  notificationManager.&notify(0, lPopup);
+  var intent: PendingIntent := PendingIntent.getActivity(aContext, 0, notificationIntent, 0);
+  
+  var lPopupBuilder := new android.support.v4.app.NotificationCompat.Builder(aContext);
+  lPopupBuilder.SmallIcon := R.drawable.ic_launcher;
+  lPopupBuilder.When := System.currentTimeMillis();
+  lPopupBuilder.ContentTitle := title;
+  lPopupBuilder.ContentText := message;
+  lPopupBuilder.ContentIntent := intent;
+  lPopupBuilder.AutoCancel := true;
+
+  var lManager: NotificationManager := NotificationManager(aContext.getSystemService(Context.NOTIFICATION_SERVICE));
+  lManager.notify(0, lPopupBuilder.build());
+
 end;
 
 end.

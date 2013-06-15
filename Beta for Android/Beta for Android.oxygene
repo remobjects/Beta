@@ -8,7 +8,7 @@
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <AllowLegacyCreate>False</AllowLegacyCreate>
     <Name>Beta for Android</Name>
-    <RootNamespace>com.remobjects.beta</RootNamespace>
+    <RootNamespace>com.remobjects.everwood.beta</RootNamespace>
     <AssemblyName>com.remobjects.everwood.beta</AssemblyName>
     <AndroidSDKPath />
     <AndroidPlatformName>
@@ -17,12 +17,9 @@
     </DefaultUses>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <Optimize>false</Optimize>
-    <OutputPath>.\bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;</DefineConstants>
-    <GenerateDebugInfo>True</GenerateDebugInfo>
-    <EnableAsserts>True</EnableAsserts>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <StartMode>Project</StartMode>
     <RegisterForComInterop>False</RegisterForComInterop>
@@ -92,9 +89,10 @@
     <Compile Include="CommonUtilities.pas" />
     <Compile Include="DataAccess.pas" />
     <Compile Include="GCMIntentService.pas" />
+    <Compile Include="LoginActivity.pas" />
     <Compile Include="PushProvider_Intf.pas" />
     <Compile Include="ServerUtilities.pas" />
-    <Compile Include="SettingsActivity.pas" />
+    <Compile Include="ProductsListAdapter.pas" />
     <Compile Include="MainActivity.pas" />
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +155,16 @@
     <Content Include="res\drawable\ic_launcher.png">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="res\drawable\login_background.jpg">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="res\drawable\new_version_badge.png">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="res\drawable\remobjects_logo.png">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="res\layout\activity_login.layout-xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="res\layout\activity_main.layout-xml">
@@ -166,7 +173,10 @@
     <Content Include="res\layout\activity_settings.layout-xml">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="res\layout\mainlist_item.layout-xml">
+    <Content Include="res\layout\product_list_header.layout-xml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="res\layout\product_list_item.layout-xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="res\menu\main.android-xml">
@@ -178,15 +188,15 @@
     <Content Include="res\values-v14\styles.android-xml">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="res\values\strings_settings.android-xml">
+    <None Include="res\values\strings_settings.android-xml">
       <SubType>Content</SubType>
-    </Content>
+    </None>
     <Content Include="res\values\styles.android-xml">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="res\xml\settings.android-xml">
+    <None Include="res\xml\settings.android-xml">
       <SubType>Content</SubType>
-    </Content>
+    </None>
     <None Include="res\values\strings.android-xml">
       <SubType>Content</SubType>
     </None>

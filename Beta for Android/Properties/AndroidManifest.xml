@@ -1,28 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.remobjects.beta"
-          android:installLocation="auto" android:versionCode="2" android:versionName="1.0">
+          package="com.remobjects.everwood.beta"
+          android:installLocation="auto" android:versionCode="3" android:versionName="1.2">
   <uses-sdk android:minSdkVersion="8"
             android:targetSdkVersion="17" />
 
-  <permission android:name="com.remobjects.beta.permission.C2D_MESSAGE"
-              android:protectionLevel="signature" />
+  <permission android:name="com.remobjects.everwood.beta.permission.C2D_MESSAGE"/>
+  <uses-permission android:name="com.remobjects.everwood.beta.permission.C2D_MESSAGE" />
+
   <!-- App receives GCM messages. -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
   <!-- GCM connects to Google Services. -->
   <uses-permission android:name="android.permission.INTERNET" />
+  <!-- to cache loaded images -->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <!-- GCM requires a Google account. -->
   <uses-permission android:name="android.permission.GET_ACCOUNTS" />
   <!-- Keeps the processor from sleeping when a message is received. -->
   <uses-permission android:name="android.permission.WAKE_LOCK" />
   <application android:name=".DataAccess" android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:theme="@style/AppTheme">
-    <activity android:name=".MainActivity" android:label="@string/activity_title">
+    <activity android:name=".MainActivity"
+              android:label="@string/activity_title"
+              android:configChanges="keyboardHidden|orientation|screenSize">
       <intent-filter android:label="@string/app_name">
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".SettingsActivity" android:label="@string/title_activity_settings"></activity>
+    <activity android:name=".LoginActivity" android:label="@string/activity_title"></activity>
 
     <service android:name=".GCMIntentService" />
     <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver"
@@ -34,7 +39,7 @@
         <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
         <!-- supposed to be the APP key, that is sent to GCM as APP ID (usually app package name) -->
-        <category android:name="com.remobjects.beta" />
+        <category android:name="com.remobjects.everwood.beta" />
       </intent-filter>
     </receiver>
   </application>

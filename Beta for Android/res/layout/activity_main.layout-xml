@@ -5,26 +5,27 @@
     android:orientation="vertical"
     android:padding="3dp" >
 
-  <TextView
-        android:id="@+id/log_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:layout_weight="1"
-        android:text="log here" />
-
+  <LinearLayout android:id="@android:id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
     <TextView
-        android:id="@android:id/empty"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:layout_weight="2"
-        android:text="@string/clients_list_empty" />
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_weight="2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/clients_list_empty" />
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="10pt"
+      android:src="@drawable/remobjects_logo" />
+  </LinearLayout>
+
+  <ListView
+      android:id="@android:id/list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
 
 </LinearLayout>

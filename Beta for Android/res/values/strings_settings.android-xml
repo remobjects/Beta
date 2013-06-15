@@ -6,18 +6,12 @@
     <string name="pref_general_max_records">Records to Load</string>
     <string name="pref_info_title">Information</string>
     <string name="pref_ext_title">Advanced</string>
-    <string name="pref_ext_data_service_name">Data Service Name</string>
-    <string name="pref_ext_login_service_name">Login Service Name</string>
     <!-- settings defaults -->
     <string name="pref_default_general_server_url">http://remobjects.com:8099/bin</string>
-    <string name="pref_default_general_max_records">20</string>
-    <string name="pref_default_ext_data_service_name">DASampleService</string>
-    <string name="pref_default_ext_use_credentials">false</string>
-    <string name="pref_default_ext_login_service_name">LoginService</string>
-    <string name="pref_default_ext_login_name"></string>
-    <string name="pref_default_ext_login_password"></string>
-    <string name="pref_default_ext_use_aes">false</string>
-    <string name="pref_default_ext_aes_password"></string>
+    <string name="pref_default_use_credentials">false</string>
+    <string name="pref_default_login_name"></string>
+    <string name="pref_default_login_password"></string>
+    <string name="pref_default_user_token"></string>
     <!-- DA info links -->
     <string name="pref_info_about">About</string>
     <string name="pref_info_more">More Samples</string>

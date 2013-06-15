@@ -1,4 +1,4 @@
-﻿  namespace com.remobjects.beta;
+﻿namespace com.remobjects.everwood.beta;
 interface
 uses
   android.app,
@@ -10,15 +10,11 @@ uses
 type
   SettingsActivity = public class(PreferenceActivity)
   public
-    class var PREFS_SERVER_URL: String := 'server_target_url'; readonly;
-    class var PREFS_LOGIN_NAME: String := 'login_name'; readonly;
-    class var PREFS_LOGIN_PASSWORD: String := 'login_password'; readonly;
-    class var PREFS_LOGIN_TOKEN: String := 'login_token'; readonly;
   protected
     [SuppressWarnings(Value := ['deprecation'])]
     method onCreate(savedInstanceState: Bundle); override;
   public
-    method onOptionsItemSelected(item: MenuItem): Boolean; override; 
+    method onOptionsItemSelected(item: MenuItem): Boolean; override;
     class constructor;
   private
     // A preference value change listener that updates the preference's summary to reflect its new value.
