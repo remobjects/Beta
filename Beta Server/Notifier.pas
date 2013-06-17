@@ -58,8 +58,20 @@ begin
     LoadCache();
 
     var lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'iOS.p12');
-    fPushConnect.APSConnect.iOSCertificateFile := lCertificatePath;
-    Log('Loaded Apple iOS Push Certificate from '+lCertificatePath);
+    if File.Exists(lCertificatePath) then begin
+      fPushConnect.APSConnect.iOSCertificateFile := lCertificatePath;
+      Log('Loaded Apple iOS Push Certificate from '+lCertificatePath);
+    end;
+    lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'Mac.p12');
+    if File.Exists(lCertificatePath) then begin
+      fPushConnect.APSConnect.MacCertificateFile := lCertificatePath;
+      Log('Loaded Apple Mac Push Certificate from '+lCertificatePath);
+    end;
+    lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'Web.p12');
+    if File.Exists(lCertificatePath) then begin
+      fPushConnect.APSConnect.WebCertificateFile := lCertificatePath;
+      Log('Loaded Apple Web Push Certificate from '+lCertificatePath);
+    end;
 
     fPushConnect.GCMConnect.ApiKey := Settings.Default.GCMSenderApiKey;
 
