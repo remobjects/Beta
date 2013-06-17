@@ -19,7 +19,11 @@ CommonUtilities = public sealed class
     /// <summary>
     /// Google API project id registered to use GCM.
     /// </summary>
-    class var SENDER_ID: String := '895043798507'; readonly; // 132572464504 - created by marc
+    {$IFNDEF TEST}
+    class var SENDER_ID: String := '132572464504'; readonly; // created by marc
+    {$ELSE}
+    class var SENDER_ID: String := '895043798507'; readonly; // mine test
+    {$ENDIF}
     /// <summary>
     /// Tag used on log messages.
     /// </summary>
@@ -30,7 +34,7 @@ CommonUtilities = public sealed class
     class var DISPLAY_MESSAGE_ACTION: String := 'com.remobjects.everwood.beta.DISPLAY_MESSAGE'; readonly;
     class var DISPLAY_TOAST_ACTION: String := 'com.remobjects.everwood.beta.DISPLAY_TOAST'; readonly;
 
-    class var PREFENCES_NAME: String := 'com.remobjects.everwood.beta.preferences'; readonly;
+    class var PREFERENCES_NAME: String := 'prefs'; readonly;
     class var PREFS_SERVER_URL: String := 'server_target_url'; readonly;
     class var PREFS_LOGIN_NAME: String := 'login_name'; readonly;
     class var PREFS_LOGIN_PASSWORD: String := 'login_pwd'; readonly;
@@ -80,8 +84,6 @@ begin
     data := newData
   end;
   exit data
-
-
 end;
 
 end.

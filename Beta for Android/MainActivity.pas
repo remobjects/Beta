@@ -40,6 +40,7 @@ type
   public
     method onCreate(savedInstanceState: Bundle); override;
     method onDestroy(); override;
+    method onPause; override;
     method onActivityResult(requestCode, resultCode: Integer; data: Intent); override;
     method onCreateOptionsMenu(aMenu: Menu): Boolean; override;
     method onMenuItemSelected(aFeatureId: Integer; anItem: MenuItem): Boolean; override;
@@ -69,15 +70,14 @@ implementation
 method MainActivity.onCreate(savedInstanceState: Bundle);
 begin
   inherited onCreate(savedInstanceState);
+  
+  setContentView(R.layout.activity_main);
 
   // Make sure the device has the proper dependencies.
   GCMRegistrar.checkDevice(self);
   // Make sure the manifest was properly set - comment out this line
   // while developing the app, then uncomment it when it's ready.
   GCMRegistrar.checkManifest(self);
-
-  setContentView(R.layout.activity_main);
-  that := self;
 
   fDataAccess := DataAccess.getInstance();
   fListView := ListView(findViewById(android.R.id.list));
@@ -110,9 +110,18 @@ begin
   try
     GCMRegistrar.onDestroy(self);
   except
-
   end;
+  
+
   inherited onDestroy();
+end;
+
+method MainActivity.onPause;
+begin
+  fDataAccess.flushCacheData();
+  Log.i(TAG, "cache data flushed on disk");
+
+  inherited.onPause();
 end;
 
 method MainActivity.onActivityResult(requestCode: Integer; resultCode: Integer; data: Intent);
@@ -210,7 +219,11 @@ begin
         Toast.makeText(self, 'login failed. try to relogin.', Toast.LENGTH_SHORT).show();
         fDataAccess.loginAsync(self);
       end;      
-    end
+    end,
+    gotCachedData := method begin
+       Toast.makeText(self, 'cached data', Toast.LENGTH_SHORT).show();
+       fAdapter.notifyDataSetChanged();
+    end    
   ));
 end;
 

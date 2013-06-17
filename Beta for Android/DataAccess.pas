@@ -15,7 +15,7 @@ uses
   com.remobjects.sdk;
 
 type
-  DataAccess = public class(android.app.Application, SharedPreferences.OnSharedPreferenceChangeListener)
+  DataAccess = public class(android.app.Application)
   private
     const TAG = "DataService";
     //const PUSH_SERVICE_URL = 'http://beta.remobjects.com:8098/bin';
@@ -28,14 +28,17 @@ type
     const KEY_USERNAME = 'Username';
     const KEY_TOKEN = 'Token';
     const KEY_CACHED_DATA = 'Downloads';
-    const CACHE_DIR_NAME = 'beta_images_cache';
+    const CACHE_IMAGES_DIR_NAME = 'beta_images_cache';
+    const CACHE_DATA_FILE_NAME = 'beta_list.cache';
 
     //var app_serverUrl: String;
-    var app_loginName: String := '';        
+    var app_loginName: String := '';
     var app_userToken: String := '';
     var app_loginPassword: String := '';
 
     var fProducts: List<Map<String, Object>> := new ArrayList<Map<String, Object>>();
+    var fCachedDataString: String;
+    var fPrefs: SharedPreferences;
 
     class fInstance: DataAccess := nil;
     var aesEnvelope: AesEncryptionEnvelope;
@@ -52,15 +55,20 @@ type
     property IsAuthorized: Boolean read (length(app_userToken) > 0) and (length(app_loginName) > 0);
     property Products: List<Map<String, Object>> read Collections.synchronizedList(fProducts);
     property Executor: Executor read fExecutor;
+    method flushCacheData();
 
 
   private
    method readPreferences();
    method initComponents();
-   method readStringFromUrl(anUrl: java.net.URI; aResponse: ReferenceType<String>): Integer;
+   method readDataStringFromUrl(anUrl: java.net.URI; aResponse: ReferenceType<String>): Integer;
+   method readDataStringFromCache(): String;
+   method writeDataStringToCache(aDataString: String);
 
    method showLogin(aContext: MainActivity);
    method getUniques<T>(aList, aListToFill: List<T>; aPredicate: KeyPredicate<T>);
+   method parseDataString(aDataString: String): List<Map<String, Object>>;
+   method formatData(aData: List<Map<String, Object>>);
 
   public
 
@@ -71,13 +79,12 @@ type
     property ImageLoader: com.webimageloader.ImageLoader read private write;
     property IsAuthorizing: Boolean read fIsAuthorizing;
     method dropAutorizing();
-
-    method onSharedPreferenceChanged(prefs: android.content.SharedPreferences; key: java.lang.String);
   end;
 
   RequestCallback nested in DataAccess = interface
     method gotLogin(aStatus: RequestStatus; aUser, aToken: String);
     method gotData(aStatus: RequestStatus);
+    method gotCachedData();
   end;
 
   RequestStatus nested in DataAccess = public enum (Ok, Failed, NetworkError);
@@ -91,12 +98,9 @@ implementation
 
 method DataAccess.readPreferences();
 begin
-  var ctx := inherited.ApplicationContext;
-  var prefs := PreferenceManager.DefaultSharedPreferences[ctx];
-  //self.app_serverUrl := prefs.getString(CommonUtilities.PREFS_SERVER_URL, PUSH_SERVICE_URL);
-  self.app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-  self.app_userToken := prefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, nil);
-  self.app_loginPassword := prefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, nil);
+  self.app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
+  self.app_userToken := fPrefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, nil);
+  self.app_loginPassword := fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, nil);
 end;
 
 
@@ -106,9 +110,8 @@ begin
   inherited.onCreate;
 
   fInstance := self;
-  PreferenceManager.setDefaultValues(self, R.xml.settings, false);
+  fPrefs := self.SharedPreferences[CommonUtilities.PREFERENCES_NAME, Context.MODE_PRIVATE];
   self.initComponents();
-  PreferenceManager.getDefaultSharedPreferences(self).registerOnSharedPreferenceChangeListener(self);
 
   // TODO get cached data here
 end;
@@ -130,35 +133,26 @@ try
 
   // Use part of the available memory for memory cache.
   var memoryCacheSize: Integer := (((1024 * 1024) * memClass) div 8);
-  var cacheDir := new java.io.File(getExternalCacheDir(), CACHE_DIR_NAME);
+  //var cacheDir := new java.io.File(getExternalCacheDir(), CACHE_IMAGES_DIR_NAME);
 
   // Find the dir to save cached images
-  if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) then
-      cacheDir := new File(self.getExternalCacheDir(), CACHE_DIR_NAME)
-  else
-      cacheDir := self.getCacheDir();
-  if (not cacheDir.exists()) then
-      cacheDir.mkdirs();
+  //if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) then
+      //cacheDir := new File(self.ExternalCacheDir, CACHE_DIR_NAME)
+  //else
+      //cacheDir := self.getCacheDir();
+  //if (not cacheDir.exists()) then
+      //cacheDir.mkdirs();
+  var lCacheDir := com.webimageloader.util.IOUtil.getDiskCacheDir(self, CACHE_IMAGES_DIR_NAME);
 
   self.ImageLoader := new com.webimageloader.ImageLoader.Builder(self)
-                                                      .enableDiskCache(cacheDir, ((10 * 1024) * 1024))
+                                                      .enableDiskCache(lCacheDir, ((10 * 1024) * 1024))
                                                       .enableMemoryCache(memoryCacheSize)
                                                       .build();
-
-
-except
-  on ex: Exception do 
-begin
-    System.err.println(java.lang.String.format('DataModule.initComponents : %s', ex.getMessage()))
-  end
-
-end;
-
-end;
-
-method DataAccess.onSharedPreferenceChanged(prefs: android.content.SharedPreferences; key: java.lang.String);
-begin
-  self.readPreferences;
+  except
+    on ex: Exception do  begin
+      System.err.println(java.lang.String.format('DataModule.initComponents : %s', ex.getMessage()));
+    end
+  end;
 end;
 
 method DataAccess.showLogin(aContext: MainActivity);
@@ -178,12 +172,11 @@ begin
   if (fIsAuthorizing) then
     exit (false);
   fIsAuthorizing := true;
-  var prefs := aContext.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
 
   // maybe we have token stored
-  if (prefs.contains(CommonUtilities.PREFS_LOGIN_TOKEN)) then begin
-    app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-    app_userToken := prefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, '');
+  if (fPrefs.contains(CommonUtilities.PREFS_LOGIN_TOKEN)) then begin
+    app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
+    app_userToken := fPrefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, '');
     fIsAuthorizing := false;
     if (aCallback <> nil) then
       aCallback.gotLogin(RequestStatus.Ok, app_loginName, app_userToken);
@@ -191,9 +184,9 @@ begin
   end;
 
   // check if we have login/password stored
-  if (prefs.contains(CommonUtilities.PREFS_LOGIN_PASSWORD)) then begin
-    app_loginName := prefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-    app_loginPassword := prefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, '');
+  if (fPrefs.contains(CommonUtilities.PREFS_LOGIN_PASSWORD)) then begin
+    app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
+    app_loginPassword := fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, '');
     
     // perform async http call to get token
     fExecutor.execute(()->begin
@@ -231,7 +224,7 @@ begin
   var lURL := new java.net.URI(API_URL + API_GETTOKEN + '?name=' + aUsername + '&password=' + aPassword + '&appid=' + API_APPID + '&clientid=' + API_APPID);
 
   var lResponse := new ReferenceType<String>();
-  var lResponseCode := self.readStringFromUrl(lURL, lResponse);
+  var lResponseCode := self.readDataStringFromUrl(lURL, lResponse);
   var lResponseString := lResponse.Value;
 
   case (lResponseCode) of
@@ -242,8 +235,7 @@ begin
       Log.i(TAG, 'got token: ' + app_userToken);
 
       {$REGION save fine token to preferences}
-      var prefs := self.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
-      prefs.edit()
+      fPrefs.edit()
            .putString(CommonUtilities.PREFS_LOGIN_TOKEN, app_userToken)
            .commit();
       {$ENDREGION }
@@ -264,105 +256,47 @@ end;
 
 
 method DataAccess.getDataAsync(aContext: MainActivity; aCallback: RequestCallback);
-begin  
+begin
+  // try get cached list
+  if (fProducts:size = 0) then begin
+    var lProductsString := self.readDataStringFromCache();
+    if (length(lProductsString) > 0) then begin
+      var lProducts := self.parseDataString(lProductsString);
+      Log.i(TAG, "cache data loaded from disk");
+      self.formatData(lProducts);
+      locking (fProducts) do begin
+        if (fProducts.size = 0) then
+          fProducts.addAll(lProducts);
+      end;
+      if (assigned(aCallback)) then
+        aCallback.gotCachedData();
+    end
+    else
+      Log.i(TAG, "nothing in cache");
+  end;
+
   fExecutor.execute(()->begin    
       var lURL := new java.net.URI(API_URL + API_DOWNLOADS + '?name=' + app_loginName + '&token=' + app_userToken);
 
       var lResponse := new ReferenceType<String>();
-      var lResponseCode := self.readStringFromUrl(lURL, lResponse);
+      var lResponseCode := self.readDataStringFromUrl(lURL, lResponse);
       var lResponseString := lResponse.Value;
   
       var lResponseStatus : RequestStatus;
 
       case lResponseCode of
         200: begin
-          {$REGION parse xml from response}
-          var dbf := javax.xml.parsers.DocumentBuilderFactory.newInstance();
-          dbf.IgnoringComments := true;
-          dbf.Validating := false;
-          dbf.IgnoringElementContentWhitespace := true;
-          var db := dbf.newDocumentBuilder();
           
-          var lInput := new org.xml.sax.InputSource();
-          lInput.CharacterStream := new StringReader(lResponseString);
-          var lXml := db.parse(lInput);
-          lXml.normalizeDocument();          
-          {$ENDREGION }
-
-          {$REGION  processing xml nodes into a showable list of key-pair values}
-          var nodes := lXml.DocumentElement.ElementsByTagName['download'];
-          var lProducts := new ArrayList<Map<String, Object>>();
-          for i: Integer := 0 to nodes.Length - 1 do begin
-            var lElemDownload: org.w3c.dom.Element := org.w3c.dom.Element(nodes.item(i));
-            var lProduct := new java.util.HashMap<String, Object>(); // product logo url version branch date prerelease
-            var attrs := lElemDownload.Attributes;
-            for ia: Integer := 0 to attrs.Length -1 do begin
-              var attr := org.w3c.dom.Attr(attrs.item(ia));
-              // todo: process date separately
-              var lValue: Object := attr.Value;
-              case (attr.Name) of
-                'product': begin
-                   var lPrName: String := java.lang.String(lValue);
-                   var pos := lPrName.indexOf('(');
-                   if (pos > 0) then
-                     //lPrName := lPrName.substring(0, pos);
-                     continue;
-                    lValue := lPrName;
-                end;
-                'date': begin
-                  var lFromServer := new java.text.SimpleDateFormat('yyyy-MM-dd');
-                  var lPrDate: Date := lFromServer.parse(java.lang.String(lValue));
-
-                  lValue := lPrDate;
-                end;
-              end;
-              lProduct.put(attr.Name, lValue);
-            end;
-            lProducts.add(lProduct);
-          end;         
-          {$ENDREGION }
-
-          {$REGION additional sorting and filtering}
-          var lSort := new interface Comparator<Map<String, Object>>(
-            compare := method(p1, p2: Map<String, Object>) begin
-              result := Date(p2.get('date')).compareTo(Date(p1.get('date')));
-              if (result = 0) then
-                result := java.lang.String(p1.get('product')).compareTo(java.lang.String(p2.get('product')));
-            end
-          );
-
-          var lBetaProducts:=  new ArrayList<Map<String, Object>>();
-          getUniques(lProducts, lBetaProducts, (val) -> begin
-            if ( not 'true'.equals(val.get('prerelease')) )  then
-              exit (nil); // no key -> not included in result list
-            exit (java.lang.String(val.get('product')));
-          end);
-          Collections.sort(lBetaProducts, lSort);
-
-          var lRtmProducts:=  new ArrayList<Map<String, Object>>();
-          getUniques(lProducts, lRtmProducts, (val) -> begin
-            if ( 'true'.equals(val.get('prerelease')) )  then
-              exit (nil); // no key -> not included in result list
-            exit (java.lang.String(val.get('product')));
-          end);
-          Collections.sort(lRtmProducts, lSort);
-
-          lProducts.clear();
-          var lBetaHeader := new HashMap<String,Object>();
-          lBetaHeader.put('header', 'Beta Downloads');
-          lProducts.add(lBetaHeader);
-          lProducts.addAll(lBetaProducts);
-          var lRtmHeader := new HashMap<String,Object>();
-          lRtmHeader.put('header', 'Release Downloads');
-          lProducts.add(lRtmHeader);
-          lProducts.addAll(lRtmProducts);
+          var lProducts := self.parseDataString(lResponseString);          
+          self.formatData(lProducts);
+          
 
           locking (fProducts) do begin
             fProducts.clear();
             fProducts.addAll(lProducts);
           end;
-
-          {$ENDREGION }
+          //here we know, that data string was parsed and formatted w/o errors
+          fCachedDataString := lResponseString;
 
           lResponseStatus := RequestStatus.Ok;
         end;        
@@ -380,6 +314,93 @@ begin
       if (assigned(aCallback)) then
         aContext.runOnUiThread(()-> aCallback.gotData(lResponseStatus));
   end);
+end;
+
+
+method DataAccess.parseDataString(aDataString: String): List<Map<String, Object>>;
+begin
+  {$REGION parse xml from response}
+  var dbf := javax.xml.parsers.DocumentBuilderFactory.newInstance();
+  dbf.IgnoringComments := true;
+  dbf.Validating := false;
+  dbf.IgnoringElementContentWhitespace := true;
+  var db := dbf.newDocumentBuilder();
+          
+  var lInput := new org.xml.sax.InputSource();
+  lInput.CharacterStream := new StringReader(aDataString);
+  var lXml := db.parse(lInput);
+  lXml.normalizeDocument();          
+  {$ENDREGION }
+
+  {$REGION  processing xml nodes into a showable list of key-pair values}
+  var nodes := lXml.DocumentElement.ElementsByTagName['download'];
+  result := new ArrayList<Map<String, Object>>();
+  for i: Integer := 0 to nodes.Length - 1 do begin
+    var lElemDownload: org.w3c.dom.Element := org.w3c.dom.Element(nodes.item(i));
+    var lProduct := new java.util.HashMap<String, Object>(); // product logo url version branch date prerelease
+    var attrs := lElemDownload.Attributes;
+    for ia: Integer := 0 to attrs.Length -1 do begin
+      var attr := org.w3c.dom.Attr(attrs.item(ia));
+      // todo: process date separately
+      var lValue: Object := attr.Value;
+      case (attr.Name) of
+        'product': begin
+            var lPrName: String := java.lang.String(lValue);
+            var pos := lPrName.indexOf('(');
+            if (pos > 0) then
+              //lPrName := lPrName.substring(0, pos);
+              continue;
+            lValue := lPrName;
+        end;
+        'date': begin
+          var lFromServer := new java.text.SimpleDateFormat('yyyy-MM-dd');
+          var lPrDate: Date := lFromServer.parse(java.lang.String(lValue));
+
+          lValue := lPrDate;
+        end;
+      end;
+      lProduct.put(attr.Name, lValue);
+    end;
+    result.add(lProduct);
+  end;         
+  {$ENDREGION }
+end;
+
+method DataAccess.formatData(aData: List<Map<String, Object>>);
+begin
+  var lSort := new interface Comparator<Map<String, Object>>(
+    compare := method(p1, p2: Map<String, Object>) begin
+      result := Date(p2.get('date')).compareTo(Date(p1.get('date')));
+      if (result = 0) then
+        result := java.lang.String(p1.get('product')).compareTo(java.lang.String(p2.get('product')));
+    end
+  );
+
+  var lBetaProducts:=  new ArrayList<Map<String, Object>>();
+  getUniques(aData, lBetaProducts, (val) -> begin
+    if ( not 'true'.equals(val.get('prerelease')) )  then
+      exit (nil); // no key -> not included in result list
+    exit (java.lang.String(val.get('product')));
+  end);
+  Collections.sort(lBetaProducts, lSort);
+
+  var lRtmProducts:=  new ArrayList<Map<String, Object>>();
+  getUniques(aData, lRtmProducts, (val) -> begin
+    if ( 'true'.equals(val.get('prerelease')) )  then
+      exit (nil); // no key -> not included in result list
+    exit (java.lang.String(val.get('product')));
+  end);
+  Collections.sort(lRtmProducts, lSort);
+
+  aData.clear();
+  var lBetaHeader := new HashMap<String,Object>();
+  lBetaHeader.put('header', 'Beta Downloads');
+  aData.add(lBetaHeader);
+  aData.addAll(lBetaProducts);
+  var lRtmHeader := new HashMap<String,Object>();
+  lRtmHeader.put('header', 'Release Downloads');
+  aData.add(lRtmHeader);
+  aData.addAll(lRtmProducts);
 end;
 
 method DataAccess.getUniques<T>(aList, aListToFill: List<T>; aPredicate: KeyPredicate<T>);
@@ -401,8 +422,7 @@ begin
 end;
 
 
-
-method DataAccess.readStringFromUrl(anUrl: java.net.URI; aResponse: ReferenceType<String>): Integer;
+method DataAccess.readDataStringFromUrl(anUrl: java.net.URI; aResponse: ReferenceType<String>): Integer;
 begin
   var lConn := java.net.HttpURLConnection(anUrl.toURL.openConnection());
   lConn.ConnectTimeout := 3000;
@@ -449,6 +469,52 @@ begin
 
   if assigned(lOutputBuffer) then
     aResponse.Value := new java.lang.String(lOutputBuffer, "UTF-8");
+end;
+
+method DataAccess.readDataStringFromCache: String;
+begin
+  var lDataFile := com.webimageloader.util.IOUtil.getDiskCacheDir(self, CACHE_DATA_FILE_NAME);
+
+  if (not lDataFile.exists()) or ( not lDataFile.isFile()) then
+    exit (nil);
+
+  var fin: FileInputStream := new FileInputStream(lDataFile);
+  try
+    var lBytes := CommonUtilities.readToEndOfStream(fin);
+    if (assigned(lBytes)) then
+      result := new java.lang.String(lBytes, "UTF-8");
+  finally
+    fin.close();
+  end;
+end;
+
+method DataAccess.writeDataStringToCache(aDataString: String);
+begin
+  var lDataFile := com.webimageloader.util.IOUtil.getDiskCacheDir(self, CACHE_DATA_FILE_NAME);
+
+  var lWriter: OutputStreamWriter;
+  try
+    if (not lDataFile.exists) then
+      lDataFile.createNewFile();
+
+    lWriter := new OutputStreamWriter(new FileOutputStream(lDataFile), "UTF-8");
+    lWriter.&write(aDataString);
+  except
+    on e: IOException do begin
+      Log.e('Exception', ('File write failed: ' + e.toString()));
+    end
+  finally
+    lWriter.close();
+  end;
+
+
+end;
+
+method DataAccess.flushCacheData();
+begin
+  if (length(self.fCachedDataString) > 0) then
+    self.writeDataStringToCache(self.fCachedDataString);
+  self.fCachedDataString := nil;
 end;
 
 end.

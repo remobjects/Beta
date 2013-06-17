@@ -53,7 +53,7 @@ begin
   btLogin := Button(findViewById(R.id.login_bt_ok));
   cbSavePassword := CheckBox(findViewById(R.id.act_login_check_remember));
 
-  fPrefs := self.SharedPreferences[CommonUtilities.PREFENCES_NAME, Context.MODE_PRIVATE];
+  fPrefs := self.SharedPreferences[CommonUtilities.PREFERENCES_NAME, Context.MODE_PRIVATE];
 
   loadPreferences();
 end;
