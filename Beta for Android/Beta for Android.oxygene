@@ -9,7 +9,7 @@
     <AllowLegacyCreate>False</AllowLegacyCreate>
     <Name>Beta for Android</Name>
     <RootNamespace>com.remobjects.everwood.beta</RootNamespace>
-    <AssemblyName>com.remobjects.everwood.beta</AssemblyName>
+    <AssemblyName>com.remobjects.beta</AssemblyName>
     <AndroidSDKPath />
     <AndroidPlatformName>
     </AndroidPlatformName>
