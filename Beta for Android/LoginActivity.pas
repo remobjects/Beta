@@ -64,10 +64,13 @@ begin
   var lLogin := etLogin.Text.toString;
   var lPassword := etPassword.Text.toString;
 
+  var lProgress := ProgressDialog.show(self, "", "Trying to login...");
+
   lAccess.Executor.execute(()-> begin  
     var lRes := lAccess.retrieveAndSaveToken(lLogin, lPassword);
 
     self.runOnUiThread(()-> begin
+      lProgress.dismiss();
       if (lAccess.IsAuthorized) then begin
         lAccess.dropAutorizing;
         self.setResult(RESULT_OK);
