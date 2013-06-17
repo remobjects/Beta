@@ -150,9 +150,13 @@ begin
   case (anItem.ItemId) of
     R.id.menu_load: begin
       if (not fDataAccess.IsAuthorized) then begin
-        fDataAccess.loginAsync(self);
-        if (not fDataAccess.IsAuthorized) then
-          exit;
+        self.fDataAccess.loginAsync(self, new interface DataAccess.RequestCallback(
+          gotLogin := method(aStatus: DataAccess.RequestStatus; aUser, aPassword: String) begin
+            if (fDataAccess.IsAuthorized) then begin
+              self.loadServerData();
+            end;
+          end
+        ));
       end
       else
         self.loadServerData();

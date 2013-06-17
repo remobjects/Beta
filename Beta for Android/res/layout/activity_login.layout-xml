@@ -33,13 +33,6 @@
       android:password="true"
       android:textSize="18sp" />
 
-  <CheckBox
-      android:id="@+id/act_login_check_remember"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:checked="false"
-      android:text="Remember Password" />
-
   <Button
       android:id="@+id/login_bt_ok"
       android:layout_width="110pt"
@@ -54,7 +47,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
-      android:layout_marginTop="10pt"
+      android:layout_marginTop="20pt"
       android:src="@drawable/remobjects_logo" />
 
 </LinearLayout>

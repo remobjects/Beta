@@ -16,6 +16,7 @@ type
     var fContext: Context;
     var fInflater: LayoutInflater;
     var fProductDateFormat: java.text.DateFormat := new java.text.SimpleDateFormat("EEE, d MMM yyyy"{"MM/dd/yyyy"});
+    var fPrettyFormat: org.ocpsoft.prettytime.PrettyTime := new org.ocpsoft.prettytime.PrettyTime(Locale.ENGLISH);
 
     var fData: DataAccess := DataAccess.getInstance();
   public
@@ -28,6 +29,7 @@ type
     method getValueAsString(aMap: java.util.Map<String, Object>; aKey, defaultValue: String): String;
     method getItemViewType(aPos: Integer): Integer; override;
     property ViewTypeCount: Integer read 2; override;
+    method notifyDataSetChanged; override;
   end;
 
   Holder nested in ProductsListAdapter = public class
@@ -112,7 +114,10 @@ begin
       var lPublishDate: Date := Date(lProduct.get('date'));
       var lPublishCal := Calendar.Instance;
       lPublishCal.Time := lPublishDate;
-      var lPrDate := fProductDateFormat.format(lPublishDate);
+
+      //var lPrDate := fProductDateFormat.format(lPublishDate);
+      var lPrDate := fPrettyFormat.format(lPublishDate);
+
       lHolder.addInfo.Text := java.lang.String.format("%s (%s)", getValueAsString(lProduct, 'version', '!undefined!'), lPrDate);
   
       var lImgUrl := String.format('http://www.remobjects.com/images/product-logos/%s-64.png', lProduct['logo']);
@@ -183,6 +188,12 @@ begin
   end
   else
     exit (1);
+end;
+
+method ProductsListAdapter.notifyDataSetChanged;
+begin
+  fPrettyFormat.Reference := new Date();
+  inherited.notifyDataSetChanged();
 end;
 
 end.

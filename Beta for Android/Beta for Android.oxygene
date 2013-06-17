@@ -80,6 +80,10 @@
       <HintPath>libs\gcm.jar</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="prettytime-3.0.2.Final.jar">
+      <HintPath>libs\prettytime-3.0.2.Final.jar</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="webimageloader-1.2.0.jar">
       <HintPath>libs\webimageloader-1.2.0.jar</HintPath>
       <Private>True</Private>

@@ -100,7 +100,6 @@ method DataAccess.readPreferences();
 begin
   self.app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
   self.app_userToken := fPrefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, nil);
-  self.app_loginPassword := fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, nil);
 end;
 
 
@@ -133,15 +132,7 @@ try
 
   // Use part of the available memory for memory cache.
   var memoryCacheSize: Integer := (((1024 * 1024) * memClass) div 8);
-  //var cacheDir := new java.io.File(getExternalCacheDir(), CACHE_IMAGES_DIR_NAME);
 
-  // Find the dir to save cached images
-  //if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) then
-      //cacheDir := new File(self.ExternalCacheDir, CACHE_DIR_NAME)
-  //else
-      //cacheDir := self.getCacheDir();
-  //if (not cacheDir.exists()) then
-      //cacheDir.mkdirs();
   var lCacheDir := com.webimageloader.util.IOUtil.getDiskCacheDir(self, CACHE_IMAGES_DIR_NAME);
 
   self.ImageLoader := new com.webimageloader.ImageLoader.Builder(self)
@@ -184,26 +175,26 @@ begin
   end;
 
   // check if we have login/password stored
-  if (fPrefs.contains(CommonUtilities.PREFS_LOGIN_PASSWORD)) then begin
-    app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-    app_loginPassword := fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, '');
-    
-    // perform async http call to get token
-    fExecutor.execute(()->begin
-
-      var lRes := self.retrieveAndSaveToken(app_loginName, app_loginPassword);
-      if (self.IsAuthorized) then begin              
-        fIsAuthorizing := false;
-        if (aCallback <> nil) then
-          aContext.runOnUiThread(()-> aCallback.gotLogin(lRes, app_loginName, app_userToken));
-      end
-      else begin
-        self.showLogin(aContext);
-      end;
-    end);
-
-    exit (false);
-  end;
+  //if (fPrefs.contains(CommonUtilities.PREFS_LOGIN_PASSWORD)) then begin
+    //app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
+    //app_loginPassword := fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, '');
+    //
+    //// perform async http call to get token
+    //fExecutor.execute(()->begin
+//
+      //var lRes := self.retrieveAndSaveToken(app_loginName, app_loginPassword);
+      //if (self.IsAuthorized) then begin              
+        //fIsAuthorizing := false;
+        //if (aCallback <> nil) then
+          //aContext.runOnUiThread(()-> aCallback.gotLogin(lRes, app_loginName, app_userToken));
+      //end
+      //else begin
+        //self.showLogin(aContext);
+      //end;
+    //end);
+//
+    //exit (false);
+  //end;
 
   // show login screen to get login/password
   // login activity itself can retrieve token.

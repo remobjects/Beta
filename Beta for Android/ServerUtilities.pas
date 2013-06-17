@@ -23,8 +23,8 @@ ServerUtilities = public sealed class
     class var fService: GooglePushProviderService_Proxy;
   assembly    
     class constructor;
-    class method &register(const context: Context; const regId: String): Boolean;
-    class method unregister(const context: Context; const regId: String);
+    class method &register(const aContext: Context; const regId: String): Boolean;
+    class method unregister(const aContext: Context; const regId: String);
 end;
 
 implementation
@@ -41,7 +41,7 @@ begin
   end;
 end;
 
-class method ServerUtilities.&register(const context: Context; const regId: String): Boolean;
+class method ServerUtilities.&register(aContext: Context; regId: String): Boolean;
 begin
   Log.i(TAG, (('registering device (regId = ' + regId) + ')'));
   var backoff: Int64 := (BACKOFF_MILLI_SECONDS + random.nextInt(1000));
@@ -51,13 +51,15 @@ begin
   begin
     var i: Integer := 1;
     while (i <= MAX_ATTEMPTS) do begin
-      Log.i(TAG, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
+      Log.i(TAG, aContext.getString(R.string.server_registering, i, MAX_ATTEMPTS));
       try
         //CommonUtilities.displayMessage(context, context.getString(R.string.server_registering, i, MAX_ATTEMPTS));
-        fService.registerDevice(regId, typeOf(MainActivity).getPackage().getName());
-        GCMRegistrar.setRegisteredOnServer(context, true);
-        Log.i(TAG, context.getString(R.string.server_registered));
-        CommonUtilities.displayMessage(context, context.getString(R.string.server_registered));
+        var lPrefs := aContext.SharedPreferences[CommonUtilities.PREFERENCES_NAME, Context.MODE_PRIVATE];
+        var lUserName := lPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, 'noname');
+        fService.registerDevice(regId, lUserName);
+        GCMRegistrar.setRegisteredOnServer(aContext, true);
+        Log.i(TAG, aContext.getString(R.string.server_registered));
+        CommonUtilities.displayMessage(aContext, aContext.getString(R.string.server_registered));
         exit true;
       except
         on e: Exception do begin
@@ -86,19 +88,19 @@ begin
       inc(i);
     end;
   end;
-  var message: String := context.getString(R.string.server_register_error, MAX_ATTEMPTS);
-  CommonUtilities.displayMessage(context, message);
+  var message: String := aContext.getString(R.string.server_register_error, MAX_ATTEMPTS);
+  CommonUtilities.displayMessage(aContext, message);
   exit false
 end;
 
-class method ServerUtilities.unregister(const context: Context; const regId: String);
+class method ServerUtilities.unregister(const aContext: Context; const regId: String);
 begin
   Log.i(TAG, (('unregistering device (regId = ' + regId) + ')'));
   try
     fService.unregisterDevice(regId);
-    GCMRegistrar.setRegisteredOnServer(context, false);
-    var message: String := context.getString(R.string.server_unregistered);
-    CommonUtilities.displayMessage(context, message);
+    GCMRegistrar.setRegisteredOnServer(aContext, false);
+    var message: String := aContext.getString(R.string.server_unregistered);
+    CommonUtilities.displayMessage(aContext, message);
   except
     on e: Exception do begin
       //  At this point the device is unregistered from GCM, but still
@@ -106,8 +108,8 @@ begin
       //  We could try to unregister again, but it is not necessary:
       //  if the server tries to send a message to the device, it will get
       //  a "NotRegistered" error message and should unregister the device.
-      var message: String := context.getString(R.string.server_unregister_error, e.getMessage());
-      CommonUtilities.displayMessage(context, message)
+      var message: String := aContext.getString(R.string.server_unregister_error, e.getMessage());
+      CommonUtilities.displayMessage(aContext, message)
     end;
   end;
 end;

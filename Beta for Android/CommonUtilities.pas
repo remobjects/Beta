@@ -37,7 +37,6 @@ CommonUtilities = public sealed class
     class var PREFERENCES_NAME: String := 'prefs'; readonly;
     class var PREFS_SERVER_URL: String := 'server_target_url'; readonly;
     class var PREFS_LOGIN_NAME: String := 'login_name'; readonly;
-    class var PREFS_LOGIN_PASSWORD: String := 'login_pwd'; readonly;
     class var PREFS_LOGIN_TOKEN: String := 'login_token'; readonly;
     /// <summary>
     /// Intent's extra that contains the message to be displayed.

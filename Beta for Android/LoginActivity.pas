@@ -23,7 +23,6 @@ type
 
   private
     etLogin, etPassword: EditText;
-    cbSavePassword: CheckBox;
     btLogin: Button;
 
     fPrefs: SharedPreferences;
@@ -51,7 +50,6 @@ begin
   etLogin := EditText(findViewById(R.id.act_login_tb_login));
   etPassword := EditText(findViewById(R.id.act_login_tb_password));
   btLogin := Button(findViewById(R.id.login_bt_ok));
-  cbSavePassword := CheckBox(findViewById(R.id.act_login_check_remember));
 
   fPrefs := self.SharedPreferences[CommonUtilities.PREFERENCES_NAME, Context.MODE_PRIVATE];
 
@@ -95,7 +93,6 @@ end;
 method LoginActivity.loadPreferences;
 begin
   etLogin.setText(fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, ''));
-  etPassword.setText(fPrefs.getString(CommonUtilities.PREFS_LOGIN_PASSWORD, ''));
 end;
 
 method LoginActivity.savePreferences;
@@ -103,8 +100,6 @@ begin
   var editor := fPrefs.edit();
 
   editor.putString(CommonUtilities.PREFS_LOGIN_NAME, etLogin.Text.toString());
-  if  (cbSavePassword.isChecked)  then    
-    editor.putString(CommonUtilities.PREFS_LOGIN_PASSWORD, etPassword.Text.toString());
   editor.commit();
 end;
 
