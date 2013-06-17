@@ -46,6 +46,8 @@ begin
   inherited onCreate(bundle);
 
   self.ContentView := R.layout.activity_login;
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) then
+    self.ActionBar.Subtitle := getString(R.string.activity_subtitle_login);
 
   etLogin := EditText(findViewById(R.id.act_login_tb_login));
   etPassword := EditText(findViewById(R.id.act_login_tb_password));
@@ -64,7 +66,7 @@ begin
   var lLogin := etLogin.Text.toString;
   var lPassword := etPassword.Text.toString;
 
-  var lProgress := ProgressDialog.show(self, "", "Trying to login...");
+  var lProgress := ProgressDialog.show(self, "", getString(R.string.login_progress_message));
 
   lAccess.Executor.execute(()-> begin  
     var lRes := lAccess.retrieveAndSaveToken(lLogin, lPassword);

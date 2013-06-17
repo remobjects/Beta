@@ -2,23 +2,24 @@
 <resources>
 
   <string name="app_name">Beta</string>
-  <string name="clients_list_empty">Data not loaded yet. Use "Reload" menu item to retrieve the list of downloads.</string>
+  <string name="clients_list_empty"></string>
   <string name="activity_title">RemObjects Beta</string>
   <string name="activity_subtitle_login">Login</string>
+  <string name="login_progress_message">Trying to login...</string>
 
   <string name="menu_load">Refresh</string>
   
-  <string name="server_registering">Trying (attempt %1$d/%2$d) to register device on Demo Server.</string>
-  <string name="server_registered">From Demo Server: successfully added device!</string>
-  <string name="server_unregistered">From Demo Server: successfully removed device!</string>
-  <string name="server_register_error">Could not register device on Demo Server after %1$d attempts.</string>
-  <string name="server_unregister_error">Could not unregister device on Demo Server (%1$s).</string>
+  <string name="server_registering">Trying (attempt %1$d/%2$d) to register device on Beta server.</string>
+  <string name="server_registered">Beta: successfully added device!</string>
+  <string name="server_unregistered">Beta: successfully removed device!</string>
+  <string name="server_register_error">Could not register device on Beta server after %1$d attempts.</string>
+  <string name="server_unregister_error">Could not unregister device on Beta server (%1$s).</string>
 
-  <string name="already_registered">Device is already registered on server.</string>
-  <string name="gcm_registered">Beta: device successfully registered!</string>
-  <string name="gcm_unregistered">Beta: device successfully unregistered!</string>
-  <string name="gcm_message">Beta:</string>
-  <string name="gcm_error">From GCM: error (%1$s).</string>
-  <string name="gcm_deleted">From GCM: server deleted %1$d pending messages!</string>
-  <string name="gcm_recoverable_error">From GCM: recoverable error (%1$s).</string>
+  <string name="already_registered">Device is already registered on GCM.</string>
+  <string name="gcm_registered">Device successfully registered in GCM!</string>
+  <string name="gcm_unregistered">Device successfully unregistered in GCM!</string>
+  <string name="gcm_message">GCM:</string>
+  <string name="gcm_error">Error from GCM (%1$s).</string>
+  <string name="gcm_deleted">GCM deleted %1$d pending messages!</string>
+  <string name="gcm_recoverable_error">Recoverable error from GCM (%1$s).</string>
 </resources>
