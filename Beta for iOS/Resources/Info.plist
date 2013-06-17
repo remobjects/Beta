@@ -41,5 +41,33 @@
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+    <key>UILaunchImages</key>
+    <array>
+      <dict>
+        <key>UILaunchImageMinimumOSVersion</key>
+        <string>7.0</string>
+        <key>UILaunchImageName</key>
+        <string>Default7-586h</string>
+        <key>UILaunchImageOrientation</key>
+        <string>Portrait</string>
+        <key>UILaunchImageSize</key>
+        <string>{320, 568}</string>
+      </dict>
+      <dict>
+        <key>UILaunchImageMinimumOSVersion</key>
+        <string>7.0</string>
+        <key>UILaunchImageName</key>
+        <string>Default7</string>
+        <key>UILaunchImageOrientation</key>
+        <string>Portrait</string>
+        <key>UILaunchImageSize</key>
+        <string>{320, 480}</string>
+      </dict>
+    </array>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>remote-notification</string>
+      <string>remote-notification-initiated-fetch</string>
+    </array>
   </dict>
 </plist>

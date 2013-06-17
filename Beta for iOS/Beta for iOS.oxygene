@@ -115,6 +115,12 @@
     <AppResource Include="Resources\New.png">
       <SubType>Content</SubType>
     </AppResource>
+    <AppResource Include="Resources\Launch Images\Default7-568h@2x.png">
+      <SubType>Content</SubType>
+    </AppResource>
+    <AppResource Include="Resources\Launch Images\Default7%402x.png">
+      <SubType>Content</SubType>
+    </AppResource>
     <None Include="Resources\App Icons\App-29.png" />
     <None Include="Resources\App Icons\App-48.png" />
     <AppResource Include="Resources\App Icons\App-57.png" />

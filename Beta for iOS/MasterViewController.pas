@@ -86,10 +86,10 @@ begin
                    action(selector(refresh:))
                    forControlEvents(UIControlEvents.UIControlEventValueChanged);
   end;
-  //62457: Nougat: Class gets linked in hard, even though only referenced via NSClassFromString
 
   tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
-  tableView.separatorStyle := UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone;
+  if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then
+    tableView.separatorStyle := UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone;
 
   {navigationItem:leftBarButtonItem := self:editButtonItem;
   var addButton := new UIBarButtonItem withBarButtonSystemItem(UIBarButtonSystemItem.UIBarButtonSystemItemAdd)
@@ -201,7 +201,9 @@ begin
       result.imageView.image := UIImage.imageNamed('EmptyAppLogo');
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
-          var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+(if lIsRetina then '-64.png' else '-32.png')));
+          var lImageSuffix := if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then (if lIsRetina then '-64.png' else '-32.png') else '-64-flat.png';
+
+          var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
           if assigned(lData) then begin
             var lImage2 := UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0);
             lDownload["image"] := lImage2;
