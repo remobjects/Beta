@@ -192,15 +192,9 @@
     <Content Include="res\values-v14\styles.android-xml">
       <SubType>Content</SubType>
     </Content>
-    <None Include="res\values\strings_settings.android-xml">
-      <SubType>Content</SubType>
-    </None>
     <Content Include="res\values\styles.android-xml">
       <SubType>Content</SubType>
     </Content>
-    <None Include="res\xml\settings.android-xml">
-      <SubType>Content</SubType>
-    </None>
     <None Include="res\values\strings.android-xml">
       <SubType>Content</SubType>
     </None>
