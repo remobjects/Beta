@@ -99,7 +99,7 @@ implementation
 method DataAccess.readPreferences();
 begin
   self.app_loginName := fPrefs.getString(CommonUtilities.PREFS_LOGIN_NAME, '');
-  self.app_userToken := fPrefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, nil);
+  self.app_userToken := fPrefs.getString(CommonUtilities.PREFS_LOGIN_TOKEN, '');
 end;
 
 

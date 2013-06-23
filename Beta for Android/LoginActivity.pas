@@ -25,6 +25,8 @@ type
     etLogin, etPassword: EditText;
     btLogin: Button;
 
+    fDataAccess: DataAccess;
+
     fPrefs: SharedPreferences;
 
     method loadPreferences;
@@ -54,6 +56,7 @@ begin
   btLogin := Button(findViewById(R.id.login_bt_ok));
 
   fPrefs := self.SharedPreferences[CommonUtilities.PREFERENCES_NAME, Context.MODE_PRIVATE];
+  fDataAccess := DataAccess.getInstance();
 
   loadPreferences();
 end;
@@ -61,20 +64,19 @@ end;
 method LoginActivity.buttonLoginClick(aView: View);
 begin
   savePreferences();
-  var lAccess := DataAccess.getInstance();
 
   var lLogin := etLogin.Text.toString;
   var lPassword := etPassword.Text.toString;
 
   var lProgress := ProgressDialog.show(self, "", getString(R.string.login_progress_message));
 
-  lAccess.Executor.execute(()-> begin  
-    var lRes := lAccess.retrieveAndSaveToken(lLogin, lPassword);
+  fDataAccess.Executor.execute(()-> begin  
+    var lRes := fDataAccess.retrieveAndSaveToken(lLogin, lPassword);
 
     self.runOnUiThread(()-> begin
       lProgress.dismiss();
-      if (lAccess.IsAuthorized) then begin
-        lAccess.dropAutorizing;
+      if (fDataAccess.IsAuthorized) then begin
+        fDataAccess.dropAutorizing;
         self.setResult(RESULT_OK);
         self.finish();
       end
@@ -92,6 +94,7 @@ end;
 method LoginActivity.onPause;
 begin
   inherited onPause();
+  fDataAccess.dropAutorizing();
   savePreferences();
 end;
 

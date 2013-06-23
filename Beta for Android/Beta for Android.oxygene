@@ -58,6 +58,7 @@
     <Folder Include="res\drawable-xhdpi\" />
     <Folder Include="res\layout\" />
     <Folder Include="res\menu\" />
+    <Folder Include="res\layout-sw600dp" />
     <Folder Include="res\values\" />
     <Folder Include="res\values-v11\" />
     <Folder Include="res\values-v14\" />
@@ -120,6 +121,12 @@
     <Content Include="res\drawable-hdpi\ic_menu_update.png">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="res\drawable-hdpi\login_background.jpg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="res\drawable-hdpi\remobjects_logo.png">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="res\drawable-ldpi\ic_launcher.png">
       <SubType>Content</SubType>
     </Content>
@@ -166,6 +173,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="res\drawable\remobjects_logo.png">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="res\layout-sw600dp\activity_login.layout-xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="res\layout\activity_login.layout-xml">

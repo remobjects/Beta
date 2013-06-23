@@ -132,7 +132,7 @@ begin
       loadServerData();
     end
     else  if  (resultCode = RESULT_CANCELED)  then  begin
-      Toast.makeText(self, 'Login cancelled', Toast.LENGTH_LONG).show();
+      Toast.makeText(self, 'Login cancelled. Press Refresh to force relogin.', Toast.LENGTH_LONG).show();
     end
   end;
   inherited onActivityResult(requestCode, resultCode, data);

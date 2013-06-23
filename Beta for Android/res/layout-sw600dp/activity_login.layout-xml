@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/login_background"
+    android:baselineAligned="false"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:weightSum="2" >
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_weight="1.5"
+        android:orientation="vertical"
+        android:padding="16dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UserName:" />
+
+        <EditText
+            android:id="@+id/act_login_tb_login"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:nextFocusForward="@id/act_login_tb_password"
+            android:textSize="30sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Password:" />
+
+        <EditText
+            android:id="@+id/act_login_tb_password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:password="true"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/login_bt_ok"
+            android:layout_width="110pt"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10pt"
+            android:onClick="buttonLoginClick"
+            android:text="Login" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32pt"
+            android:src="@drawable/remobjects_logo" />
+    </LinearLayout>
+
+</LinearLayout>
