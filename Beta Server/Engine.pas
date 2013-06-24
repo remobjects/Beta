@@ -54,8 +54,8 @@ end;
 method Engine.Start();
 begin
   var lDeviceStoreFile := Path.ChangeExtension(typeOf(self).Assembly.Location, 'devices');
-  PushManager.Instance.DeviceManager := new FileDeviceManager(lDeviceStoreFile);
-  PushManager.Instance.RequireSession := false;
+  PushManager.DeviceManager := new FileDeviceManager(lDeviceStoreFile);
+  PushManager.RequireSession := false;
 
   self.serverChannel.Port := Settings.Default.ServerPort;
   self.serverChannel.Activate();
