@@ -10,6 +10,7 @@ type
   AppDelegate = class(IUIApplicationDelegate, IDataAccessDelegate)
   private
     method downloadsChanged(aNotification: NSNotification);
+    method showInAppPushMessage(aUserInfo: NSDictionary);
   public
     property window: UIWindow;
 
@@ -26,6 +27,7 @@ type
     method application(application: UIKit.UIApplication) didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Foundation.NSData);
     method application(application: UIKit.UIApplication) didFailToRegisterForRemoteNotificationsWithError(error: Foundation.NSError);
     method application(application: UIKit.UIApplication) didReceiveRemoteNotification(userInfo: Foundation.NSDictionary);
+    method application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
     {$ENDREGION}
 
     {$REGION IDataAccessDelegate}
@@ -102,7 +104,7 @@ end;
 {$REGION Push Notifications}
 method AppDelegate.application(application: UIKit.UIApplication) didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Foundation.NSData);
 begin
-  NSLog('Registered for push with devcie id %@', deviceToken.description);
+  NSLog('Registered for push with device id %@', deviceToken.description);
   DataAccess.sharedInstance.pushDeviceToken := deviceToken;
 end;
 
@@ -115,11 +117,9 @@ begin
   lAlert.show();
 end;
 
-method AppDelegate.application(application: UIKit.UIApplication) didReceiveRemoteNotification(userInfo: Foundation.NSDictionary);
+method AppDelegate.showInAppPushMessage(aUserInfo: NSDictionary);
 begin
-  NSLog('application:didReceiveRemoteNotification:%@', userInfo);
-
-  var lAPS := userInfo['aps'];
+  var lAPS := aUserInfo['aps'];
   if assigned(lAPS) then begin
     var lAlert := lAPS['alert'];
     var lBadge := lAPS['badge'];
@@ -128,13 +128,41 @@ begin
       UIApplication.sharedApplication.applicationIconBadgeNumber := lBadge.intValue; 
 
     if assigned(lAlert) then begin
-      var lLocalNotification := new UILocalNotification;
-      lLocalNotification.alertBody := lAlert;
-      UIApplication.sharedApplication.presentLocalNotificationNow(lLocalNotification);
+
+      if UIApplication.sharedApplication.applicationState = UIApplicationState.UIApplicationStateActive then begin
+        NSLog('UIApplicationStateActive');
+        var a := new UIAlertView withTitle('Beta') message(lAlert) &delegate(nil) cancelButtonTitle('OK') otherButtonTitles(nil);
+        a.show();
+      end
+      else begin
+        NSLog('NOT UIApplicationStateActive');
+        var lLocalNotification := new UILocalNotification;
+        lLocalNotification.alertBody := 'INAPP: '+lAlert;
+        UIApplication.sharedApplication.presentLocalNotificationNow(lLocalNotification);
+      end;
+
     end;
   end;
+end;
 
-  DataAccess.sharedInstance.beginGetData();
+method AppDelegate.application(application: UIKit.UIApplication) didReceiveRemoteNotification(userInfo: Foundation.NSDictionary);
+begin
+  NSLog('application:didReceiveRemoteNotification:%@', userInfo);
+  DataAccess.sharedInstance.beginGetDataWithCompletion(method begin
+      showInAppPushMessage(userInfo);
+    end);
+end;
+
+method AppDelegate.application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
+begin
+  NSLog('application:didReceiveRemoteNotification:fetchCompletionHandler: %@', userInfo);
+  DataAccess.sharedInstance.beginGetDataWithCompletion(method begin
+      
+      showInAppPushMessage(userInfo);
+      
+      if assigned(completionHandler) then completionHandler(UIBackgroundFetchResult.UIBackgroundFetchResultNewData);
+
+    end);
 end;
 {$ENDREGION}
 

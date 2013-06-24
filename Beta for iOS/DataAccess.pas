@@ -42,6 +42,7 @@ type
     method beginRegisterForPush;
   public
     class property sharedInstance: DataAccess read sharedInstance;
+    class property isIOS7OrLater: Boolean read UIDevice.currentDevice.systemVersion.floatValue ≥ 7.0;
 
     method init: id; override;
 
@@ -51,6 +52,7 @@ type
 
     method beginLogin;
     method beginGetData;
+    method beginGetDataWithCompletion(aCompletion: block );
 
     method beginLoginWithUsername(aUsername: String) password(aPassword: String) completion(aCompletion: block(aSUccess: Boolean));
 
@@ -121,6 +123,11 @@ end;
 
 method DataAccess.beginGetData;
 begin
+  beginGetDataWithCompletion(nil);
+end;
+
+method DataAccess.beginGetDataWithCompletion(aCompletion: block);
+begin
   if length(fUserToken) = 0 then begin
     beginLogin();
     exit;
@@ -163,6 +170,9 @@ begin
           // ToDo: indicate error?
         end;
       end;
+
+      if assigned(aCompletion) then 
+        dispatch_async(dispatch_get_main_queue(), aCompletion);
 
     end);
 end;
@@ -216,6 +226,7 @@ begin
                                             end;
 
                                          end);
+
   end);
 end;
 

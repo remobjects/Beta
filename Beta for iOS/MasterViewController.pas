@@ -171,7 +171,8 @@ begin
 
     if NSDate.date().timeIntervalSinceDate(lDownload['date']) < 60*60*24*3 {3 days} then begin
       var lNew := new UIImageView withImage(UIImage.imageNamed('New'));
-      lNew.frame := CGRectMake(22, 4, lNew.image.size.width, lNew.image.size.height);
+      var lLeft := if not DataAccess.isIOS7OrLater then 22 else 30;
+      lNew.frame := CGRectMake(lLeft, 4, lNew.image.size.width, lNew.image.size.height);
       result.addSubview(lNew);
     end;
   end;
@@ -198,10 +199,10 @@ begin
     end
     else begin
 
-      result.imageView.image := UIImage.imageNamed('EmptyAppLogo');
+      result.imageView.image := UIImage.imageNamed(if not DataAccess.isIOS7OrLater then 'EmptyAppLogo' else 'EmptyAppLogo7');
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
-          var lImageSuffix := if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then (if lIsRetina then '-64.png' else '-32.png') else '-64-flat.png';
+          var lImageSuffix := if not DataAccess.isIOS7OrLater then (if lIsRetina then '-64.png' else '-32.png') else '-64-flat.png';
 
           var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
           if assigned(lData) then begin
