@@ -16,7 +16,7 @@ type
     var fContext: Context;
     var fInflater: LayoutInflater;
     var fProductDateFormat: java.text.DateFormat := new java.text.SimpleDateFormat("EEE, d MMM yyyy"{"MM/dd/yyyy"});
-    var fPrettyFormat: org.ocpsoft.prettytime.PrettyTime := new org.ocpsoft.prettytime.PrettyTime(Locale.ENGLISH);
+    var fPrettyFormat: org.ocpsoft.prettytime.PrettyTime;
 
     var fData: DataAccess := DataAccess.getInstance();
   public
@@ -46,7 +46,9 @@ implementation
 constructor ProductsListAdapter(aContext: Context);
 begin
   fContext := aContext;
-  fInflater := LayoutInflater(fContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+  fInflater := LayoutInflater(fContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+
+  fPrettyFormat := new org.ocpsoft.prettytime.PrettyTime(Locale.ENGLISH);
 end;
 
 method ProductsListAdapter.getCount(): Integer;
@@ -116,7 +118,7 @@ begin
       lPublishCal.Time := lPublishDate;
 
       //var lPrDate := fProductDateFormat.format(lPublishDate);
-      var lPrDate := fPrettyFormat.format(lPublishDate);
+      var lPrDate := if (android.text.format.DateUtils.isToday(lPublishDate.Time)) then "today" else fPrettyFormat.format(lPublishDate);
 
       lHolder.addInfo.Text := java.lang.String.format("%s (%s)", getValueAsString(lProduct, 'version', '!undefined!'), lPrDate);
   

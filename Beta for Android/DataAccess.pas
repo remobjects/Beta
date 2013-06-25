@@ -495,7 +495,8 @@ begin
       Log.e('Exception', ('File write failed: ' + e.toString()));
     end
   finally
-    lWriter.close();
+    if (assigned(lWriter)) then
+      lWriter.close();
   end;
 
 
