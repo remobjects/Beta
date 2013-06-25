@@ -44,7 +44,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-    <ProvisioningProfile>0E716533-8332-4FE5-B84A-C95EDAC24B37</ProvisioningProfile>
+    <ProvisioningProfile>456DE529-2F1B-4FFD-B714-BCC6F4B9E009</ProvisioningProfile>
     <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
     <CreateIPA>True</CreateIPA>
@@ -89,6 +89,14 @@
     </AppResource>
     <AppResource Include="Resources\EmptyAppLogo.png">
       <SubType>Content</SubType>
+    </AppResource>
+    <AppResource Include="Resources\EmptyAppLogo7%402x.png">
+      <SubType>Content</SubType>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </AppResource>
+    <AppResource Include="Resources\EmptyAppLogo7.png">
+      <SubType>Content</SubType>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </AppResource>
     <Content Include="Resources\Info.plist" />
     <AppResource Include="Resources\LoginBackground%402x.jpg">

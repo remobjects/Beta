@@ -24,8 +24,6 @@ type
     fTimer: System.Timers.Timer := nil;
     fInTimer: Boolean;
 
-    fPushConnect: GenericPushConnect := new GenericPushConnect;
-
     fBetaProducts: Dictionary<String,String> := new Dictionary<String,String>;
     fRTMProducts: Dictionary<String,String> := new Dictionary<String,String>;
     fBetaProductsFile, fRTMProductsFile: String;
@@ -57,23 +55,8 @@ begin
     fRTMProductsFile := Path.ChangeExtension(typeOf(self).Assembly.Location, 'rtm.products.txt');
     LoadCache();
 
-    var lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'iOS.p12');
-    if File.Exists(lCertificatePath) then begin
-      fPushConnect.APSConnect.iOSCertificateFile := lCertificatePath;
-      Log('Loaded Apple iOS Push Certificate from '+lCertificatePath);
-    end;
-    lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'Mac.p12');
-    if File.Exists(lCertificatePath) then begin
-      fPushConnect.APSConnect.MacCertificateFile := lCertificatePath;
-      Log('Loaded Apple Mac Push Certificate from '+lCertificatePath);
-    end;
-    lCertificatePath := Path.ChangeExtension(typeOf(self).Assembly.Location, 'Web.p12');
-    if File.Exists(lCertificatePath) then begin
-      fPushConnect.APSConnect.WebCertificateFile := lCertificatePath;
-      Log('Loaded Apple Web Push Certificate from '+lCertificatePath);
-    end;
-
-    fPushConnect.GCMConnect.ApiKey := Settings.Default.GCMSenderApiKey;
+    PushManager.PushConnect.APSConnect.LoadCertificatesFromBaseFilename(typeOf(self).Assembly.Location);
+    PushManager.PushConnect.GCMConnect.ApiKey := Settings.Default.GCMSenderApiKey;
 
     fTimer := new System.Timers.Timer;
     fTimer.Interval := PING_TIME;
@@ -156,8 +139,8 @@ begin
       var lMessage := 'New beta downloads for '+GetProductMessage(lUniqueBetaProducts)+' are available now.';
       Log(lMessage);
 
-      for each d in PushManager.Instance.DeviceManager.Devices do
-        fPushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+      for each d in PushManager.DeviceManager.Devices do
+        PushManager.PushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
       Log('Done sending Push notifications for Beta');
 
     end;
@@ -167,8 +150,8 @@ begin
       var lMessage := 'New RTM downloads for '+GetProductMessage(lUniqueRTMProducts)+' are available now.';
       Log(lMessage);
 
-      for each d in PushManager.Instance.DeviceManager.Devices do
-        fPushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+      for each d in PushManager.DeviceManager.Devices do
+        PushManager.PushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
       Log('Done sending Push notifications for RTM');
 
     end;
@@ -186,6 +169,8 @@ end;
 
 method Notifier.Start;
 begin
+  {for each d in PushManager.DeviceManager.Devices do
+    PushManager.PushConnect.PushMessageAndBadgeNotification(d, 'debug: start', 5);}
   fTimer.Enabled := true;
   TimerElapsed(nil, nil);
 end;

@@ -182,7 +182,7 @@ begin
     if  (GCMRegistrar.isRegisteredOnServer(self))  then  begin
       //  Skips registration.
       // TODO: show in UI that device already registered
-      Toast.makeText(self, getString(R.string.already_registered), Toast.LENGTH_SHORT).show();
+      //Toast.makeText(self, getString(R.string.already_registered), Toast.LENGTH_SHORT).show();
     end
     else
   begin
@@ -216,16 +216,16 @@ begin
         Toast.makeText(self, 'Loading failed. Check network connection.', Toast.LENGTH_SHORT).show();
       end
       else if (fDataAccess.IsAuthorized) then begin
-        Toast.makeText(self, 'loading of data completed', Toast.LENGTH_SHORT).show();
+        Toast.makeText(self, 'New data downloaded successfully.', Toast.LENGTH_SHORT).show();
         fAdapter.notifyDataSetChanged();
       end
       else begin
-        Toast.makeText(self, 'login failed. try to relogin.', Toast.LENGTH_SHORT).show();
+        Toast.makeText(self, 'Login failed. Please try again.', Toast.LENGTH_SHORT).show();
         fDataAccess.loginAsync(self);
       end;      
     end,
     gotCachedData := method begin
-       Toast.makeText(self, 'cached data', Toast.LENGTH_SHORT).show();
+       Toast.makeText(self, 'Showing cached data.', Toast.LENGTH_SHORT).show();
        fAdapter.notifyDataSetChanged();
     end    
   ));
