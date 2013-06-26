@@ -29,7 +29,7 @@
       android:id="@+id/product_list_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="12dp"
+      android:layout_marginTop="10dp"
       android:layout_toRightOf="@id/product_list_logo"
       android:text="%Product Name%"
       android:textAppearance="?android:attr/textAppearanceMedium" />
