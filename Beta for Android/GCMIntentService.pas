@@ -62,7 +62,7 @@ begin
   var message: String := getString(R.string.gcm_message);
   var lServerMessage: String := intent.getStringExtra(CommonUtilities.EXTRA_MESSAGE);
   if (lServerMessage <> nil) then
-    message := message + (': ' + lServerMessage);
+    message := message + lServerMessage;
   CommonUtilities.displayMessage(aContext, message);
   //  notifies user
   GCMIntentService.generateNotification(aContext, message)

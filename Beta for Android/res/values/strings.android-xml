@@ -18,7 +18,7 @@
   <string name="already_registered">Device is already registered on GCM.</string>
   <string name="gcm_registered">Device successfully registered in GCM!</string>
   <string name="gcm_unregistered">Device successfully unregistered in GCM!</string>
-  <string name="gcm_message">Beta:</string>
+  <string name="gcm_message"></string>
   <string name="gcm_error">Error from GCM (%1$s).</string>
   <string name="gcm_deleted">GCM deleted %1$d pending messages!</string>
   <string name="gcm_recoverable_error">Recoverable error from GCM (%1$s).</string>
