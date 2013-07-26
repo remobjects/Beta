@@ -34,14 +34,12 @@ type
     //var app_serverUrl: String;
     var app_loginName: String := '';
     var app_userToken: String := '';
-    var app_loginPassword: String := '';
 
     var fProducts: List<Map<String, Object>> := new ArrayList<Map<String, Object>>();
     var fCachedDataString: String;
     var fPrefs: SharedPreferences;
 
     class fInstance: DataAccess := nil;
-    var aesEnvelope: AesEncryptionEnvelope;
     var fExecutor: java.util.concurrent.Executor := java.util.concurrent.Executors.newFixedThreadPool(5);
     var fIsAuthorizing: Boolean := false;
 
