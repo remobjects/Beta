@@ -27,7 +27,7 @@ type
     method application(application: UIKit.UIApplication) didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Foundation.NSData);
     method application(application: UIKit.UIApplication) didFailToRegisterForRemoteNotificationsWithError(error: Foundation.NSError);
     method application(application: UIKit.UIApplication) didReceiveRemoteNotification(userInfo: Foundation.NSDictionary);
-    method application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
+    //method application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
     {$ENDREGION}
 
     {$REGION IDataAccessDelegate}
@@ -54,8 +54,6 @@ begin
                                      name(DataAccess.NOTIFICATION_DOWNLOADS_CHANGED) 
                                      object(DataAccess.sharedInstance);
 
-  var lTintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
-  UINavigationBar.appearance.tintColor := lTintColor;
   //NSClassFromString('UIRefreshControl').appearance.tintColor := lTintColor;
   // Pull to Refresh is not available on iOS5.
   //62469: Nougat: No member "appearance" on type "Class" and "id"
@@ -153,7 +151,7 @@ begin
     end);
 end;
 
-method AppDelegate.application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
+{method AppDelegate.application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
 begin
   NSLog('application:didReceiveRemoteNotification:fetchCompletionHandler: %@', userInfo);
   DataAccess.sharedInstance.beginGetDataWithCompletion(method begin
@@ -163,7 +161,7 @@ begin
       if assigned(completionHandler) then completionHandler(UIBackgroundFetchResult.UIBackgroundFetchResultNewData);
 
     end);
-end;
+end;}
 {$ENDREGION}
 
 {$REGION IDataAccessDelegate}

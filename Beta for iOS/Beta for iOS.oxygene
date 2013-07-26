@@ -20,6 +20,7 @@
     <StartupClass />
     <CreateHeaderFile>False</CreateHeaderFile>
     <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
+    <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
@@ -79,6 +80,7 @@
     <Compile Include="MasterViewController.pas" />
     <Compile Include="Program.pas" />
     <Compile Include="PushProvider_Intf.pas" />
+    <Compile Include="WebViewController.pas" />
     <Compile Include="Z:\Code\git\bc7public\iOS\BaseCell.pas" />
     <Compile Include="Z:\Code\git\bc7public\iOS\BaseCellView.pas" />
     <Compile Include="Z:\Code\git\bc7public\iOS\HeaderView.pas" />
@@ -97,6 +99,9 @@
     <AppResource Include="Resources\EmptyAppLogo7.png">
       <SubType>Content</SubType>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </AppResource>
+    <AppResource Include="Resources\ChangeLogs.css">
+      <SubType>Content</SubType>
     </AppResource>
     <Content Include="Resources\Info.plist" />
     <AppResource Include="Resources\LoginBackground%402x.jpg">

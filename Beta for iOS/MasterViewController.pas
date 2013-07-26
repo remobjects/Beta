@@ -77,11 +77,15 @@ begin
  
   title := 'Betas';
 
+  var lTintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
+  navigationController.navigationBar.tintColor := lTintColor;
+
   // Pull to Refresh is not available on iOS5.
-  if self.respondsToSelector(selector(refreshControl)) then begin
-    refreshControl := NSClassFromString('UIRefreshControl').alloc.init;
+  //if self.respondsToSelector(selector(refreshControl)) then begin
+  if assigned(typeOf(UIRefreshControl)) then begin
+    refreshControl := UIRefreshControl.alloc.init;
     //62469: Nougat: No member "appearance" on type "Class" and "id"
-    refreshControl .tintColor := navigationController.navigationBar.tintColor;
+    refreshControl .tintColor := lTintColor;
     refreshControl.addTarget(self) 
                    action(selector(refresh:))
                    forControlEvents(UIControlEvents.UIControlEventValueChanged);
@@ -160,9 +164,11 @@ begin
   if not assigned(result) then begin
     result := new BaseCell withStyle(UITableViewCellStyle.UITableViewCellStyleSubtitle) reuseIdentifier('RootCell');
 
-    var selectionColor := new UIView;
-    selectionColor.backgroundColor := navigationController.navigationBar.tintColor;
-    result.selectedBackgroundView := selectionColor;
+    if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then begin
+      var selectionColor := new UIView;
+      selectionColor.backgroundColor := navigationController.navigationBar.tintColor;
+      result.selectedBackgroundView := selectionColor;
+    end;
 
     result.textLabel.backgroundColor := UIColor.clearColor;
     result.textLabel.font := UIFont.systemFontOfSize(18);
@@ -206,7 +212,10 @@ begin
 
           var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
           if assigned(lData) then begin
-            var lImage2 := UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0);
+            var lImage2 := //if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
+                             UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0);
+                           //else
+                           //  UIImage.imageWithData(lData);
             lDownload["image"] := lImage2;
             fIconCache[lLogoName] := lImage2;
             dispatch_async(dispatch_get_main_queue(), method begin
@@ -232,15 +241,26 @@ end;
 
 method MasterViewController.tableView(tableView: UITableView) shouldHighlightRowAtIndexPath(indexPath: NSIndexPath): Boolean;
 begin
-  result := false;
+  var lDownloads := case indexPath.section of
+                      0: fBetaDownloads;
+                      1: fRTMDownloads;
+                    end;
+  var lDownload := lDownloads[indexPath.row];
+
+  result := assigned(lDownload) and assigned(lDownload['changelog']);
 end;
 
 method MasterViewController.tableView(tableView: UITableView) didSelectRowAtIndexPath(indexPath: NSIndexPath);
 begin
-  if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
-  //  var lObject := fObjects[indexPath.row];
-  //  detailViewController.detailItem := lObject;
-  end;
+  var lDownloads := case indexPath.section of
+                      0: fBetaDownloads;
+                      1: fRTMDownloads;
+                    end;
+  var lDownload := lDownloads[indexPath.row];
+
+  if assigned(lDownload['changelog']) then
+    navigationController.pushViewController(new WebViewController withHtml(lDownload['changelog'])) animated(true); 
+
   tableView.deselectRowAtIndexPath(indexPath) animated(true); 
 end;
 

@@ -29,9 +29,11 @@ type
   
     {$REGION INSXMLParserDelegate}
     method parser(parser: NSXMLParser) didStartElement(elementName: NSString) namespaceURI(namespaceURI: NSString) qualifiedName(qName: NSString) attributes(attributeDict: NSDictionary);
+    method parser(parser: NSXMLParser) foundCDATA(CDATABlock: NSData);
     {$ENDREGION}
     var fDownloads: NSMutableArray := new NSMutableArray;
     var fTempDownloads: NSMutableArray;
+    var fLastDownload: NSMutableDictionary;
 
     method beginGetDataFromURL(aURL: NSURL) completion(aCompletion: block (aData: NSData; aResponse: NSHTTPURLResponse));
 
@@ -133,7 +135,7 @@ begin
     exit;
   end;
 
-  var lURL := new NSURL withString(API_URL+API_DOWNLOADS+'?name='+fUsername+'&token='+fUserToken);
+  var lURL := new NSURL withString(API_URL+API_DOWNLOADS+'?name='+fUsername+'&token='+fUserToken+'&changelogs=yes');
   beginGetDataFromURL(lURL) completion(method (aData: NSData; aResponse: NSHTTPURLResponse) begin 
 
       case aResponse.statusCode of
@@ -193,7 +195,15 @@ begin
       lDict['product'] := lDict['product'].substringToIndex(p).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet);
 
     fTempDownloads.addObject(lDict);
+    fLastDownload := lDict;
   end;
+end;
+
+method DataAccess.parser(parser: NSXMLParser) foundCDATA(CDATABlock: NSData);
+begin
+  var lString := new NSString withData(CDATABlock) encoding(NSStringEncoding.NSUTF8StringEncoding);
+  //NSLog('CDATA: '+lString);
+  fLastDownload:setObject(lString) forKey('changelog');
 end;
 {$ENDREGION}
 
