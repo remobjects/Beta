@@ -99,6 +99,7 @@ begin
 
     var lNewBetaProducts := new Dictionary<String, String>;
     var lNewRTMProducts := new Dictionary<String, String>;
+    var lBranches := new List<String>;
 
     var lUrl := String.Format(Settings.Default.DownloadInfoURL, Settings.Default.ReferenceUsername, 
                                                                 Settings.Default.ReferenceUserToken,
@@ -122,9 +123,13 @@ begin
       end 
       else begin
 
+        var lBranch := lDownload.Attribute('branch'):Value;
         if (not fBetaProducts.ContainsKey(lProduct)) or (fBetaProducts[lProduct] <> lVersion) then begin
           fBetaProducts[lProduct] := lVersion;
           lNewBetaProducts[lProduct] := lVersion;
+
+          if assigned(lBranch) and not lBranches.Contains(lBranch) then 
+            lBranches.Add(lBranch);
         end;
       end;
 
@@ -136,11 +141,18 @@ begin
 
     if lNewBetaProducts.Count > 0 then begin
 
-      var lMessage := 'New beta downloads for '+GetProductMessage(lUniqueBetaProducts)+' are available now.';
+      var lType := 'pre-release';
+      if lBranches.Count = 1 then lType := lBranches[0];
+
+      var lMessage := 'New '+lType+' downloads for '+GetProductMessage(lUniqueBetaProducts)+' are available now.';
       Log(lMessage);
 
-      for each d in PushManager.DeviceManager.Devices do
+      for each d in PushManager.DeviceManager.Devices do try
         PushManager.PushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+      except
+        on E2: Exception do
+          Log('Error pushing to '+d.ID+' ('+d.ClientInfo+'): '+E2.Message);
+      end;
       Log('Done sending Push notifications for Beta');
 
     end;
