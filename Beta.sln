@@ -1,70 +1,38 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta for iOS", "Beta for iOS\Beta for iOS.oxygene", "{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}"
-EndProject
+# RemObjects Fire
 Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta Server", "Beta Server\Beta Server.oxygene", "{36699322-22F5-4FEE-B484-653042F48FB8}"
-EndProject
-Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "RemObjects.SDK.Push", "Push\RemObjects.SDK.Push\RemObjects.SDK.Push.oxygene", "{6EE56252-1979-48FA-8409-3DCED05426C3}"
 EndProject
 Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta for Android", "Beta for Android\Beta for Android.oxygene", "{A963AE56-1B2B-4831-AA93-18A68A023C61}"
 EndProject
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta for iOS", "Beta for iOS\Beta for iOS.oxygene", "{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}"
+EndProject
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "RemObjects.SDK.Push", "Push\RemObjects.SDK.Push\RemObjects.SDK.Push.oxygene", "{6EE56252-1979-48FA-8409-3DCED05426C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		AdHoc|AnyCPU = AdHoc|AnyCPU
-		AdHoc|Mixed Platforms = AdHoc|Mixed Platforms
 		Debug|AnyCPU = Debug|AnyCPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Release|AnyCPU = Release|AnyCPU
-		Release|Mixed Platforms = Release|Mixed Platforms
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.AdHoc|AnyCPU.ActiveCfg = AdHoc
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.AdHoc|AnyCPU.Build.0 = AdHoc
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.AdHoc|Mixed Platforms.ActiveCfg = AdHoc
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.AdHoc|Mixed Platforms.Build.0 = AdHoc
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|AnyCPU.ActiveCfg = Debug
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|AnyCPU.Build.0 = Debug
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|Mixed Platforms.Build.0 = Debug
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|AnyCPU.ActiveCfg = Release
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|AnyCPU.Build.0 = Release
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|Mixed Platforms.ActiveCfg = Release
-		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|Mixed Platforms.Build.0 = Release
-		{36699322-22F5-4FEE-B484-653042F48FB8}.AdHoc|AnyCPU.ActiveCfg = AdHoc
-		{36699322-22F5-4FEE-B484-653042F48FB8}.AdHoc|Mixed Platforms.ActiveCfg = AdHoc
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.ActiveCfg = Debug
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.Build.0 = Debug
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|Mixed Platforms.Build.0 = Debug
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.ActiveCfg = Release
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.Build.0 = Release
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|Mixed Platforms.ActiveCfg = Release
-		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|Mixed Platforms.Build.0 = Release
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.AdHoc|AnyCPU.ActiveCfg = Release|AnyCPU
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.AdHoc|AnyCPU.Build.0 = Release|AnyCPU
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.AdHoc|Mixed Platforms.ActiveCfg = Release|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.Build.0 = Release|AnyCPU
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|AnyCPU.Build.0 = Release|AnyCPU
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{480657F7-06AD-4A0C-B214-A9F3BF6BD4E5}.Release|AnyCPU.Build.0 = Release|AnyCPU
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|Mixed Platforms.ActiveCfg = Debug|AnyCPU
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|Mixed Platforms.Build.0 = Debug|AnyCPU
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
 		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.Build.0 = Release|AnyCPU
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|Mixed Platforms.ActiveCfg = Release|AnyCPU
-		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|Mixed Platforms.Build.0 = Release|AnyCPU
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|AnyCPU.ActiveCfg = Release
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|AnyCPU.Build.0 = Release
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.AdHoc|Mixed Platforms.ActiveCfg = Release
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|AnyCPU.ActiveCfg = Debug
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|AnyCPU.Build.0 = Debug
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Debug|Mixed Platforms.Build.0 = Debug
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|AnyCPU.ActiveCfg = Release
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|AnyCPU.Build.0 = Release
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|Mixed Platforms.ActiveCfg = Release
-		{A963AE56-1B2B-4831-AA93-18A68A023C61}.Release|Mixed Platforms.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		ideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

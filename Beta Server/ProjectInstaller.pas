@@ -9,7 +9,6 @@ uses
   System.ComponentModel,
   System.Configuration.Install;
 
-
 type
   ProjectInstaller = public partial class
   protected
@@ -18,9 +17,7 @@ type
     constructor;
   end;
 
-
 implementation
-
 
 constructor ProjectInstaller;
 begin
@@ -29,7 +26,6 @@ begin
   //
   InitializeComponent();
 end;
-
 
 method ProjectInstaller.Dispose(disposing: Boolean);
 begin
@@ -41,6 +37,5 @@ begin
   end;
   inherited Dispose(disposing);
 end;
-
 
 end.

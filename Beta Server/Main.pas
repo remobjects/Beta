@@ -1,4 +1,4 @@
-﻿namespace BetaServer;
+namespace BetaServer;
 
 interface
 

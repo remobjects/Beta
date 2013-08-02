@@ -8,7 +8,6 @@ uses
   System.ComponentModel,
   System.Drawing,
   System.Windows.Forms;
-
   
 type
   MainForm = partial class(System.Windows.Forms.Form)

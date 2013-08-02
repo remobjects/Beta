@@ -7,7 +7,6 @@ uses
   System.Collections,
   System.ComponentModel,
   System.ServiceProcess;
-
   
 type
   MainService = assembly partial class(System.ServiceProcess.ServiceBase)
