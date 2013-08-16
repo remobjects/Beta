@@ -23,7 +23,7 @@ type
 
   {$region Private fields}
   private
-    const TAG = "Beta.MainActivity";
+    const TAG = "Beta.Main";
     var that: MainActivity;
     var fDataAccess: DataAccess;
     fHandleMessageReceiver: BroadcastReceiver;
@@ -39,6 +39,7 @@ type
 
   public
     method onCreate(savedInstanceState: Bundle); override;
+    method onRestart; override;
     method onDestroy(); override;
     method onPause; override;
     method onActivityResult(requestCode, resultCode: Integer; data: Intent); override;
@@ -73,6 +74,8 @@ begin
   
   setContentView(R.layout.activity_main);
 
+  //Toast.makeText(self, 'Main: created', Toast.LENGTH_SHORT).show();
+
   // Make sure the device has the proper dependencies.
   GCMRegistrar.checkDevice(self);
   // Make sure the manifest was properly set - comment out this line
@@ -83,13 +86,21 @@ begin
   fListView := ListView(findViewById(android.R.id.list));
   fListView.EmptyView := findViewById(android.R.id.empty);
 
-  self.registerReceiver();  
-
-  //var lService := new GCMIntentService();
+  self.registerReceiver();
 
   fAdapter := new ProductsListAdapter(self);
   fListView.setAdapter(fAdapter);
+  fListView.OnItemClickListener := new interface AdapterView.OnItemClickListener(
+    onItemClick := method(aParent: AdapterView; aView: View; aPos: Integer; anId: Int64) begin
+      var  lBundle := new Bundle();
+      lBundle.putInt(ChangeLogActivity.EXTRA_KEY_PRODUCT_INDEX, aPos);
+      var lIntent := new Intent(self, typeOf(ChangeLogActivity));
+      lIntent.putExtras(lBundle);
+      self.startActivity(lIntent);
+    end
+  );
 
+  Log.i(TAG, 'onCreate: initiate login and load data');
   self.fDataAccess.loginAsync(self, new interface DataAccess.RequestCallback(
     gotLogin := method(aStatus: DataAccess.RequestStatus; aUser, aPassword: String) begin
       if (fDataAccess.IsAuthorized) then begin
@@ -98,6 +109,12 @@ begin
       end;
     end
   ));
+end;
+
+method MainActivity.onRestart;
+begin
+  //Toast.makeText(self, 'Main: restarted', Toast.LENGTH_SHORT).show();
+  inherited.onRestart();
 end;
 
 method MainActivity.onDestroy;

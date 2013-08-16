@@ -181,7 +181,7 @@ begin
     //fExecutor.execute(()->begin
 //
       //var lRes := self.retrieveAndSaveToken(app_loginName, app_loginPassword);
-      //if (self.IsAuthorized) then begin              
+      //if (self.IsAuthorized) then begin
         //fIsAuthorizing := false;
         //if (aCallback <> nil) then
           //aContext.runOnUiThread(()-> aCallback.gotLogin(lRes, app_loginName, app_userToken));
@@ -264,8 +264,8 @@ begin
       Log.i(TAG, "nothing in cache");
   end;
 
-  fExecutor.execute(()->begin    
-      var lURL := new java.net.URI(API_URL + API_DOWNLOADS + '?name=' + app_loginName + '&token=' + app_userToken);
+  fExecutor.execute(()->begin
+      var lURL := new java.net.URI(API_URL + API_DOWNLOADS + '?name=' + app_loginName + '&token=' + app_userToken +'&changelogs=yes');
 
       var lResponse := new ReferenceType<String>();
       var lResponseCode := self.readDataStringFromUrl(lURL, lResponse);
@@ -276,7 +276,7 @@ begin
       case lResponseCode of
         200: begin
           
-          var lProducts := self.parseDataString(lResponseString);          
+          var lProducts := self.parseDataString(lResponseString);
           self.formatData(lProducts);
           
 
@@ -350,6 +350,16 @@ begin
       end;
       lProduct.put(attr.Name, lValue);
     end;
+    // try get changelog html from element CDATA
+    var lElemDownloadChilds := lElemDownload.ChildNodes;
+    var lChangeLogBuffer := new StringBuffer();
+    for ic: Integer := 0 to lElemDownloadChilds.Length - 1 do begin
+      var iChild := lElemDownloadChilds.item(ic);
+      if (iChild.NodeType = org.w3c.dom.Node.CDATA_SECTION_NODE) then
+        lChangeLogBuffer.append(iChild.NodeValue);
+    end;
+    lProduct.put('changelog', lChangeLogBuffer.toString());
+
     result.add(lProduct);
   end;         
   {$ENDREGION }

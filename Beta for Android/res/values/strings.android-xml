@@ -4,6 +4,7 @@
   <string name="app_name">Beta</string>
   <string name="clients_list_empty"></string>
   <string name="activity_title">RemObjects Beta</string>
+  <string name="activity_title_changelog">Change Log</string>
   <string name="activity_subtitle_login">Login</string>
   <string name="login_progress_message">Trying to login...</string>
 

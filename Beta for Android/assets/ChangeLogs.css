@@ -1,0 +1,13 @@
+body {
+    font-family: Helvetica Neue;
+    font-weight: 300;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 20pt;
+}
+
+li {
+    margin-bottom: 0.5em;
+}

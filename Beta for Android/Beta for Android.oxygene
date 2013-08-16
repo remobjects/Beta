@@ -9,7 +9,7 @@
     <AllowLegacyCreate>False</AllowLegacyCreate>
     <Name>Beta for Android</Name>
     <RootNamespace>com.remobjects.everwood.beta</RootNamespace>
-    <AssemblyName>com.remobjects.beta</AssemblyName>
+    <AssemblyName>com.remobjects.everwood.beta</AssemblyName>
     <AndroidSDKPath />
     <AndroidPlatformName>
     </AndroidPlatformName>
@@ -19,7 +19,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;TEST</DefineConstants>
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <StartMode>Project</StartMode>
     <RegisterForComInterop>False</RegisterForComInterop>
@@ -47,8 +47,17 @@
     <XmlDocWarningLevel>WarningOnPublicMembers</XmlDocWarningLevel>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
     <EnableUnmanagedDebugging>False</EnableUnmanagedDebugging>
+    <JavaDigestAlgorith>SHA1</JavaDigestAlgorith>
+    <JavaSign>True</JavaSign>
+    <AndroidSign>False</AndroidSign>
+    <JavaKeyStorePassword></JavaKeyStorePassword>
+    <JavaKeyStore></JavaKeyStore>
+    <JavaKeyPassword></JavaKeyPassword>
+    <JavaSigningAlias>"remobjects samples"</JavaSigningAlias>
+    <JavaSignatureAlgorith>MD5withRSA</JavaSignatureAlgorith>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="assets" />
     <Folder Include="Properties\" />
     <Folder Include="res\" />
     <Folder Include="res\drawable\" />
@@ -91,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeLogActivity.pas" />
     <Compile Include="CommonUtilities.pas" />
     <Compile Include="DataAccess.pas" />
     <Compile Include="GCMIntentService.pas" />
@@ -106,6 +116,9 @@
     </AndroidManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\ChangeLogs.css">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="res\drawable-hdpi\ic_launcher.png">
       <SubType>Content</SubType>
     </Content>
@@ -178,13 +191,13 @@
     <Content Include="res\layout-sw600dp\activity_login.layout-xml">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="res\layout\activity_changelog.layout-xml">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="res\layout\activity_login.layout-xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="res\layout\activity_main.layout-xml">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="res\layout\activity_settings.layout-xml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="res\layout\product_list_header.layout-xml">
@@ -205,9 +218,9 @@
     <Content Include="res\values\styles.android-xml">
       <SubType>Content</SubType>
     </Content>
-    <None Include="res\values\strings.android-xml">
+    <Content Include="res\values\strings.android-xml">
       <SubType>Content</SubType>
-    </None>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Oxygene\RemObjects.Oxygene.Cooper.Android.targets" />
   <PropertyGroup>
