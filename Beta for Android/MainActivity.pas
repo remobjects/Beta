@@ -92,6 +92,8 @@ begin
   fListView.setAdapter(fAdapter);
   fListView.OnItemClickListener := new interface AdapterView.OnItemClickListener(
     onItemClick := method(aParent: AdapterView; aView: View; aPos: Integer; anId: Int64) begin
+      var lProduct := fDataAccess.Products.get(aPos);
+      if (lProduct.containsKey('header')) then exit;
       var  lBundle := new Bundle();
       lBundle.putInt(ChangeLogActivity.EXTRA_KEY_PRODUCT_INDEX, aPos);
       var lIntent := new Intent(self, typeOf(ChangeLogActivity));
