@@ -27,7 +27,7 @@ type
     method application(application: UIKit.UIApplication) didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Foundation.NSData);
     method application(application: UIKit.UIApplication) didFailToRegisterForRemoteNotificationsWithError(error: Foundation.NSError);
     method application(application: UIKit.UIApplication) didReceiveRemoteNotification(userInfo: Foundation.NSDictionary);
-    //method application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
+    method application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
     {$ENDREGION}
 
     {$REGION IDataAccessDelegate}
@@ -131,13 +131,13 @@ begin
         NSLog('UIApplicationStateActive');
         var a := new UIAlertView withTitle('Beta') message(lAlert) &delegate(nil) cancelButtonTitle('OK') otherButtonTitles(nil);
         a.show();
-      end
-      else begin
+      end;
+      {else begin
         NSLog('NOT UIApplicationStateActive');
         var lLocalNotification := new UILocalNotification;
         lLocalNotification.alertBody := 'INAPP: '+lAlert;
         UIApplication.sharedApplication.presentLocalNotificationNow(lLocalNotification);
-      end;
+      end;}
 
     end;
   end;
@@ -151,7 +151,7 @@ begin
     end);
 end;
 
-{method AppDelegate.application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
+method AppDelegate.application(application: UIApplication) didReceiveRemoteNotification(userInfo: NSDictionary) fetchCompletionHandler(completionHandler: block (aResult: UIBackgroundFetchResult));
 begin
   NSLog('application:didReceiveRemoteNotification:fetchCompletionHandler: %@', userInfo);
   DataAccess.sharedInstance.beginGetDataWithCompletion(method begin
@@ -161,7 +161,7 @@ begin
       if assigned(completionHandler) then completionHandler(UIBackgroundFetchResult.UIBackgroundFetchResultNewData);
 
     end);
-end;}
+end;
 {$ENDREGION}
 
 {$REGION IDataAccessDelegate}

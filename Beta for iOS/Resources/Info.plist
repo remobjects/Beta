@@ -2,7 +2,7 @@
 <plist version="1.0">
   <dict>
     <key>CFBundleVersion</key>
-    <string>1.0.3</string>
+    <string>1.0.5</string>
     <key>CFBundleIcons</key>
 	  <dict>
 		  <key>CFBundlePrimaryIcon</key>
@@ -11,8 +11,11 @@
 			  <array>
 				  <string>App-57.png</string>
 				  <string>App-72.png</string>
+				  <string>App-76.png</string>
 				  <string>App-114.png</string>
+				  <string>App-120.png</string>
 				  <string>App-144.png</string>
+				  <string>App-152.png</string>
 			  </array>
 		  </dict>
 	  </dict>
@@ -74,24 +77,9 @@
 			  <false/>
 		  </dict>
 	  </dict>
-    <!--<key>UIBackgroundModes</key>
+    <key>UIBackgroundModes</key>
     <array>
       <string>remote-notification</string>
-      <string>remote-notification-initiated-fetch</string>
-    </array>-->
-    <key>DTSDKName</key>
-    <string>iphoneos6.1</string>
-    <key>DTXcode</key>
-    <string>0450</string>
-    <key>DTXcodeBuild</key>
-    <string>4G182</string>
-    <key>DTPlatformBuild</key>
-    <string>10A403</string>
-    <key>DTPlatformVersion</key>
-    <string>6.1</string>
-    <key>DTPlatformName</key>
-    <string>iphoneos</string>
-    <key>DTSDKBuild</key>
-    <string>10A403</string>
+    </array>
   </dict>
 </plist>

@@ -42,7 +42,7 @@ begin
   fWebView.autoresizingMask := UIViewAutoresizing.UIViewAutoresizingFlexibleHeight;
   view.addSubview(fWebView);
 
-  var lCss := NSString.stringWithContentsOfFile(NSBundle.mainBundle.pathForResource('ChangeLogs') ofType('css')); 
+  var lCss := NSString.stringWithContentsOfFile(NSBundle.mainBundle.pathForResource('ChangeLogs') ofType('css')) encoding(NSStringEncoding.NSUTF8StringEncoding) error(nil); 
   fWebView.loadHTMLString('<style>'+lCss+'</style>'+fHtml) baseURL(nil); 
 end;
 

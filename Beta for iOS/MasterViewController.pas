@@ -83,9 +83,9 @@ begin
   // Pull to Refresh is not available on iOS5.
   //if self.respondsToSelector(selector(refreshControl)) then begin
   if assigned(typeOf(UIRefreshControl)) then begin
-    refreshControl := UIRefreshControl.alloc.init;
+    refreshControl := new UIRefreshControl;
     //62469: Nougat: No member "appearance" on type "Class" and "id"
-    refreshControl .tintColor := lTintColor;
+    refreshControl.tintColor := lTintColor;
     refreshControl.addTarget(self) 
                    action(selector(refresh:))
                    forControlEvents(UIControlEvents.UIControlEventValueChanged);
@@ -212,10 +212,10 @@ begin
 
           var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
           if assigned(lData) then begin
-            var lImage2 := //if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
+            var lImage2 := if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
                              UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0);
-                           //else
-                           //  UIImage.imageWithData(lData);
+                           else
+                             UIImage.imageWithData(lData);
             lDownload["image"] := lImage2;
             fIconCache[lLogoName] := lImage2;
             dispatch_async(dispatch_get_main_queue(), method begin

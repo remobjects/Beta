@@ -21,6 +21,7 @@
     <CreateHeaderFile>False</CreateHeaderFile>
     <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
     <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
+    <BundleExtension />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
@@ -34,7 +35,8 @@
     <ProvisioningProfile>CBBA6E8F-EEEF-4501-9903-4130AC37867C</ProvisioningProfile>
     <ProvisioningProfileName>Beta Develop</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Developer: marc hoffman (K2YTD84U6W)</CodesignCertificateName>
-    <Architecture>armv7</Architecture>
+    <Architecture>armv7;armv7s</Architecture>
+    <SimulatorArchitectures>i386</SimulatorArchitectures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
     <Optimize>false</Optimize>
@@ -58,10 +60,12 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <CaptureConsoleOutput>False</CaptureConsoleOutput>
     <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-    <CreateIPA>True</CreateIPA>
     <ProvisioningProfile>6EFBFEDC-C774-40BF-8FBC-FD192CFA7815</ProvisioningProfile>
     <ProvisioningProfileName>Beta App Store</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
+    <Architecture>armv7;armv7s</Architecture>
+    <SimulatorArchitectures>i386</SimulatorArchitectures>
+    <CreateIPA>True</CreateIPA>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CoreGraphics.fx" />
@@ -103,6 +107,15 @@
     <AppResource Include="Resources\ChangeLogs.css">
       <SubType>Content</SubType>
     </AppResource>
+    <AppResource Include="Resources\App Icons\App-120.png">
+      <SubType>Content</SubType>
+    </AppResource>
+    <AppResource Include="Resources\App Icons\App-152.png">
+      <SubType>Content</SubType>
+    </AppResource>
+    <AppResource Include="Resources\App Icons\App-76.png">
+      <SubType>Content</SubType>
+    </AppResource>
     <Content Include="Resources\Info.plist" />
     <AppResource Include="Resources\LoginBackground%402x.jpg">
       <SubType>Content</SubType>
@@ -134,17 +147,17 @@
     <AppResource Include="Resources\Launch Images\Default7%402x.png">
       <SubType>Content</SubType>
     </AppResource>
-    <None Include="Resources\App Icons\App-29.png" />
-    <None Include="Resources\App Icons\App-48.png" />
+    <AppResource Include="Resources\App Icons\App-29.png" />
+    <AppResource Include="Resources\App Icons\App-48.png" />
     <AppResource Include="Resources\App Icons\App-57.png" />
-    <None Include="Resources\App Icons\App-58.png" />
+    <AppResource Include="Resources\App Icons\App-58.png" />
     <AppResource Include="Resources\App Icons\App-72.png" />
-    <None Include="Resources\App Icons\App-96.png" />
+    <AppResource Include="Resources\App Icons\App-96.png" />
     <AppResource Include="Resources\App Icons\App-114.png" />
     <AppResource Include="Resources\App Icons\App-144.png" />
     <Storyboard Include="Resources\MainStoryboard~iPad.storyboard" />
     <Storyboard Include="Resources\MainStoryboard~iPhone.storyboard" />
-    <None Include="Resources\App Icons\App-512.png" />
+    <AppResource Include="Resources\App Icons\App-512.png" />
     <AppResource Include="Resources\Launch Images\Default.png" />
     <AppResource Include="Resources\Launch Images\Default@2x.png" />
     <AppResource Include="Resources\Launch Images\Default-568h@2x.png" />
