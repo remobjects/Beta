@@ -1,11 +1,11 @@
-namespace BetaServer;
+﻿namespace BetaServer;
 
 interface
 
 uses
   System.Collections,
   System.Collections.Generic,
-  System.ComponentModel, 
+  System.ComponentModel,
   System.Configuration,
   System.IO,
   System.Linq,
@@ -15,7 +15,7 @@ uses
   System.Security.Permissions,
   System.Xml.Linq,
   RemObjects.SDK.Push,
-  RemObjects.SDK.Server, 
+  RemObjects.SDK.Server,
   BetaServer.Properties;
 
 type
@@ -76,16 +76,16 @@ begin
                                      result := aProductName;
                                      var p := result.IndexOf(' for');
                                      if p > 0 then result := result.Substring(0, p);
- 
+
                                    end).Distinct().ToList().OrderBy(p -> p).ToList();
 end;
 
 method Notifier.GetProductMessage(aProducts: List<String>): String;
 begin
   for each p in aProducts index i do begin
-    if (i = aProducts.Count-1) and (aProducts.Count > 1) then 
+    if (i = aProducts.Count-1) and (aProducts.Count > 1) then
       result := result+' and '
-    else if i > 0 then 
+    else if i > 0 then
       result := result+', ';
     result := result+p;
   end;
@@ -101,7 +101,7 @@ begin
     var lNewRTMProducts := new Dictionary<String, String>;
     var lBranches := new List<String>;
 
-    var lUrl := String.Format(Settings.Default.DownloadInfoURL, Settings.Default.ReferenceUsername, 
+    var lUrl := String.Format(Settings.Default.DownloadInfoURL, Settings.Default.ReferenceUsername,
                                                                 Settings.Default.ReferenceUserToken,
                                                                 'Everwood.Beta.Server' {App ID},
                                                                 'Everwood.Beta.Server' {Client ID});
@@ -114,13 +114,15 @@ begin
       if not assigned(lProduct) or not assigned(lVersion) then continue;
 
       if lDownload.Attribute('prerelease'):Value ≠ 'true' then begin
-        
+
         if (not fRTMProducts.ContainsKey(lProduct)) or (fRTMProducts[lProduct] <> lVersion) then begin
+          //Console.WriteLine(fRTMProducts[lProduct]+' ≠ '+lVersion);
+
           fRTMProducts[lProduct] := lVersion;
           lNewRTMProducts[lProduct] := lVersion;
         end;
-        
-      end 
+
+      end
       else begin
 
         var lBranch := lDownload.Attribute('branch'):Value;
@@ -128,7 +130,7 @@ begin
           fBetaProducts[lProduct] := lVersion;
           lNewBetaProducts[lProduct] := lVersion;
 
-          if assigned(lBranch) and not lBranches.Contains(lBranch) then 
+          if assigned(lBranch) and not lBranches.Contains(lBranch) then
             lBranches.Add(lBranch);
         end;
       end;
@@ -148,7 +150,7 @@ begin
       Log(lMessage);
 
       for each d in PushManager.DeviceManager.Devices do try
-        PushManager.PushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+        PushManager.PushConnect.PushCommon(d, nil, lMessage, lCount, nil, nil);
       except
         on E2: Exception do
           Log('Error pushing to '+d.ID+' ('+d.ClientInfo+'): '+E2.Message);
@@ -163,7 +165,7 @@ begin
       Log(lMessage);
 
       for each d in PushManager.DeviceManager.Devices do
-        PushManager.PushConnect.PushMessageAndBadgeNotification(d, lMessage, lCount);
+        PushManager.PushConnect.PushCommon(d, nil, lMessage, lCount, nil, nil);
       Log('Done sending Push notifications for RTM');
 
     end;
