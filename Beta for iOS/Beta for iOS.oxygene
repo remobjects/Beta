@@ -11,7 +11,7 @@
     <AllowLegacyCreate>False</AllowLegacyCreate>
     <AllowUnsafeCode>False</AllowUnsafeCode>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
-    <SDK>iOS</SDK>
+    <SDK>iOS 7.0</SDK>
     <CreateAppBundle>True</CreateAppBundle>
     <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
     <DeploymentTargetVersion>5.0</DeploymentTargetVersion>
@@ -35,8 +35,8 @@
     <ProvisioningProfile>CBBA6E8F-EEEF-4501-9903-4130AC37867C</ProvisioningProfile>
     <ProvisioningProfileName>Beta Develop</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Developer: marc hoffman (K2YTD84U6W)</CodesignCertificateName>
-    <Architecture>armv7;armv7s</Architecture>
     <SimulatorArchitectures>i386</SimulatorArchitectures>
+    <Architecture>armv7;armv7s</Architecture>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
     <Optimize>false</Optimize>
@@ -64,8 +64,8 @@
     <ProvisioningProfileName>Beta App Store</ProvisioningProfileName>
     <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
     <Architecture>armv7;armv7s</Architecture>
-    <SimulatorArchitectures>i386</SimulatorArchitectures>
     <CreateIPA>True</CreateIPA>
+    <SimulatorArchitectures>i386</SimulatorArchitectures>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CoreGraphics.fx" />
@@ -84,10 +84,10 @@
     <Compile Include="MasterViewController.pas" />
     <Compile Include="Program.pas" />
     <Compile Include="PushProvider_Intf.pas" />
+    <Compile Include="Resources\Launch Images\HeaderView.pas" />
     <Compile Include="WebViewController.pas" />
-    <Compile Include="Z:\Code\git\bc7public\iOS\BaseCell.pas" />
-    <Compile Include="Z:\Code\git\bc7public\iOS\BaseCellView.pas" />
-    <Compile Include="Z:\Code\git\bc7public\iOS\HeaderView.pas" />
+    <Compile Include="..\..\bc7public\iOS\BaseCell.pas" />
+    <Compile Include="..\..\bc7public\iOS\BaseCellView.pas" />
   </ItemGroup>
   <ItemGroup>
     <AppResource Include="Resources\EmptyAppLogo%402x.png">

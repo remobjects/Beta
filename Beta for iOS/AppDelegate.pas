@@ -60,7 +60,7 @@ begin
 
   if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
     var lSplitViewController := self.window.rootViewController as UISplitViewController;
-    var navigationController := lSplitViewController.viewControllers.lastObject;
+    var navigationController := lSplitViewController.viewControllers.firstObject;
     lSplitViewController.delegate := navigationController.topViewController as IUISplitViewControllerDelegate;
   end;
 

@@ -9,7 +9,7 @@ uses
 
 type
   [IBObject]
-  MasterViewController = public class (UITableViewController, IUITableViewDelegate)
+  MasterViewController = public class (UITableViewController, IUITableViewDelegate, IUISplitViewControllerDelegate)
   private
     var fBetaDownloads: NSArray;
     var fRTMDownloads: NSArray;
@@ -36,6 +36,10 @@ type
 
     {$REGION Table view delegate}
     method tableView(tableView: UITableView) didSelectRowAtIndexPath(indexPath: NSIndexPath);
+    {$ENDREGION}
+
+    {$REGION IUISplitViewControllerDelegate}
+    method splitViewController(svc: UISplitViewController) shouldHideViewController(vc: UIViewController) inOrientation(orientation: UIInterfaceOrientation): Boolean;
     {$ENDREGION}
 
     method refresh(aSender: id);
@@ -75,7 +79,7 @@ method MasterViewController.viewDidLoad;
 begin
   inherited viewDidLoad;
  
-  title := 'Betas';
+  title := 'Available Builds';
 
   var lTintColor := UIColor.colorWithRed(0.3) green(0.3) blue(0.7) alpha(1.0);
   navigationController.navigationBar.tintColor := lTintColor;
@@ -89,6 +93,9 @@ begin
     refreshControl.addTarget(self) 
                    action(selector(refresh:))
                    forControlEvents(UIControlEvents.UIControlEventValueChanged);
+  end;
+
+  if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
   end;
 
   tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
@@ -213,7 +220,7 @@ begin
           var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
           if assigned(lData) then begin
             var lImage2 := if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
-                             UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0);
+                             UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0)
                            else
                              UIImage.imageWithData(lData);
             lDownload["image"] := lImage2;
@@ -241,6 +248,8 @@ end;
 
 method MasterViewController.tableView(tableView: UITableView) shouldHighlightRowAtIndexPath(indexPath: NSIndexPath): Boolean;
 begin
+  if  assigned(detailViewController) then exit true;
+
   var lDownloads := case indexPath.section of
                       0: fBetaDownloads;
                       1: fRTMDownloads;
@@ -258,10 +267,18 @@ begin
                     end;
   var lDownload := lDownloads[indexPath.row];
 
-  if assigned(lDownload['changelog']) then
-    navigationController.pushViewController(new WebViewController withHtml(lDownload['changelog'])) animated(true); 
+  if assigned(detailViewController) then begin
+    if assigned(lDownload['changelog']) then
+      detailViewController.showChangeLog(lDownload['changelog'])
+    else
+      detailViewController.hideChangeLog();
+  end
+  else begin
+    if assigned(lDownload['changelog']) then 
+      navigationController.pushViewController(new WebViewController withHtml(lDownload['changelog'])) animated(true); 
+    tableView.deselectRowAtIndexPath(indexPath) animated(true); 
+  end;
 
-  tableView.deselectRowAtIndexPath(indexPath) animated(true); 
 end;
 
 {$ENDREGION}
@@ -282,5 +299,12 @@ method MasterViewController.refresh(aSender: id);
 begin
   DataAccess.sharedInstance.beginGetData();
 end;
+
+{$REGION IUISplitViewControllerDelegate}
+method MasterViewController.splitViewController(svc: UISplitViewController) shouldHideViewController(vc: UIViewController) inOrientation(orientation: UIInterfaceOrientation): Boolean;
+begin
+  result := false;
+end;
+{$ENDREGION}
 
 end.

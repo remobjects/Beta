@@ -8,9 +8,10 @@ uses
 
 type
   [IBObject]
-  DetailViewController = public class (UIViewController, IUISplitViewControllerDelegate)
+  DetailViewController = public class (UIViewController)
   private
     fDetailItem: id;
+    fWebViewController: WebViewController;
     method setDetailItem(newDetailItem: id);
     method configureView;
   protected
@@ -22,8 +23,9 @@ type
 
     method viewDidLoad; override;
     method didReceiveMemoryWarning; override;
-    method splitViewController(splitController: UISplitViewController) willHideViewController(viewController: UIViewController) withBarButtonItem(barButtonItem: UIBarButtonItem) forPopoverController(popoverController: UIPopoverController);
-    method splitViewController(splitController: UISplitViewController) willShowViewController(viewController: UIViewController) invalidatingBarButtonItem(barButtonItem: UIBarButtonItem);
+
+    method showChangeLog(aHtml: String);
+    method hideChangeLog;
   end;
 
 implementation
@@ -61,27 +63,36 @@ begin
   // Dispose of any resources that can be recreated.
 end;
 
-{$REGION Split view delegate}
-
-method DetailViewController.splitViewController(splitController: UISplitViewController)
-                            willHideViewController(viewController: UIViewController)
-                            withBarButtonItem(barButtonItem: UIBarButtonItem)
-                            forPopoverController(popoverController: UIPopoverController);
+method DetailViewController.showChangeLog(aHtml: String);
 begin
-  barButtonItem:title := 'Master';
-  navigationItem:setLeftBarButtonItem(barButtonItem) animated(true);
-  masterPopoverController := popoverController;
+  if not assigned(fWebViewController) then begin
+
+    var f := view.bounds;
+    f.size.height := f.size.height - 64;
+    f.origin.y := 64;
+
+    fWebViewController := new WebViewController withFrame(f) andHtml(aHtml);
+    fWebViewController.view.frame := f;
+    fWebViewController.view.autoresizingMask := UIViewAutoresizing.UIViewAutoresizingFlexibleHeight or UIViewAutoresizing.UIViewAutoresizingFlexibleWidth;
+    view.autoresizingMask := UIViewAutoresizing.UIViewAutoresizingFlexibleHeight or UIViewAutoresizing.UIViewAutoresizingFlexibleWidth;
+    view.autoresizesSubviews := true;
+    view.addSubview(fWebViewController.view);
+
+  end
+  else begin
+
+    fWebViewController.loadHtml(aHtml);
+
+  end;
+
 end;
 
-method DetailViewController.splitViewController(splitController: UISplitViewController)
-                            willShowViewController(viewController:  UIViewController)
-                            invalidatingBarButtonItem(barButtonItem:  UIBarButtonItem);
+method DetailViewController.hideChangeLog;
 begin
-  // Called when the view is shown again in the split view, invalidating the button and popover controller.
-  navigationItem.setLeftBarButtonItem(nil) animated(true);
-  masterPopoverController := nil;
+  if assigned(fWebViewController) then begin
+    fWebViewController.view.removeFromSuperview();
+    fWebViewController := nil;
+  end;
 end;
-
-{$ENDREGION}
 
 end.
