@@ -44,7 +44,7 @@ type
     method beginRegisterForPush;
   public
     class property sharedInstance: DataAccess read sharedInstance;
-    class property isIOS7OrLater: Boolean read UIDevice.currentDevice.systemVersion.floatValue ≥ 7.0;
+    class property isIOS7OrLater: Boolean read UIDevice.currentDevice.systemVersion.componentsSeparatedByString('.')[0].intValue ≥ 7;
 
     method init: id; override;
 

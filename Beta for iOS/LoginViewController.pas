@@ -12,7 +12,6 @@ type
     method init: id; override;
 
     method viewDidLoad; override;
-    method didReceiveMemoryWarning; override;
 
     method textFieldShouldReturn(textField: UITextField): Boolean;
 
@@ -22,6 +21,7 @@ type
     [IBOutlet] property loginButton: weak UIButton;
 
     [IBAction] method loginTapped(aSender: id);
+
   end;
 
 implementation
@@ -29,28 +29,16 @@ implementation
 method LoginViewController.init: id;
 begin
   self := inherited initWithNibName('LoginViewController') bundle(nil);
-  if assigned(self) then begin
-
-    // Custom initialization
-
-  end;
   result := self;
 end;
 
 method LoginViewController.viewDidLoad;
 begin
   inherited viewDidLoad;
+  title := 'Login';
+
   username.becomeFirstResponder();
   activity.hidesWhenStopped := true;
-
-  // Do any additional setup after loading the view.
-end;
-
-method LoginViewController.didReceiveMemoryWarning;
-begin
-  inherited didReceiveMemoryWarning;
-
-  // Dispose of any resources that can be recreated.
 end;
 
 method LoginViewController.textFieldShouldReturn(textField: UITextField): Boolean;

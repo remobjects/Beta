@@ -17,7 +17,7 @@ type
     class method headerHeight: CGFloat;
 
     {$HIDE NH0}
-    class property Font: UIFont read if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then UIFont.boldSystemFontOfSize(15) else UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline);
+    class property Font: UIFont read if UIDevice.currentDevice.systemVersion.componentsSeparatedByString('.')[0].intValue < 7.0 then UIFont.boldSystemFontOfSize(15) else UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline);
     {$SHOW NH0}
   end;
 

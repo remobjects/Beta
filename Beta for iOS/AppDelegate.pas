@@ -167,7 +167,16 @@ end;
 {$REGION IDataAccessDelegate}
 method AppDelegate.askForLogin;
 begin
-  self.window.rootViewController.presentViewController(new LoginViewController) animated(true) completion(nil); 
+  var lLoginViewController := new UINavigationController withRootViewController(new LoginViewController);
+  lLoginViewController.modalPresentationStyle := UIModalPresentationStyle.UIModalPresentationFormSheet;
+
+//  if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
+
+    self.window.rootViewController.presentViewController(lLoginViewController) animated(true) completion(nil); 
+
+//  end;
+
+
 end;
 
 method AppDelegate.alertErrorWithTitle(aTitle: String) message(aMessage: String);

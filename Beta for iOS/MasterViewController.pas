@@ -99,7 +99,7 @@ begin
   end;
 
   tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
-  if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then
+  if not DataAccess.isIOS7OrLater then
     tableView.separatorStyle := UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone;
 
   {navigationItem:leftBarButtonItem := self:editButtonItem;
@@ -171,7 +171,7 @@ begin
   if not assigned(result) then begin
     result := new BaseCell withStyle(UITableViewCellStyle.UITableViewCellStyleSubtitle) reuseIdentifier('RootCell');
 
-    if UIDevice.currentDevice.systemVersion.floatValue < 7.0 then begin
+    if not DataAccess.isIOS7OrLater then begin
       var selectionColor := new UIView;
       selectionColor.backgroundColor := navigationController.navigationBar.tintColor;
       result.selectedBackgroundView := selectionColor;
@@ -216,11 +216,12 @@ begin
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
           var lImageSuffix := if not DataAccess.isIOS7OrLater then (if lIsRetina then '-64.png' else '-32.png') else '-64-flat.png';
+          var lScale := if DataAccess.isIOS7OrLater or lIsRetina then 2.0 else 1.0; 
 
           var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
           if assigned(lData) then begin
             var lImage2 := if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
-                             UIImage.imageWithData(lData) scale(if lIsRetina then 2.0 else 1.0)
+                             UIImage.imageWithData(lData) scale(lScale)
                            else
                              UIImage.imageWithData(lData);
             lDownload["image"] := lImage2;
