@@ -165,7 +165,7 @@ begin
       Log(lMessage);
 
       for each d in PushManager.DeviceManager.Devices do
-        PushManager.PushConnect.PushCommon(d, nil, lMessage, lCount, nil, nil);
+        PushManager.PushConnect.PushCommon(d, nil, lMessage, lCount, nil, nil, true);
       Log('Done sending Push notifications for RTM');
 
     end;
