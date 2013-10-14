@@ -138,15 +138,15 @@ begin
                     1: 'Release Downloads';
                   end;
   result := if assigned(lCaption) then 
-              new HeaderView withWidth(tableView.frame.size.width) caption(lCaption);
+              new TPHeaderView withWidth(tableView.frame.size.width) caption(lCaption);
 end;
 
 method MasterViewController.tableView(tableView: UITableView) heightForHeaderInSection(section: Integer): CGFloat;
 begin
 
   result := case section of
-              0: if fBetaDownloads.count > 0 then HeaderView.headerHeight else 0;
-              1: HeaderView.headerHeight;
+              0: if fBetaDownloads.count > 0 then TPHeaderView.headerHeight else 0;
+              1: TPHeaderView.headerHeight;
               else 0;
             end;
 end;
@@ -169,7 +169,7 @@ begin
 
   //result := tableView.dequeueReusableCellWithIdentifier('RootCell');
   if not assigned(result) then begin
-    result := new BaseCell withStyle(UITableViewCellStyle.UITableViewCellStyleSubtitle) reuseIdentifier('RootCell');
+    result := new TPBaseCell withStyle(UITableViewCellStyle.UITableViewCellStyleSubtitle) reuseIdentifier('RootCell');
 
     if not DataAccess.isIOS7OrLater then begin
       var selectionColor := new UIView;

@@ -167,9 +167,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Properties\App.ico" />
-    <None Include="Getting Started.html">
-      <ExcludeFromBuild>Yes</ExcludeFromBuild>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
