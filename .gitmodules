@@ -1,3 +1,7 @@
 [submodule "Push"]
 	path = Push
 	url = git@github.com:remobjects/Push.git
+[submodule "TwinPeaks"]
+	path = TwinPeaks
+	url = git@github.com:remobjects/TwinPeaks.git
+	branch = master
