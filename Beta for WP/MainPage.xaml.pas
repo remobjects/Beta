@@ -23,9 +23,11 @@ type
     method btnLogin_Click(sender: Object; e: System.Windows.RoutedEventArgs);
     method MainPage_Loaded(sender: Object; e: System.Windows.RoutedEventArgs);
     property isUpdatingBinding: Binding;
+
   public
     // Constructor
     constructor ;
+    
 end;
 
 implementation
@@ -37,6 +39,9 @@ begin
   DataContext := App.ViewModel;
   self.isUpdatingBinding := new Binding('IsUpdating', Source := DataContext);
 
+  App.ViewModel.LoginButtonContent := "Login";
+  self.LoginWindowBorder.Height := Application.Current.Host.Content.ActualHeight;
+  self.LoginWindowBorder.Width := Application.Current.Host.Content.ActualWidth;
 end;
 
 method MainPage.MainPage_Loaded(sender: Object; e: System.Windows.RoutedEventArgs);
@@ -50,9 +55,6 @@ begin
     progressIndicator.SetValue(ProgressIndicator.TextProperty, 'Updating data...');
     SystemTray.SetProgressIndicator(self, progressIndicator)
   end;
-
-  self.LoginWindow.Height := Application.Current.Host.Content.ActualHeight;
-  self.LoginWindow.Width := Application.Current.Host.Content.ActualWidth;
 
   if not App.ViewModel.IsDataLoaded then begin
     App.ViewModel.LoadData()
@@ -81,11 +83,12 @@ begin
     exit
   end;
 
+  App.ViewModel.LoginButtonContent := 'Connecting...';
   DataAccess.GetInstance.BeginLogin(self.UsernameTextBox.Text,
                                     self.PasswordTextBox.Password,
                                     new AsyncCallback(DataAccess.GetInstance.EndLogin));
 
-  App.ViewModel.LoginWindowActive := false;
+  
 end;
 
 end.

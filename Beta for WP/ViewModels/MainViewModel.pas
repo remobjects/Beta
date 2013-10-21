@@ -31,6 +31,7 @@ type
     property IsDataLoaded: Boolean;
     property LoginWindowActive: Boolean; notify;
     property IsUpdating: Boolean; notify;
+    property LoginButtonContent: String; notify;
 
     method LoadData;
 

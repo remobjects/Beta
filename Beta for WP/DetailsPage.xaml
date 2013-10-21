@@ -23,15 +23,16 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="10">
-            <TextBlock Text="BETAS" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="{Binding ProductName}" Style="{StaticResource PhoneTextLargeStyle}"/>
-            <TextBlock Text="Change Log" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock Text="{Binding ProductName}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextLargeStyle}"/>
+            <TextBlock Text="{Binding ProductVersion}" VerticalAlignment="Bottom" Style="{StaticResource PhoneTextSubtleStyle}"/>
         </StackPanel>
  
         <phone:WebBrowser
+            x:Name="ChangelogBrowser"
+            Margin="12,0,12,0"
             Grid.Row="1"
             helpers:WebBrowserHelper.Html="{Binding ChangeLog}"
-            Background="Black"/>
+            Loaded="WebBrowser_Loaded"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

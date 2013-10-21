@@ -15,7 +15,6 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     Loaded="MainPage_Loaded">
-
   
     <Grid>
         <Grid.Resources>
@@ -25,9 +24,9 @@
         <Popup x:Name="LoginWindow"
                IsOpen="{Binding LoginWindowActive}">
             
-            <Border 
+            <Border x:Name="LoginWindowBorder"
                 BorderBrush="White" 
-                BorderThickness="5">
+                BorderThickness="2">
 
                 <StackPanel>
                     <StackPanel.Background>
@@ -65,8 +64,8 @@
                         Name="btnLogin" 
                         Margin="5" 
                         Width="300" 
-                        Height="90" 
-                        Content="Login" />
+                        Height="80" 
+                        Content="{Binding LoginButtonContent}" />
                     <Image Source="../Assets/RemObjectsLogo.png"/>
                 </StackPanel>
             </Border>

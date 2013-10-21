@@ -24,6 +24,8 @@ type
     const URL_GET_DATA: String = '{0}{1}?name={2}&token={3}&changelogs=yes';
           URL_GET_TOKEN: String = '{0}{1}?name={2}&password={3}&appid={4}&clientid={5}';
 
+          CHANGELOG_HTML: String = '<html><body style="background-color: #000000; color: #FFFFFF"> {0} </body> </html>';
+
     const PUSH_SERVICE_URL = 'http://beta.remobjects.com:8098/bin';
 
     const API_URL = 'https://secure.remobjects.com/api/';
@@ -48,6 +50,7 @@ type
 
     method EndGetData(data: IAsyncResult);    
     method ParseData(data: String; dataIsStale: Boolean);
+    method TryGetAsyncResponce(request: HttpWebRequest; data: IAsyncResult): HttpWebResponse;
 
   public
     constructor;
@@ -104,25 +107,18 @@ method DataAccess.EndLogin(data: IAsyncResult);
 begin
   var lRequest: HttpWebRequest := HttpWebRequest(&data.AsyncState);
 
-  var lResponse: HttpWebResponse;
-  try
-    lResponse := HttpWebResponse(lRequest.EndGetResponse(&data));
-  except on ex: WebException do begin 
-    var errorResponse := HttpWebResponse(ex.Response); 
-    if errorResponse.StatusCode = HttpStatusCode.NotImplemented then //501 
-      begin
-        fUserToken := nil;
-        Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
-          App.ViewModel.LoginWindowActive := true 
-        end);
-      end;
-    end
-  end;
+  var lResponse := TryGetAsyncResponce(lRequest, data);
 
   if (lResponse <> nil) and (lResponse.StatusCode = HttpStatusCode.OK) then begin
     var reader := new StreamReader(lResponse.GetResponseStream);
     fUserToken := reader.ReadToEnd;
     SavePreferences;
+
+    Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
+      App.ViewModel.LoginButtonContent := 'Login';
+      App.ViewModel.LoginWindowActive := false;
+    end);
+
     BeginGetData;
   end
 end;
@@ -141,24 +137,13 @@ method DataAccess.EndGetData(data: IAsyncResult);
 begin
   var lRequest: HttpWebRequest := HttpWebRequest(&data.AsyncState);
 
-  var lResponse: HttpWebResponse;
-  try
-    lResponse := HttpWebResponse(lRequest.EndGetResponse(&data));
-  except on ex: WebException do begin
-    var errorResponse := HttpWebResponse(ex.Response); 
-    if (errorResponse.StatusCode = HttpStatusCode.Unauthorized) then begin
-      fUserToken := nil;
-      Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
-        App.ViewModel.LoginWindowActive := true 
-      end);
-      end
-    end
-  end;
+  var lResponse := TryGetAsyncResponce(lRequest, data);
 
   if (lResponse <> nil) and (lResponse.StatusCode = HttpStatusCode.OK) then begin
     var reader := new StreamReader(lResponse.GetResponseStream);
     var dataXML := reader.ReadToEnd;
     SaveDataInCache(dataXML);
+    App.ViewModel.IsDataLoaded := true;
     ParseData(dataXML, false);
     Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
         App.ViewModel.IsUpdating := false;
@@ -211,8 +196,12 @@ begin
       end);
 
     newBuildItem.ImageURL := new Uri(String.Format(IMAGES_URL, docNode.Attribute('logo').Value));
-    newBuildItem.ChangeLog := {String.Format('<link rel="stylesheet" type="text/css" href="ChangeLogs.css" /> {0',} 
-                              docNode.Value.ToString;
+
+    var changeLog := docNode.Value.ToString;
+    newBuildItem.ChangeLog := 
+      iif(String.IsNullOrEmpty(changeLog),
+          String.Format(CHANGELOG_HTML, 'No changelog available for this product.'),
+          String.Format(CHANGELOG_HTML, changeLog));
 
     fParsedItems.Add(newBuildItem);
     inc(itemID);
@@ -246,6 +235,7 @@ end;
 method DataAccess.SaveDataInCache(data: String);
 begin
   var fileStorage := IsolatedStorageFile.GetUserStoreForApplication;
+
   //Does nothing if directory exists
   fileStorage.CreateDirectory(CACHE_DIRNAME);
 
@@ -253,6 +243,43 @@ begin
                                        CACHE_FILENAME, FileMode.&Create, fileStorage));
   fileWriter.Write(data);
   fileWriter.Close;
+end;
+
+method DataAccess.TryGetAsyncResponce(request: HttpWebRequest; data: IAsyncResult): HttpWebResponse;
+begin
+  var lResponse: HttpWebResponse;
+
+  try
+    lResponse := HttpWebResponse(request.EndGetResponse(&data));
+  except 
+    on webEx: WebException do begin
+    var errorResponse := HttpWebResponse(webEx.Response); 
+
+    if (errorResponse.StatusCode = HttpStatusCode.NotImplemented) or //501 
+       (errorResponse.StatusCode = HttpStatusCode.Unauthorized) then begin
+      fUserToken := nil;
+      Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
+        App.ViewModel.LoginButtonContent := 'Login';
+        App.ViewModel.IsUpdating := false;
+        App.ViewModel.LoginWindowActive := true 
+      end);
+      end;
+
+    if errorResponse.StatusCode = HttpStatusCode.NotFound then begin //404
+      Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
+        App.ViewModel.IsUpdating := false;
+        MessageBox.Show(String.Format("Unable to update data."), "Error", MessageBoxButton.OK);
+      end);
+      end
+    end;
+
+    on ex: Exception do begin
+      App.ViewModel.IsUpdating := false;
+      MessageBox.Show(String.Format("Error occured: {0}", ex.Message), "Error", MessageBoxButton.OK);
+    end
+  end;
+
+  exit lResponse;
 end;
 
 end.
