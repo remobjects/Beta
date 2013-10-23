@@ -31,8 +31,7 @@
             x:Name="ChangelogBrowser"
             Margin="12,0,12,0"
             Grid.Row="1"
-            helpers:WebBrowserHelper.Html="{Binding ChangeLog}"
-            Loaded="WebBrowser_Loaded"/>
+            helpers:WebBrowserHelper.Html="{Binding ChangeLog}"/>
     </Grid>
 
 </phone:PhoneApplicationPage>
