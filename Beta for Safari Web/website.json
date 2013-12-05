@@ -1,0 +1,8 @@
+{
+    "websiteName": "RemObjects Software Customer Portal",
+    "websitePushID": "web.com.remobjects.everwood.beta",
+    "allowedDomains": ["https://secure.remobjects.com", "http://staging.remobjects.com"],
+    "urlFormatString": "https://secure.remobjects.com/downloads/beta",
+    "authenticationToken": "",
+    "webServiceURL": https://secure.remobjects.com/api/web-push"
+}
