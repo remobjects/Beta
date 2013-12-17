@@ -22,7 +22,10 @@ type
     method MainLongListSelector_SelectionChanged(sender: System.Object; e: SelectionChangedEventArgs);
     method btnLogin_Click(sender: Object; e: System.Windows.RoutedEventArgs);
     method MainPage_Loaded(sender: Object; e: System.Windows.RoutedEventArgs);
-    property isUpdatingBinding: Binding;
+    method updateButton_Click(sender: Object; e: System.EventArgs);
+
+    property IsUpdatingBinding: Binding;
+    method ReloadData;
 
   public
     // Constructor
@@ -46,19 +49,8 @@ end;
 
 method MainPage.MainPage_Loaded(sender: Object; e: System.Windows.RoutedEventArgs);
 begin
-  var progressIndicator: ProgressIndicator := SystemTray.ProgressIndicator;
-  
-  if progressIndicator = nil then begin
-    progressIndicator := new ProgressIndicator;
-    BindingOperations.SetBinding(progressIndicator, ProgressIndicator.IsVisibleProperty, self.isUpdatingBinding);
-    progressIndicator.SetValue(ProgressIndicator.IsIndeterminateProperty, true);
-    progressIndicator.SetValue(ProgressIndicator.TextProperty, 'Updating data...');
-    SystemTray.SetProgressIndicator(self, progressIndicator)
-  end;
-
-  if not App.ViewModel.IsDataLoaded then begin
-    App.ViewModel.LoadData()
-  end
+  if not App.ViewModel.IsDataLoaded then
+    ReloadData;
 end;
 
 method MainPage.MainLongListSelector_SelectionChanged(sender: System.Object; e: SelectionChangedEventArgs);
@@ -87,8 +79,26 @@ begin
   DataAccess.GetInstance.BeginLogin(self.UsernameTextBox.Text,
                                     self.PasswordTextBox.Password,
                                     new AsyncCallback(DataAccess.GetInstance.EndLogin));
+end;
 
+method MainPage.ReloadData;
+begin
+  var progressIndicator: ProgressIndicator := SystemTray.ProgressIndicator;
   
+  if progressIndicator = nil then begin
+    progressIndicator := new ProgressIndicator;
+    BindingOperations.SetBinding(progressIndicator, ProgressIndicator.IsVisibleProperty, self.IsUpdatingBinding);
+    progressIndicator.SetValue(ProgressIndicator.IsIndeterminateProperty, true);
+    progressIndicator.SetValue(ProgressIndicator.TextProperty, 'Updating data...');
+    SystemTray.SetProgressIndicator(self, progressIndicator)
+  end;
+  
+  App.ViewModel.LoadData()
+end;
+
+method MainPage.updateButton_Click(sender: Object; e: System.EventArgs);
+begin
+  ReloadData;
 end;
 
 end.

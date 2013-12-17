@@ -17,10 +17,6 @@
     Loaded="MainPage_Loaded">
   
     <Grid>
-        <Grid.Resources>
-            <helpers:BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        </Grid.Resources>
-
         <Popup x:Name="LoginWindow"
                IsOpen="{Binding LoginWindowActive}">
             
@@ -71,13 +67,18 @@
             </Border>
         </Popup>    <!--LoginWindow-->
         
-        <phone:Pivot Title="BETAS">
+        <phone:Pivot 
+            Title="BETAS">
             <!--Pivot item one-->
-            <phone:PivotItem Header="Beta Downloads">
+            <phone:PivotItem>
+                <phone:PivotItem.Header>
+                    <Grid>
+                        <TextBlock FontSize="40" Text="Beta Downloads"  />
+                    </Grid>
+                </phone:PivotItem.Header>
                 <Grid x:Name="BetaContentPanel" Grid.Row="1" Margin="12,0,12,0">
                     <phone:LongListSelector 
                         x:Name="BetaLongListSelector" 
-                        Margin="0,0,-12,0" 
                         ItemsSource="{Binding BetaDownloads}" 
                         SelectionChanged="MainLongListSelector_SelectionChanged"
                         ItemTemplate="{StaticResource ListItemTemplate}">
@@ -85,11 +86,15 @@
                 </Grid>
 
             </phone:PivotItem>
-            <phone:PivotItem Header="Release Downloads">
+            <phone:PivotItem>
+                <phone:PivotItem.Header>
+                    <Grid>
+                        <TextBlock FontSize="40" Text="Release Downloads"  />
+                    </Grid>
+                </phone:PivotItem.Header>
                 <Grid x:Name="ReleaseContentPanel" Grid.Row="1" Margin="12,0,12,0">
                     <phone:LongListSelector 
                         x:Name="ReleaseLongListSelector" 
-                        Margin="0,0,-12,0" 
                         ItemsSource="{Binding ReleaseDownloads}" 
                         SelectionChanged="MainLongListSelector_SelectionChanged"
                         ItemTemplate="{StaticResource ListItemTemplate}">
@@ -97,5 +102,17 @@
                 </Grid>
             </phone:PivotItem>
         </phone:Pivot>
+
     </Grid>
+
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar
+            Mode="Minimized">
+            <shell:ApplicationBarIconButton
+                x:Name="updateButton"
+                Click="updateButton_Click"
+                IconUri="/Assets/Refresh.png"
+                Text="Update data"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>
