@@ -28,7 +28,7 @@
         </StackPanel>
  
         <phone:WebBrowser
-            x:Name="ChangelogBrowser"
+            x:Name="changelogBrowser"
             Margin="12,0,12,0"
             Grid.Row="1"
             helpers:WebBrowserHelper.Html="{Binding ChangeLog}"
