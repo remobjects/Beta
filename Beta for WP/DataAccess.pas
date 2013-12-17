@@ -129,7 +129,11 @@ begin
 
   var lRequest: HttpWebRequest;
   lRequest := HttpWebRequest(WebRequest.&Create(lURL));
-  App.ViewModel.IsUpdating := true;
+
+  Deployment.Current.Dispatcher.BeginInvoke(() -> begin 
+    App.ViewModel.IsUpdating := true;
+  end);
+
   lRequest.BeginGetResponse(new AsyncCallback(EndGetData), lRequest);
 end;
 

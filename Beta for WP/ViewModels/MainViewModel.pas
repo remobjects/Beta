@@ -22,7 +22,7 @@ type
     method setBuildsList(value: ObservableCollection<BuildViewModel>);
 
   public
-    constructor ;
+    constructor; empty;
 
     property BuildsList: ObservableCollection<BuildViewModel> read fBuildsList write setBuildsList; notify;
     property BetaDownloads: ObservableCollection<BuildViewModel> {read getBetaDownloads}; notify;
@@ -39,11 +39,6 @@ type
   end;
 
 implementation
-
-constructor MainViewModel;
-begin
-
-end;
 
 method MainViewModel.LoadData;
 begin

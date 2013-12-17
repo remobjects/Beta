@@ -16,6 +16,9 @@ uses
 
 type
   DetailsPage = public partial class(PhoneApplicationPage)
+  private
+    method changelogBrowser_LoadCompleted(sender: Object; e: System.Windows.Navigation.NavigationEventArgs);
+    method changelogBrowser_Navigating(sender: Object; e: Microsoft.Phone.Controls.NavigatingEventArgs);
 
   protected
     // When page is navigated to set data context to selected item in list
@@ -42,6 +45,20 @@ begin
       DataContext := App.ViewModel.BuildsList[&index]
     end
   end
+end;
+
+method DetailsPage.changelogBrowser_LoadCompleted(sender: Object; e: System.Windows.Navigation.NavigationEventArgs);
+begin
+  // Making webbrowser visible, when content is loaded,
+  // to avoid blinking of white background
+  changelogBrowser.Opacity := 1;
+end;
+
+method DetailsPage.changelogBrowser_Navigating(sender: Object; e: Microsoft.Phone.Controls.NavigatingEventArgs);
+begin
+  // Making webbrowser invisible, until content is loaded,
+  // to avoid blinking of white background
+  changelogBrowser.Opacity := 0;
 end;
 
 end.

@@ -86,7 +86,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <XmlDocWarningLevel>WarningOnPublicMembers</XmlDocWarningLevel>
-    <CpuType>arm</CpuType>
+    <CpuType>anycpu</CpuType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
     <DebugType>pdbonly</DebugType>
@@ -133,10 +133,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <DesignData Include="SampleData\MainViewModelSampleData.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </DesignData>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
@@ -148,9 +144,6 @@
     <Content Include="Assets\ApplicationIcon.png">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Assets\ChangeLogs.css">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Assets\EmptyAppLogo.png">
       <SubType>Content</SubType>
     </Content>
@@ -158,6 +151,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Assets\New.png">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Assets\Refresh.png">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Assets\RemObjectsLogo.png">
@@ -190,7 +186,6 @@
     <Folder Include="Helpers" />
     <Folder Include="Properties\" />
     <Folder Include="Resources\" />
-    <Folder Include="SampleData\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>

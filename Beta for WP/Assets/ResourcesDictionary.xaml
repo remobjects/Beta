@@ -7,12 +7,6 @@
     <helpers:BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     <DataTemplate x:Key="ListItemTemplate">
         <Grid >
-           <!--<Grid.Background>
-                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                    <GradientStop Color="#FFFFFF"/>
-                    <GradientStop Color="#E4E4E4" Offset="1"/>
-                </LinearGradientBrush>
-            </Grid.Background>-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -25,12 +19,8 @@
                 Margin="15,0,15,15"
                 Grid.Row="0" 
                 Grid.RowSpan="2"
-                Opacity="{Binding ProductIconOpacity}">
-                <Image.Source>
-                    <BitmapImage
-                        UriSource="{Binding ImageURL}"  CreateOptions="DelayCreation"/>
-                </Image.Source>
-            </Image>
+                Opacity="{Binding ProductIconOpacity}"
+                Source="{Binding ImageURL, TargetNullValue='../Assets/EmptyAppLogo.png'}"/>
             <Image 
                 Source="/Assets/New.png" 
                 HorizontalAlignment="Right"

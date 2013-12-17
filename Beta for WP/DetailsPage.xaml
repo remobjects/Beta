@@ -28,11 +28,13 @@
         </StackPanel>
  
         <phone:WebBrowser
-            x:Name="ChangelogBrowser"
+            x:Name="changelogBrowser"
             Margin="12,0,12,0"
             Grid.Row="1"
+            Background="Black"
             helpers:WebBrowserHelper.Html="{Binding ChangeLog}"
-            Loaded="WebBrowser_Loaded"/>
+            LoadCompleted="changelogBrowser_LoadCompleted"
+            Navigating="changelogBrowser_Navigating"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

@@ -31,7 +31,7 @@ type
     method getChangeLog: String;
 
   public
-    constructor;
+    constructor; empty;
 
     property ID: String read fId write fId; notify;
     property ProductName: String read fProductName write fProductName; notify;
@@ -48,11 +48,6 @@ type
   end;
 
 implementation
-
-constructor BuildViewModel;
-begin
-  fImageURL := new Uri("../Assets/EmptyAppLogo.png", UriKind.RelativeOrAbsolute);
-end;
 
 method BuildViewModel.NotifyPropertyChanged(propertyName: String);
 begin

@@ -42,7 +42,11 @@ begin
     exit;
 
   var html := e.NewValue.ToString();
-  browser.NavigateToString(html)
+  
+  // Making webbrowser invisible, until content is loaded,
+  // to avoid blinking of white background
+  browser.Opacity := 0;
+  browser.NavigateToString(html);
 end;
 
 end.
