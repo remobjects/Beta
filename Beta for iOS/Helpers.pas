@@ -17,7 +17,7 @@ begin
   for each item in self do begin
     var keyForItem := item.valueForKey(aKey);
     if not keyValues.containsObject(keyForItem) then begin
-     NSMUtableArray(result).addObject(item);
+     NSMutableArray(result).addObject(item);
      keyValues.addObject(keyForItem);
     end;
   end;

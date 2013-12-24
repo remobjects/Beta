@@ -1,5 +1,4 @@
 RemObjects.SDK.Server.IpHttpServerChannel, RemObjects.SDK.Server
 RemObjects.SDK.Server.EventSinkManager, RemObjects.SDK.Server
-RemObjects.SDK.Server.MasterServerSessionManager, RemObjects.SDK.Server
 RemObjects.SDK.Server.MemorySessionManager, RemObjects.SDK.Server
 RemObjects.SDK.Server.MemoryMessageQueueManager, RemObjects.SDK.Server

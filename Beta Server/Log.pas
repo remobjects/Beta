@@ -3,21 +3,34 @@
 interface
 
 uses
-  System.IO;
+  System.IO, 
+  BetaServer.Properties;
 
 type
   Log = public class
   private
     class var fCount: Int32 := 0;
-    class var fFilename: String := Path.ChangeExtension(typeOf(self).Assembly.Location, '.'+System.Environment.MachineName+'.log');
+    class var fFilename: String;
     const MAX_LOGFILE_SIZE = 1*1024*1024; { 1MB }
   protected
+    class constructor;
   public
     class method Log(aMessage: String); locked;
     class operator Explicit(aString: String): Log;
   end;
   
 implementation
+
+class constructor Log;
+begin
+  if length(Settings.Default.LogFolder) > 0 then begin
+    Directory.CreateDirectory(Settings.Default.LogFolder);
+    fFilename := Path.Combine(Settings.Default.LogFolder, Path.ChangeExtension(Path.GetFileName(typeOf(self).Assembly.Location), '.'+System.Environment.MachineName+'.log'));
+  end
+  else begin
+    fFilename := Path.ChangeExtension(typeOf(self).Assembly.Location, '.'+System.Environment.MachineName+'.log')
+  end;
+end;
 
 class method Log.Log(aMessage: String);
 begin
