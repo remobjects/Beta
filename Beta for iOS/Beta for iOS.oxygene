@@ -85,9 +85,9 @@
     <Compile Include="MasterViewController.pas" />
     <Compile Include="Program.pas" />
     <Compile Include="PushProvider_Intf.pas" />
-    <Compile Include="V:\git\Beta\TwinPeaks\iOS\Oxygene\TPBaseCell.pas" />
-    <Compile Include="V:\git\Beta\TwinPeaks\iOS\Oxygene\TPBaseCellView.pas" />
-    <Compile Include="V:\git\Beta\TwinPeaks\iOS\Oxygene\TPHeaderView.pas" />
+    <Compile Include="..\TwinPeaks\iOS\Oxygene\TPBaseCell.pas" />
+    <Compile Include="..\TwinPeaks\iOS\Oxygene\TPBaseCellView.pas" />
+    <Compile Include="..\TwinPeaks\iOS\Oxygene\TPHeaderView.pas" />
     <Compile Include="WebViewController.pas" />
   </ItemGroup>
   <ItemGroup>
