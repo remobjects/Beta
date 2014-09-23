@@ -103,7 +103,7 @@ begin
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
       var lRequest := NSURLRequest.requestWithURL(aURL) 
-                                   cachePolicy(NSURLRequestReloadIgnoringLocalAndRemoteCacheData)
+                                   cachePolicy(NSURLRequestCachePolicy.NSURLRequestReloadIgnoringLocalAndRemoteCacheData)
                                    timeoutInterval(30); 
       var lResponse: NSURLResponse;
       var lError: NSError;

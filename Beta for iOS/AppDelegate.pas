@@ -64,10 +64,18 @@ begin
     lSplitViewController.delegate := navigationController.topViewController as IUISplitViewControllerDelegate;
   end;
 
-  application.registerForRemoteNotificationTypes(UIRemoteNotificationType.UIRemoteNotificationTypeAlert or
-                                                 UIRemoteNotificationType.UIRemoteNotificationTypeBadge or
-                                                 UIRemoteNotificationType.UIRemoteNotificationTypeSound);
-
+  if application.respondsToSelector(selector(registerUserNotificationSettings:)) then begin
+    var lSettings := UIUserNotificationSettings.settingsForTypes(UIUserNotificationType.Badge or UIUserNotificationType.Alert or UIUserNotificationType.Sound) categories(nil);
+    application.registerUserNotificationSettings(lSettings);
+  end;
+  
+  if application.respondsToSelector(selector(registerForRemoteNotifications)) then
+    application.registerForRemoteNotifications()
+  else
+    application.registerForRemoteNotificationTypes(UIRemoteNotificationType.UIRemoteNotificationTypeAlert or
+                                                   UIRemoteNotificationType.UIRemoteNotificationTypeBadge or
+                                                   UIRemoteNotificationType.UIRemoteNotificationTypeSound);
+  
   result := true;
 end;
 
