@@ -77,7 +77,8 @@ begin
 
   var lCacheData := NSUserDefaults.standardUserDefaults.objectForKey(KEY_CACHED_DATA) as NSArray;
   if assigned(lCacheData) then begin
-    fDownloads.addObjectsFromArray(lCacheData);
+    for each c in lCacheData do
+      fDownloads.addObject(c.mutableCopy);
     dataIsStale := true;
   end;
 end;
