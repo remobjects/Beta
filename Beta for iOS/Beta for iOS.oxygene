@@ -20,6 +20,9 @@
         <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
         <Architecture>arm64;armv7</Architecture>
         <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
+        <CodesignCertificateName>iPhone Distribution: RemObjects Software (24G43Y5373)</CodesignCertificateName>
+        <EntitlementsFile>.\Resources\Entitlements.entitlements</EntitlementsFile>
+        <BundleVersion>1.0.15</BundleVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <Optimize>false</Optimize>
@@ -30,12 +33,12 @@
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <CaptureConsoleOutput>False</CaptureConsoleOutput>
         <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>456DE529-2F1B-4FFD-B714-BCC6F4B9E009</ProvisioningProfile>
-        <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
-        <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
         <SimulatorArchitectures>i386</SimulatorArchitectures>
         <CreateIPA>True</CreateIPA>
-        <GenerateDSym>False</GenerateDSym>
+        <GenerateDSym>True</GenerateDSym>
+        <ProvisioningProfileName>Beta Develop</ProvisioningProfileName>
+        <ProvisioningProfile>de11baa6-acfa-48ce-b195-d60ee65e730e</ProvisioningProfile>
+        <CodesignCertificateName>iPhone Developer: marc hoffman (K2YTD84U6W)</CodesignCertificateName>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
         <Optimize>false</Optimize>
@@ -46,23 +49,21 @@
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <CaptureConsoleOutput>False</CaptureConsoleOutput>
         <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>456DE529-2F1B-4FFD-B714-BCC6F4B9E009</ProvisioningProfile>
+        <ProvisioningProfile>d31fcc9b-2995-438a-ad2a-741d9db5f228</ProvisioningProfile>
         <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
-        <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
         <CreateIPA>True</CreateIPA>
         <GenerateDSym>True</GenerateDSym>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <Optimize>true</Optimize>
+        <Optimize>False</Optimize>
         <OutputPath>.\bin\Release</OutputPath>
-        <GenerateDebugInfo>False</GenerateDebugInfo>
+        <GenerateDebugInfo>True</GenerateDebugInfo>
         <EnableAsserts>False</EnableAsserts>
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <CaptureConsoleOutput>False</CaptureConsoleOutput>
         <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>6EFBFEDC-C774-40BF-8FBC-FD192CFA7815</ProvisioningProfile>
+        <ProvisioningProfile>9d241e49-512f-4c26-bac6-e183f3f1e9f2</ProvisioningProfile>
         <ProvisioningProfileName>Beta App Store</ProvisioningProfileName>
-        <CodesignCertificateName>iPhone Distribution: RemObjects Software</CodesignCertificateName>
         <CreateIPA>True</CreateIPA>
         <SimulatorArchitectures>i386</SimulatorArchitectures>
         <GenerateDSym>True</GenerateDSym>
@@ -167,7 +168,6 @@
         <AppResource Include="Resources\Launch Images\Default-Landscape@2x.png"/>
     </ItemGroup>
     <ItemGroup>
-        <Folder Include="Properties\"/>
         <Folder Include="Resources\"/>
         <Folder Include="Resources\App Icons\"/>
         <Folder Include="Resources\Launch Images\"/>
@@ -183,8 +183,9 @@
         <AppResource Include="Resources\RemObjectsLogo@3x.png"/>
         <AppResource Include="Resources\New@3x.png"/>
         <AppResource Include="Resources\App Icons\App-180.png"/>
+        <None Include="Resources\Entitlements.entitlements"/>
     </ItemGroup>
-    <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Oxygene\RemObjects.Oxygene.Nougat.targets"/>
+    <Import Project="$(MSBuildExtensionsPath)/RemObjects Software/Oxygene/RemObjects.Oxygene.Nougat.targets"/>
     <PropertyGroup>
         <PreBuildEvent/>
     </PropertyGroup>

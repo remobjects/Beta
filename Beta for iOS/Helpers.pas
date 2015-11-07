@@ -16,7 +16,7 @@ begin
   result := new NSMutableArray;
   for each item in self do begin
     var keyForItem := item.valueForKey(aKey);
-    if not keyValues.containsObject(keyForItem) then begin
+    if assigned(keyForItem) and not keyValues.containsObject(keyForItem) then begin
      NSMutableArray(result).addObject(item);
      keyValues.addObject(keyForItem);
     end;

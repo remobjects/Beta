@@ -56,7 +56,8 @@ type
     method beginGetData;
     method beginGetDataWithCompletion(aCompletion: block );
 
-    method beginLoginWithUsername(aUsername: String) password(aPassword: String) completion(aCompletion: block(aSUccess: Boolean));
+    method beginLoginWithUsername(aUsername: String) password(aPassword: String) fromKeychain(fromKeychain: Boolean) completion(aCompletion: block(aSUccess: Boolean));
+    property askingForLogin: Boolean;
 
     property delegate: IDataAccessDelegate;
     
@@ -101,27 +102,35 @@ end;
 
 method DataAccess.beginGetDataFromURL(aURL: NSURL) completion(aCompletion: block(aData: NSData; aResponse: NSHTTPURLResponse));
 begin
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
+  NSLog('beginGetDataFromURL');
+  var lRequest := NSURLRequest.requestWithURL(aURL) 
+                               cachePolicy(NSURLRequestCachePolicy.NSURLRequestReloadIgnoringLocalAndRemoteCacheData)
+                               timeoutInterval(10); 
 
-      var lRequest := NSURLRequest.requestWithURL(aURL) 
-                                   cachePolicy(NSURLRequestCachePolicy.NSURLRequestReloadIgnoringLocalAndRemoteCacheData)
-                                   timeoutInterval(30); 
-      var lResponse: NSURLResponse;
-      var lError: NSError;
-      UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(true);
-      var lData := NSURLConnection.sendSynchronousRequest(lRequest) returningResponse(var lResponse) error(var lError); 
-      UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(false);
-
-      if assigned(lError) then
-        NSLog('error: %@', lError);
+  UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(true);
+  //var lData := NSURLConnection.sendSynchronousRequest(lRequest) returningResponse(var lResponse) error(var lError); 
+  NSURLConnection.sendAsynchronousRequest(lRequest) queue(NSOperationQueue.mainQueue) completionHandler( method (response: NSURLResponse; data: NSData; connectionError: NSError) begin
+    
+    UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(false);
+    
+    try
+      NSLog('got response');
+      
+      if assigned(connectionError) then
+        NSLog('error: %@', connectionError);
 
       // this is a hack; i need to encapsulate the HTTP GET better 
-      if not assigned(lResponse) then
-        lResponse := new NSHTTPURLResponse withURL(aURL) statusCode(501) HTTPVersion('1.1') headerFields(nil); 
+      if not assigned(response) then
+        response := new NSHTTPURLResponse withURL(aURL) statusCode(501) HTTPVersion('1.1') headerFields(nil); 
 
-      aCompletion(lData, lResponse as NSHTTPURLResponse);
+      aCompletion(data, response as NSHTTPURLResponse);
 
-    end);
+    except
+      on E: Exception do
+        NSLog('Exception: %@', E);
+    end;
+    
+  end);
 end;
 
 method DataAccess.beginGetData;
@@ -146,12 +155,12 @@ begin
 
               lXml.delegate := self;
 
-              fTempDownloads := new NSMutableArray;
-              lXml.parse();
               locking self do begin
+                fTempDownloads := new NSMutableArray;
+                lXml.parse();
                 fDownloads := fTempDownloads;
+                fTempDownloads := nil;
               end;
-              fTempDownloads := nil;
 
               NSUserDefaults.standardUserDefaults.setObject(downloads) forKey(KEY_CACHED_DATA);
               NSUserDefaults.standardUserDefaults.synchronize();
@@ -186,17 +195,22 @@ begin
   if elementName = 'download' then begin
     //NSLog('got download: %@', attributeDict);
     var lDict := attributeDict.mutableCopy();
-
-    var lDateFormatter := new NSDateFormatter;
-    lDateFormatter.dateFormat := 'yyyy-MM-dd';
-    lDict['date'] := lDateFormatter.dateFromString(lDict['date']);
-
-    var p := lDict['product'].rangeOfString('(').location;
-    if p <> NSNotFound then
-      lDict['product'] := lDict['product'].substringToIndex(p).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet);
-
-    fTempDownloads.addObject(lDict);
-    fLastDownload := lDict;
+    
+    if assigned(lDict['date']) and assigned(lDict['product']) then begin
+  
+      var lDateFormatter := new NSDateFormatter;
+      lDateFormatter.dateFormat := 'yyyy-MM-dd';
+      lDict['date'] := lDateFormatter.dateFromString(lDict['date']);
+  
+      var p := lDict['product'].rangeOfString('(').location;
+      if p <> NSNotFound then begin
+        var lProduct := lDict['product'].substringToIndex(p).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet);
+        lDict['product'] := lProduct;
+      end;
+  
+      fTempDownloads.addObject(lDict);
+      fLastDownload := lDict;
+    end;
   end;
 end;
 
@@ -213,30 +227,38 @@ begin
   NSNotificationCenter.defaultCenter.postNotificationName(NOTIFICATION_DOWNLOADS_CHANGED) object(self); 
 end;
 
-method DataAccess.beginLoginWithUsername(aUsername: String) password(aPassword: String) completion(aCompletion: block (aSUccess: Boolean));
+method DataAccess.beginLoginWithUsername(aUsername: String) password(aPassword: String) fromKeychain(fromKeychain: Boolean) completion(aCompletion: block (aSUccess: Boolean));
 begin
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
 
     var lUrl := new NSURL withString(API_URL+API_GETTOKEN+'?name='+aUsername+'&password='+aPassword+'&appid='+API_APPID+'&clientid='{+UIDev});
     beginGetDataFromURL(lUrl) completion(method (aData: NSData; aResponse: NSHTTPURLResponse) begin 
 
-                                           if aResponse.statusCode = 200 then begin
-                                             fUsername := aUsername;
-                                             fUserToken := new NSString withData(aData) encoding(NSStringEncoding.NSUTF8StringEncoding);
+      DataAccess.sharedInstance.askingForLogin := true;
+      if aResponse.statusCode = 200 then begin
+        fUsername := aUsername;
+        fUserToken := new NSString withData(aData) encoding(NSStringEncoding.NSUTF8StringEncoding);
 
-                                             NSLog('got token: %@', fUserToken);
-                                             dispatch_async(dispatch_get_main_queue(), method begin
-                                                 aCompletion(true);
-                                                 gotLoginToken();
-                                               end);
-                                            end
-                                            else begin
-                                              NSLog('didnt get token: status %d', aResponse.statusCode);
-                                              fUserToken := nil;
-                                              dispatch_async(dispatch_get_main_queue(), -> aCompletion(false));
-                                            end;
+        NSLog('got token: %@', fUserToken);
 
-                                         end);
+        if not fromKeychain then
+          SecAddSharedWebCredential("secure.remobjects.com", aUsername, aPassword, method (error: CFErrorRef) begin
+            if assigned(error) then
+              NSLog("Error setting web credentials: %@", bridge<NSError>(error));
+          end);
+
+        dispatch_async(dispatch_get_main_queue(), method begin
+          aCompletion(true);
+          gotLoginToken();
+        end);
+      end
+      else begin
+        NSLog('didnt get token: status %ld', aResponse.statusCode);
+        fUserToken := nil;
+        dispatch_async(dispatch_get_main_queue(), -> aCompletion(false));
+      end;
+
+    end);
 
   end);
 end;

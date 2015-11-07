@@ -54,7 +54,7 @@ begin
   activity.startAnimating();
   loginButton.enabled := false;
   loginButton.setTitle('Connecting...') forState(UIControlState.UIControlStateNormal);
-  DataAccess.sharedInstance.beginLoginWithUsername(username.text) password(password.text) completion(method (aSuccess: Boolean) begin
+  DataAccess.sharedInstance.beginLoginWithUsername(username.text) password(password.text) fromKeychain(false) completion(method (aSuccess: Boolean) begin
 
       activity.stopAnimating();
       if aSuccess then begin

@@ -13,7 +13,9 @@ type
   private
     var fBetaDownloads: NSArray;
     var fRTMDownloads: NSArray;
+    var fActivity: NSUserActivity;
     var fIconCache: NSMutableDictionary<String, UIImage> := new NSMutableDictionary<String, UIImage>;
+    var fIconQueue: dispatch_queue_t;
     method downloadsChanged(aNotification: NSNotification);
   protected
   public
@@ -21,8 +23,9 @@ type
 
     method awakeFromNib; override;
     method viewDidLoad; override;
+    method viewDidAppear(animated: BOOL); override;
     method didReceiveMemoryWarning; override;
-    method prepareForSegue(segue: UIStoryboardSegue) sender(sender: id); override;
+    method prepareForSegue(segue: not nullable UIStoryboardSegue) sender(sender: id); override;
 
     {$REGION Table view data source}
     method numberOfSectionsInTableView(tableView: UITableView): Integer;
@@ -49,10 +52,9 @@ implementation
 
 method MasterViewController.awakeFromNib;
 begin
-  if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
-    clearsSelectionOnViewWillAppear := true;
-    contentSizeForViewInPopover := CGSizeMake(320.0, 600.0);
-  end;
+  clearsSelectionOnViewWillAppear := true;
+  tableView.separatorStyle := UITableViewCellSeparatorStyle.None;
+  fIconQueue := dispatch_queue_create('com.remobjects.everewood.beta.iconqueue', DISPATCH_QUEUE_SERIAL);
   inherited awakeFromNib;
 end;
 
@@ -62,10 +64,10 @@ begin
                             new NSSortDescriptor withKey('product') ascending(true)];
   
   locking DataAccess.sharedInstance do begin
-    fBetaDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')).distinctArrayWithKey('product')
-                                                         .sortedArrayUsingDescriptors(lSorting);
-    fRTMDownloads := DataAccess.sharedInstance.downloads.filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')).distinctArrayWithKey('product')
-                                                         .sortedArrayUsingDescriptors(lSorting);
+    fBetaDownloads := DataAccess.sharedInstance.downloads:filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')):distinctArrayWithKey('product')
+                                                         :sortedArrayUsingDescriptors(lSorting);
+    fRTMDownloads := DataAccess.sharedInstance.downloads:filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')):distinctArrayWithKey('product')
+                                                         :sortedArrayUsingDescriptors(lSorting);
   end;
 
   // Pull to Refresh is not available on iOS5.
@@ -94,11 +96,11 @@ begin
                    action(selector(refresh:))
                    forControlEvents(UIControlEvents.UIControlEventValueChanged);
   end;
-
+  
   if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
   end;
 
-  tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
+  //tableView.backgroundColor := UIColor.scrollViewTexturedBackgroundColor;
   if not DataAccess.isIOS7OrLater then
     tableView.separatorStyle := UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone;
 
@@ -109,13 +111,23 @@ begin
   navigationItem:rightBarButtonItem := addButton;}
   detailViewController := splitViewController:viewControllers:lastObject:topViewController as DetailViewController;
 
-  DataAccess.sharedInstance.beginGetData();
+  //DataAccess.sharedInstance.beginGetData();
 
   NSNotificationCenter.defaultCenter.addObserver(self) 
                                      &selector(selector(downloadsChanged:))
                                      name(DataAccess.NOTIFICATION_DOWNLOADS_CHANGED) 
                                      object(DataAccess.sharedInstance);
   downloadsChanged(nil);
+end;
+
+method MasterViewController.viewDidAppear(animated: BOOL);
+begin
+  if NSClassFromString("NSUserActivity") ≠ nil then begin
+    NSLog('creating NSUserActivity');
+    fActivity := new NSUserActivity withActivityType(NSUserActivityTypeBrowsingWeb);
+    fActivity.webpageURL := NSURL.URLWithString("https://secure.remobjects.com/portal/downloads");
+    fActivity.becomeCurrent();
+  end;
 end;
 
 method MasterViewController.didReceiveMemoryWarning;
@@ -128,13 +140,13 @@ end;
 
 method MasterViewController.numberOfSectionsInTableView(tableView: UITableView): Integer;
 begin
-  result := if fRTMDownloads.count > 0 then 2 else 1;
+  result := if fRTMDownloads:count > 0 then 2 else 1;
 end;
 
 method MasterViewController.tableView(tableView: UITableView) viewForHeaderInSection(section: Integer): UIView;
 begin
   var lCaption := case section of
-                    0: if fBetaDownloads.count > 0 then 'Beta Downloads';
+                    0: if fBetaDownloads:count > 0 then 'Beta Downloads';
                     1: 'Release Downloads';
                   end;
   result := if assigned(lCaption) then 
@@ -145,7 +157,7 @@ method MasterViewController.tableView(tableView: UITableView) heightForHeaderInS
 begin
 
   result := case section of
-              0: if fBetaDownloads.count > 0 then TPHeaderView.headerHeight else 0;
+              0: if fBetaDownloads:count > 0 then TPHeaderView.headerHeight else 0;
               1: TPHeaderView.headerHeight;
               else 0;
             end;
@@ -206,34 +218,43 @@ begin
   if not assigned(lDownload["image"]) then begin
 
 
-    var lImage := fIconCache[lLogoName];
+    var lImage: UIImage;
+    locking self do lImage := fIconCache[lLogoName];
     if assigned(lImage) then begin
       result.imageView.image := lImage;
     end
     else begin
 
       result.imageView.image := UIImage.imageNamed(if not DataAccess.isIOS7OrLater then 'EmptyAppLogo' else 'EmptyAppLogo7');
-      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), method begin
+      dispatch_async(fIconQueue, method begin
+
+        var lImage2: UIImage;
+        locking self do lImage2 := fIconCache[lLogoName];
+        if not assigned(lImage2) then begin
 
           var lImageSuffix := if not DataAccess.isIOS7OrLater then (if lIsRetina then '-64.png' else '-32.png') else '-64-flat.png';
           var lScale := if DataAccess.isIOS7OrLater or lIsRetina then 2.0 else 1.0; 
-
-          var lData := new NSData withContentsOfURL(new NSURL withString('http://www.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix));
+          
+          var lUrl := new NSURL withString('https://secure.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix);
+          NSLog('downloading %@', lUrl);
+          var lData := new NSData withContentsOfURL(lUrl);
+          NSLog('downloading done');
           if assigned(lData) then begin
-            var lImage2 := if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
+            lImage2 := if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
                              UIImage.imageWithData(lData) scale(lScale)
                            else
                              UIImage.imageWithData(lData);
-            lDownload["image"] := lImage2;
-            fIconCache[lLogoName] := lImage2;
-            dispatch_async(dispatch_get_main_queue(), method begin
- 
-                tableView.reloadRowsAtIndexPaths(NSArray.arrayWithObject(indexPath)) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
-                //tableView.reloadRowsAtIndexPaths([indexPath]) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
-
-              end);
+            locking self do fIconCache[lLogoName] := lImage2;
           end;
+        end;
+        dispatch_async(dispatch_get_main_queue(), method begin
+          lDownload["image"] := lImage2;
+
+          tableView.reloadRowsAtIndexPaths(NSArray.arrayWithObject(indexPath)) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
+          //tableView.reloadRowsAtIndexPaths([indexPath]) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
+
         end);
+      end);
 
     end;
 
@@ -269,10 +290,13 @@ begin
   var lDownload := lDownloads[indexPath.row];
 
   if assigned(detailViewController) then begin
-    if assigned(lDownload['changelog']) then
+    //detailViewController.isBeta := indexPath.section = 0;
+    if assigned(lDownload['changelog']) then begin
       detailViewController.showChangeLog(lDownload['changelog'])
-    else
+    end
+    else begin
       detailViewController.hideChangeLog();
+    end;
   end
   else begin
     if assigned(lDownload['changelog']) then 
@@ -284,7 +308,7 @@ end;
 
 {$ENDREGION}
 
-method MasterViewController.prepareForSegue(segue: UIStoryboardSegue) sender(sender: id);
+method MasterViewController.prepareForSegue(segue: not nullable UIStoryboardSegue) sender(sender: id);
 begin
   if segue.identifier.isEqualToString('showDetail') then begin
   //  var lIndexPath := tableView.indexPathForSelectedRow;

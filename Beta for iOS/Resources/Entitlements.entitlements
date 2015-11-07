@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
+<plist version="1.0">
+	<dict>
+		<key>com.apple.developer.associated-domains</key>
+		<array>
+			<string>activitycontinuation:secure.remobjects.com</string>
+			<string>applinks:secure.remobjects.com</string>
+			<string>webcredentials:secure.remobjects.com</string>
+		</array>
+	</dict>
+</plist>

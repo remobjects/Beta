@@ -16,6 +16,8 @@ type
 
     {$REGION IUIApplicationDelegate}
     method application(application: UIApplication) didFinishLaunchingWithOptions(launchOptions: NSDictionary): Boolean;
+    method application(application: UIApplication) continueUserActivity(userActivity: NSUserActivity) restorationHandler(restorationHandler: block(results: NSArray));
+    method application(application: UIApplication) performActionForShortcutItem(shortcutItem: UIApplicationShortcutItem) completionHandler(completionHandler: block(aSuccess: Boolean));
     method applicationWillResignActive(application: UIApplication);
     method applicationDidEnterBackground(application: UIApplication);
     method applicationWillEnterForeground(application: UIApplication);
@@ -54,10 +56,6 @@ begin
                                      name(DataAccess.NOTIFICATION_DOWNLOADS_CHANGED) 
                                      object(DataAccess.sharedInstance);
 
-  //NSClassFromString('UIRefreshControl').appearance.tintColor := lTintColor;
-  // Pull to Refresh is not available on iOS5.
-  //62469: Nougat: No member "appearance" on type "Class" and "id"
-
   if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
     var lSplitViewController := self.window.rootViewController as UISplitViewController;
     var navigationController := lSplitViewController.viewControllers.firstObject;
@@ -65,18 +63,37 @@ begin
   end;
 
   if application.respondsToSelector(selector(registerUserNotificationSettings:)) then begin
+    {$HIDE NH0}
     var lSettings := UIUserNotificationSettings.settingsForTypes(UIUserNotificationType.Badge or UIUserNotificationType.Alert or UIUserNotificationType.Sound) categories(nil);
+    //var lSettings := NSClassFromString("UIUserNotificationSettings").settingsForTypes(UIUserNotificationType.Badge or UIUserNotificationType.Alert or UIUserNotificationType.Sound) categories(nil);
     application.registerUserNotificationSettings(lSettings);
+    {$SHOW NH0}
   end;
   
   if application.respondsToSelector(selector(registerForRemoteNotifications)) then
+    {$HIDE NH0}
     application.registerForRemoteNotifications()
+    {$SHOW NH0}
   else
+    {$HIDE W28}
     application.registerForRemoteNotificationTypes(UIRemoteNotificationType.UIRemoteNotificationTypeAlert or
                                                    UIRemoteNotificationType.UIRemoteNotificationTypeBadge or
                                                    UIRemoteNotificationType.UIRemoteNotificationTypeSound);
-  
+    {$SHOW W28}
   result := true;
+end;
+
+method AppDelegate.application(application: UIApplication) continueUserActivity(userActivity: NSUserActivity) restorationHandler(restorationHandler: block(results: NSArray));
+begin
+end;
+
+method AppDelegate.application(application: UIApplication) performActionForShortcutItem(shortcutItem: UIApplicationShortcutItem) completionHandler(completionHandler: block(aSuccess: Boolean));
+begin
+  if shortcutItem.type.hasSuffix("refresh") then
+    DataAccess.sharedInstance.beginGetData();
+  completionHandler(true);
+  //else if shortcutItem.type.hasSuffix("home") then begn
+  //  DataAccess.sharedInstance.beginGetData();
 end;
 
 method AppDelegate.applicationWillResignActive(application: UIApplication);
@@ -175,15 +192,35 @@ end;
 {$REGION IDataAccessDelegate}
 method AppDelegate.askForLogin;
 begin
-  var lLoginViewController := new UINavigationController withRootViewController(new LoginViewController);
-  lLoginViewController.modalPresentationStyle := UIModalPresentationStyle.UIModalPresentationFormSheet;
-
-//  if UIDevice.currentDevice.userInterfaceIdiom = UIUserInterfaceIdiom.UIUserInterfaceIdiomPad then begin
-
+  if DataAccess.sharedInstance.askingForLogin then
+    exit;
+    
+  DataAccess.sharedInstance.askingForLogin := true;
+  // try getting credentials from safari keychain
+  SecRequestSharedWebCredential("secure.remobjects.com", nil, method (credentials: CFArrayRef; error: CFErrorRef) begin
+    if assigned(credentials) then begin
+      var lData := bridge<NSArray>(credentials);
+      if lData.count > 0 then begin
+        var lAccount := lData[0] as NSDictionary;
+        if lAccount["srvr"] = "secure.remobjects.com" then begin
+          //NSLog("data: %@", lData);
+          var lUsername := lAccount["acct"]; // kSecAttrAccount
+          var lPassword := lAccount["spwd"]; // kSecSharedPassword
+          dispatch_async(dispatch_get_main_queue(), method begin
+            DataAccess.sharedInstance.beginLoginWithUsername(lUsername) password(lPassword) fromKeychain(true) completion(method (aSuccess: Boolean) begin
+            end);
+            //(UIApplication.sharedApplication.delegate as! AppDelegate).gotLoginDetails();
+          end);
+          exit;
+        end
+      // if that failed, ask for login
+      end;
+    end;
+    NSLog("Error getting web credentials: %@", bridge<NSError>(error));
+    var lLoginViewController := new UINavigationController withRootViewController(new LoginViewController);
+    lLoginViewController.modalPresentationStyle := UIModalPresentationStyle.UIModalPresentationFormSheet;
     self.window.rootViewController.presentViewController(lLoginViewController) animated(true) completion(nil); 
-
-//  end;
-
+  end);
 
 end;
 
