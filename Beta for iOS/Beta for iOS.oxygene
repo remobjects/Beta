@@ -62,8 +62,8 @@
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <CaptureConsoleOutput>False</CaptureConsoleOutput>
         <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>9d241e49-512f-4c26-bac6-e183f3f1e9f2</ProvisioningProfile>
-        <ProvisioningProfileName>Beta App Store</ProvisioningProfileName>
+        <ProvisioningProfile>105eff3a-1db5-462b-990c-c7159b6fbca7</ProvisioningProfile>
+        <ProvisioningProfileName>Beta App Store 2015</ProvisioningProfileName>
         <CreateIPA>True</CreateIPA>
         <SimulatorArchitectures>i386</SimulatorArchitectures>
         <GenerateDSym>True</GenerateDSym>
