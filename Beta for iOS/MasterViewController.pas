@@ -225,7 +225,8 @@ begin
     end
     else begin
 
-      result.imageView.image := UIImage.imageNamed(if not DataAccess.isIOS7OrLater then 'EmptyAppLogo' else 'EmptyAppLogo7');
+      var lEmptyImage := UIImage.imageNamed(if not DataAccess.isIOS7OrLater then 'EmptyAppLogo' else 'EmptyAppLogo7');
+      result.imageView.image := lEmptyImage;
       dispatch_async(fIconQueue, method begin
 
         var lImage2: UIImage;
@@ -245,6 +246,10 @@ begin
                            else
                              UIImage.imageWithData(lData);
             locking self do fIconCache[lLogoName] := lImage2;
+          end
+          else begin
+            NSLog('Can''t find image %@', lLogoName);
+            locking self do fIconCache[lLogoName] := lEmptyImage; // use place holder image
           end;
         end;
         dispatch_async(dispatch_get_main_queue(), method begin

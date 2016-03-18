@@ -69,12 +69,13 @@
         <GenerateDSym>True</GenerateDSym>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="CoreGraphics.fx"/>
-        <Reference Include="Foundation.fx"/>
-        <Reference Include="libRemObjectsSDK.fx"/>
-        <Reference Include="UIKit.fx"/>
-        <Reference Include="rtl.fx"/>
-        <Reference Include="libNougat.fx"/>
+        <Reference Include="CoreGraphics"/>
+        <Reference Include="Foundation"/>
+        <Reference Include="libRemObjectsSDK"/>
+        <Reference Include="UIKit"/>
+        <Reference Include="rtl"/>
+        <Reference Include="libNougat"/>
+        <Reference Include="CoreFoundation"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AppDelegate.pas"/>
@@ -85,10 +86,10 @@
         <Compile Include="MasterViewController.pas"/>
         <Compile Include="Program.pas"/>
         <Compile Include="PushProvider_Intf.pas"/>
-        <Compile Include="..\TwinPeaks\iOS\Oxygene\TPBaseCell.pas"/>
-        <Compile Include="..\TwinPeaks\iOS\Oxygene\TPBaseCellView.pas"/>
-        <Compile Include="..\TwinPeaks\iOS\Oxygene\TPHeaderView.pas"/>
         <Compile Include="WebViewController.pas"/>
+        <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCell.pas"/>
+        <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCellView.pas"/>
+        <Compile Include="..\TwinPeaks\iOS\Elements\TPHeaderView.pas"/>
     </ItemGroup>
     <ItemGroup>
         <AppResource Include="Resources\EmptyAppLogo%402x.png">
@@ -185,7 +186,7 @@
         <AppResource Include="Resources\App Icons\App-180.png"/>
         <None Include="Resources\Entitlements.entitlements"/>
     </ItemGroup>
-    <Import Project="$(MSBuildExtensionsPath)/RemObjects Software/Oxygene/RemObjects.Oxygene.Nougat.targets"/>
+    <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Elements\RemObjects.Elements.Nougat.targets"/>
     <PropertyGroup>
         <PreBuildEvent/>
     </PropertyGroup>
