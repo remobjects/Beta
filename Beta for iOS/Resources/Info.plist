@@ -9,19 +9,18 @@
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>App-57.png</string>
 					<string>App-72.png</string>
 					<string>App-76.png</string>
 					<string>App-114.png</string>
 					<string>App-120.png</string>
-					<string>App-144.png</string>
 					<string>App-152.png</string>
+					<string>App-167.png</string>
 					<string>App-180.png</string>
 				</array>
 			</dict>
 		</dict>
 		<key>CFBundleDisplayName</key>
-		<string>Beta</string>
+		<string>Everwood</string>
 		<key>UIDeviceFamily</key>
 		<array>
 			<integer>1</integer>

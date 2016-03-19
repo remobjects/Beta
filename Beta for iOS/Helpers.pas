@@ -60,11 +60,11 @@ begin
   else if (lDelta < 48 * HOUR) then
     result := 'yesterday'
   else if (lDelta < 30 * DAY) then
-    result := NSString.stringWithFormat('%d days ago', lComponents.day)
+    result := NSString.stringWithFormat('%ld days ago', lComponents.day)
   else if (lDelta < 12 * MONTH) then
-    result := if (lComponents.month <= 1) then 'one month ago' else NSString.stringWithFormat('%d months ago', lComponents.month) as NSString
+    result := if (lComponents.month <= 1) then 'one month ago' else NSString.stringWithFormat('%ld months ago', lComponents.month) as NSString
   else
-    result := if (lComponents.year <= 1) then 'one year ago' else NSString.stringWithFormat('%d years ago', lComponents.year) as NSString;
+    result := if (lComponents.year <= 1) then 'one year ago' else NSString.stringWithFormat('%ld years ago', lComponents.year) as NSString;
 
 end;
 
