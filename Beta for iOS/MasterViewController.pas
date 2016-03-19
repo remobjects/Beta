@@ -14,9 +14,9 @@ type
     var fBetaDownloads: NSArray;
     var fRTMDownloads: NSArray;
     var fActivity: NSUserActivity;
-    var fIconCache: NSMutableDictionary<String, UIImage> := new NSMutableDictionary<String, UIImage>;
-    var fIconQueue: dispatch_queue_t;
+    var fCollapse := true;
     method downloadsChanged(aNotification: NSNotification);
+    method collapseDownloads(var aDownloads: NSArray);
   protected
   public
     property detailViewController: DetailViewController;
@@ -54,7 +54,6 @@ method MasterViewController.awakeFromNib;
 begin
   clearsSelectionOnViewWillAppear := true;
   tableView.separatorStyle := UITableViewCellSeparatorStyle.None;
-  fIconQueue := dispatch_queue_create('com.remobjects.everewood.beta.iconqueue', DISPATCH_QUEUE_SERIAL);
   inherited awakeFromNib;
 end;
 
@@ -64,17 +63,71 @@ begin
                             new NSSortDescriptor withKey('product') ascending(true)];
   
   locking DataAccess.sharedInstance do begin
-    fBetaDownloads := DataAccess.sharedInstance.downloads:filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')):distinctArrayWithKey('product')
-                                                         :sortedArrayUsingDescriptors(lSorting);
-    fRTMDownloads := DataAccess.sharedInstance.downloads:filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')):distinctArrayWithKey('product')
-                                                         :sortedArrayUsingDescriptors(lSorting);
+    fBetaDownloads := DataAccess.sharedInstance.downloads:filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease = "true"')):distinctArrayWithKey('product');
+    fRTMDownloads := DataAccess.sharedInstance.downloads:filteredArrayUsingPredicate(NSPredicate.predicateWithFormat('prerelease <> "true"')):distinctArrayWithKey('product');
   end;
+  
+  if fCollapse then begin
+    collapseDownloads(var fBetaDownloads);
+    collapseDownloads(var fRTMDownloads);
+  end;
+  
+  fBetaDownloads := fBetaDownloads:sortedArrayUsingDescriptors(lSorting);
+  fRTMDownloads := fRTMDownloads:sortedArrayUsingDescriptors(lSorting);
 
   // Pull to Refresh is not available on iOS5.
   if self.respondsToSelector(selector(refreshControl)) then
     refreshControl:endRefreshing();
 
   tableView.reloadData();
+end;
+
+method MasterViewController.collapseDownloads(var aDownloads: NSArray);
+begin
+  var lProductsToMerge := new NSMutableDictionary();
+  var lKeptProducts := new NSMutableArray();
+  for each d in aDownloads do begin
+    var lName := d['product'];
+    var p := lName.rangeOfString(" for ").location;
+    if p ≠ NSNotFound then begin
+      lName := lName.substringToIndex(p);
+
+      var lExisting := lProductsToMerge[lName];
+      if not assigned(lExisting) then begin
+        lExisting := new NSMutableArray();
+        lProductsToMerge[lName] := lExisting;
+      end;
+      lExisting.addObject(d);
+        
+    end
+    else begin
+      lKeptProducts.addObject(d);
+    end;
+  end;
+  
+  for each k in lProductsToMerge.allKeys do begin
+    var lFirst: NSDictionary;
+    for each d in lProductsToMerge[k] do begin
+      if not assigned(lFirst) then
+        lFirst := d;
+        
+      if String(d['version']) ≠ String(lFirst['version']) then begin
+        lFirst := nil;
+        break;
+      end;
+       
+    end;
+    if assigned(lFirst) then begin
+      var lCopy := lFirst.mutableCopy();
+      lCopy['product'] := k;
+      lKeptProducts.addObject(lCopy);
+    end
+    else begin
+      lKeptProducts.addObjectsFromArray(lProductsToMerge[k]);
+    end;
+  end;
+  
+  aDownloads := lKeptProducts;
 end;
 
 method MasterViewController.viewDidLoad;
@@ -206,67 +259,20 @@ begin
   result.detailTextLabel.text :=lDownload['version']+' ('+lDownload['date'].relativeDateString+')' ;
 
   if DataAccess.sharedInstance.dataIsStale then begin
-    result.textLabel.textColor := result.detailTextLabel.textColor;
+    result.textLabel.textColor := UIColor.lightGrayColor;
+    result.detailTextLabel.textColor := UIColor.lightGrayColor;
     result.imageView.alpha := 0.5;
-  end;
-
-  //62454: Nougat: Internal Compiler error on scope issue
-  var lLogoName := lDownload['logo'];
-
-  var lIsRetina := UIScreen.mainScreen.scale > 1;
-
-  if not assigned(lDownload["image"]) then begin
-
-
-    var lImage: UIImage;
-    locking self do lImage := fIconCache[lLogoName];
-    if assigned(lImage) then begin
-      result.imageView.image := lImage;
-    end
-    else begin
-
-      var lEmptyImage := UIImage.imageNamed(if not DataAccess.isIOS7OrLater then 'EmptyAppLogo' else 'EmptyAppLogo7');
-      result.imageView.image := lEmptyImage;
-      dispatch_async(fIconQueue, method begin
-
-        var lImage2: UIImage;
-        locking self do lImage2 := fIconCache[lLogoName];
-        if not assigned(lImage2) then begin
-
-          var lImageSuffix := if not DataAccess.isIOS7OrLater then (if lIsRetina then '-64.png' else '-32.png') else '-64-flat.png';
-          var lScale := if DataAccess.isIOS7OrLater or lIsRetina then 2.0 else 1.0; 
-          
-          var lUrl := new NSURL withString('https://secure.remobjects.com/images/product-logos/'+lDownload['logo']+lImageSuffix);
-          NSLog('downloading %@', lUrl);
-          var lData := new NSData withContentsOfURL(lUrl);
-          NSLog('downloading done');
-          if assigned(lData) then begin
-            lImage2 := if UIImage.respondsToSelector(selector(imageWithData:scale:)) then
-                             UIImage.imageWithData(lData) scale(lScale)
-                           else
-                             UIImage.imageWithData(lData);
-            locking self do fIconCache[lLogoName] := lImage2;
-          end
-          else begin
-            NSLog('Can''t find image %@', lLogoName);
-            locking self do fIconCache[lLogoName] := lEmptyImage; // use place holder image
-          end;
-        end;
-        dispatch_async(dispatch_get_main_queue(), method begin
-          lDownload["image"] := lImage2;
-
-          tableView.reloadRowsAtIndexPaths(NSArray.arrayWithObject(indexPath)) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
-          //tableView.reloadRowsAtIndexPaths([indexPath]) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
-
-        end);
-      end);
-
-    end;
-
   end
   else begin
-    result.imageView.image := lDownload["image"];
+    result.textLabel.textColor := UIColor.blackColor;
+    result.detailTextLabel.textColor := UIColor.blackColor;
+    result.imageView.alpha := 1.0;
   end;
+
+  result.imageView.image := ImageManager.getImage(lDownload['logo']) callback( (aImage: UIImage) -> begin
+    tableView.reloadRowsAtIndexPaths(NSArray.arrayWithObject(indexPath)) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
+    //tableView.reloadRowsAtIndexPaths([indexPath]) withRowAnimation(UITableViewRowAnimation.UITableViewRowAnimationNone);
+  end);
 end;
 
 {$ENDREGION}

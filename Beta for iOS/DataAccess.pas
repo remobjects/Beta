@@ -3,7 +3,6 @@
 interface
 
 uses
-  Foundation, 
   RemObjectsSDK;
 
 type
@@ -60,6 +59,8 @@ type
     property askingForLogin: Boolean;
 
     property delegate: IDataAccessDelegate;
+    
+    property cachesFolder: String := NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.NSCachesDirectory, NSSearchPathDomainMask.NSUserDomainMask, true).lastObject; lazy;
     
     const NOTIFICATION_DOWNLOADS_CHANGED = 'com.remobjects.beta.downloads.changed';
   end;

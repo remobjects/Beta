@@ -23,6 +23,7 @@
         <CodesignCertificateName>iPhone Distribution: RemObjects Software (24G43Y5373)</CodesignCertificateName>
         <EntitlementsFile>.\Resources\Entitlements.entitlements</EntitlementsFile>
         <BundleVersion>1.0.15</BundleVersion>
+        <DefaultUses>UIKit</DefaultUses>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <Optimize>false</Optimize>
@@ -185,6 +186,7 @@
         <AppResource Include="Resources\New@3x.png"/>
         <AppResource Include="Resources\App Icons\App-180.png"/>
         <None Include="Resources\Entitlements.entitlements"/>
+        <Compile Include="ImageManager.pas"/>
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Elements\RemObjects.Elements.Nougat.targets"/>
     <PropertyGroup>
