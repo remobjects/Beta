@@ -20,7 +20,7 @@
 			</dict>
 		</dict>
 		<key>CFBundleDisplayName</key>
-		<string>Everwood</string>
+		<string>Beta</string>
 		<key>UIDeviceFamily</key>
 		<array>
 			<integer>1</integer>
@@ -47,29 +47,6 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
-		<key>UILaunchImages</key>
-		<array>
-			<dict>
-				<key>UILaunchImageMinimumOSVersion</key>
-				<string>7.0</string>
-				<key>UILaunchImageName</key>
-				<string>Default7-568h</string>
-				<key>UILaunchImageOrientation</key>
-				<string>Portrait</string>
-				<key>UILaunchImageSize</key>
-				<string>{320, 568}</string>
-			</dict>
-			<dict>
-				<key>UILaunchImageMinimumOSVersion</key>
-				<string>7.0</string>
-				<key>UILaunchImageName</key>
-				<string>Default7</string>
-				<key>UILaunchImageOrientation</key>
-				<string>Portrait</string>
-				<key>UILaunchImageSize</key>
-				<string>{320, 480}</string>
-			</dict>
-		</array>
 		<key>UIStatusBarTintParameters</key>
 		<dict>
 			<key>UINavigationBar</key>
@@ -84,6 +61,8 @@
 		<array>
 			<string>remote-notification</string>
 		</array>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSAllowsArbitraryLoads</key>
