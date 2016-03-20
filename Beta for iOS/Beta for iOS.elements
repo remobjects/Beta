@@ -14,7 +14,7 @@
         <SDK>iOS</SDK>
         <CreateAppBundle>True</CreateAppBundle>
         <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
-        <DeploymentTargetVersion>7.0</DeploymentTargetVersion>
+        <DeploymentTargetVersion>8.0</DeploymentTargetVersion>
         <Name>Beta for iOS</Name>
         <CreateHeaderFile>False</CreateHeaderFile>
         <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
@@ -22,7 +22,7 @@
         <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
         <CodesignCertificateName>iPhone Distribution: RemObjects Software (24G43Y5373)</CodesignCertificateName>
         <EntitlementsFile>.\Resources\Entitlements.entitlements</EntitlementsFile>
-        <BundleVersion>1.0.15</BundleVersion>
+        <BundleVersion>1.1.4</BundleVersion>
         <DefaultUses>UIKit</DefaultUses>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -63,8 +63,8 @@
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <CaptureConsoleOutput>False</CaptureConsoleOutput>
         <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>105eff3a-1db5-462b-990c-c7159b6fbca7</ProvisioningProfile>
-        <ProvisioningProfileName>Beta App Store 2015</ProvisioningProfileName>
+        <ProvisioningProfile>45d22898-62ba-41a5-8b2e-fe606145b2a4</ProvisioningProfile>
+        <ProvisioningProfileName>Beta/Everwood App Store 2016</ProvisioningProfileName>
         <CreateIPA>True</CreateIPA>
         <SimulatorArchitectures>i386</SimulatorArchitectures>
         <GenerateDSym>True</GenerateDSym>
@@ -93,86 +93,35 @@
         <Compile Include="..\TwinPeaks\iOS\Elements\TPHeaderView.pas"/>
     </ItemGroup>
     <ItemGroup>
-        <AppResource Include="Resources\EmptyAppLogo%402x.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\EmptyAppLogo.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\EmptyAppLogo7%402x.png">
-            <SubType>Content</SubType>
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        </AppResource>
-        <AppResource Include="Resources\EmptyAppLogo7.png">
-            <SubType>Content</SubType>
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        </AppResource>
-        <AppResource Include="Resources\ChangeLogs.css">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\App Icons\App-120.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\App Icons\App-152.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\App Icons\App-76.png">
-            <SubType>Content</SubType>
-        </AppResource>
+        <AppResource Include="Resources\EmptyAppLogo%402x.png"/>
+        <AppResource Include="Resources\EmptyAppLogo.png"/>
+        <AppResource Include="Resources\EmptyAppLogo7%402x.png"/>
+        <AppResource Include="Resources\EmptyAppLogo7.png"/>
+        <AppResource Include="Resources\ChangeLogs.css"/>
+        <AppResource Include="Resources\App Icons\App-120.png"/>
+        <AppResource Include="Resources\App Icons\App-152.png"/>
+        <AppResource Include="Resources\App Icons\App-76.png"/>
         <Content Include="Resources\Info.plist"/>
-        <AppResource Include="Resources\LoginBackground%402x.jpg">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\LoginBackground.jpg">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\RemObjectsLogo%402x.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\RemObjectsLogo.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\LoginBackground%402x.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\LoginBackground.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\New%402x.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\New.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\Launch Images\Default7-568h@2x.png">
-            <SubType>Content</SubType>
-        </AppResource>
-        <AppResource Include="Resources\Launch Images\Default7%402x.png">
-            <SubType>Content</SubType>
-        </AppResource>
+        <AppResource Include="Resources\LoginBackground%402x.jpg"/>
+        <AppResource Include="Resources\LoginBackground.jpg"/>
+        <AppResource Include="Resources\RemObjectsLogo%402x.png"/>
+        <AppResource Include="Resources\RemObjectsLogo.png"/>
+        <AppResource Include="Resources\LoginBackground%402x.png"/>
+        <AppResource Include="Resources\LoginBackground.png"/>
+        <AppResource Include="Resources\New%402x.png"/>
+        <AppResource Include="Resources\New.png"/>
         <AppResource Include="Resources\App Icons\App-29.png"/>
-        <AppResource Include="Resources\App Icons\App-48.png"/>
-        <AppResource Include="Resources\App Icons\App-57.png"/>
         <AppResource Include="Resources\App Icons\App-58.png"/>
         <AppResource Include="Resources\App Icons\App-72.png"/>
-        <AppResource Include="Resources\App Icons\App-96.png"/>
         <AppResource Include="Resources\App Icons\App-114.png"/>
-        <AppResource Include="Resources\App Icons\App-144.png"/>
+        <AppResource Include="Resources\App Icons\App-180.png"/>
+        <AppResource Include="Resources\App Icons\App-167.png"/>
         <Storyboard Include="Resources\MainStoryboard~iPad.storyboard"/>
         <Storyboard Include="Resources\MainStoryboard~iPhone.storyboard"/>
-        <AppResource Include="Resources\App Icons\App-512.png"/>
-        <AppResource Include="Resources\Launch Images\Default.png"/>
-        <AppResource Include="Resources\Launch Images\Default@2x.png"/>
-        <AppResource Include="Resources\Launch Images\Default-568h@2x.png"/>
-        <AppResource Include="Resources\Launch Images\Default-Portrait.png"/>
-        <AppResource Include="Resources\Launch Images\Default-Portrait@2x.png"/>
-        <AppResource Include="Resources\Launch Images\Default-Landscape.png"/>
-        <AppResource Include="Resources\Launch Images\Default-Landscape@2x.png"/>
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Resources\"/>
         <Folder Include="Resources\App Icons\"/>
-        <Folder Include="Resources\Launch Images\"/>
     </ItemGroup>
     <ItemGroup>
         <Xib Include="LoginViewController~ipad.xib">
@@ -184,7 +133,6 @@
         <Storyboard Include="Resources\Launch.storyboard"/>
         <AppResource Include="Resources\RemObjectsLogo@3x.png"/>
         <AppResource Include="Resources\New@3x.png"/>
-        <AppResource Include="Resources\App Icons\App-180.png"/>
         <None Include="Resources\Entitlements.entitlements"/>
         <Compile Include="ImageManager.pas"/>
     </ItemGroup>

@@ -104,23 +104,21 @@ end;
 method DataAccess.beginGetDataFromURL(aURL: NSURL) completion(aCompletion: block(aData: NSData; aResponse: NSHTTPURLResponse));
 begin
   NSLog('beginGetDataFromURL');
+  
   var lRequest := NSURLRequest.requestWithURL(aURL) 
                                cachePolicy(NSURLRequestCachePolicy.NSURLRequestReloadIgnoringLocalAndRemoteCacheData)
                                timeoutInterval(10); 
 
   UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(true);
-  //var lData := NSURLConnection.sendSynchronousRequest(lRequest) returningResponse(var lResponse) error(var lError); 
-  NSURLConnection.sendAsynchronousRequest(lRequest) queue(NSOperationQueue.mainQueue) completionHandler( method (response: NSURLResponse; data: NSData; connectionError: NSError) begin
-    
+  NSURLSession.sharedSession.dataTaskWithRequest(lRequest) completionHandler((data, response, error) -> begin
+
     UIApplication.sharedApplication.setNetworkActivityIndicatorVisible(false);
     
     try
       NSLog('got response');
-      
-      if assigned(connectionError) then
-        NSLog('error: %@', connectionError);
+      if assigned(error) then
+        NSLog('error: %@', error);
 
-      // this is a hack; i need to encapsulate the HTTP GET better 
       if not assigned(response) then
         response := new NSHTTPURLResponse withURL(aURL) statusCode(501) HTTPVersion('1.1') headerFields(nil); 
 
@@ -131,7 +129,7 @@ begin
         NSLog('Exception: %@', E);
     end;
     
-  end);
+  end).resume();
 end;
 
 method DataAccess.beginGetData;
