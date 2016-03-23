@@ -20,10 +20,10 @@
         <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
         <Architecture>arm64;armv7</Architecture>
         <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
+        <BundleVersion>1.1.7</BundleVersion>
+        <DefaultUses>UIKit</DefaultUses>
         <CodesignCertificateName>iPhone Distribution: RemObjects Software (24G43Y5373)</CodesignCertificateName>
         <EntitlementsFile>.\Resources\Entitlements.entitlements</EntitlementsFile>
-        <BundleVersion>1.1.4</BundleVersion>
-        <DefaultUses>UIKit</DefaultUses>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <Optimize>false</Optimize>
@@ -37,9 +37,8 @@
         <SimulatorArchitectures>i386</SimulatorArchitectures>
         <CreateIPA>True</CreateIPA>
         <GenerateDSym>True</GenerateDSym>
-        <ProvisioningProfileName>Beta Develop</ProvisioningProfileName>
-        <ProvisioningProfile>de11baa6-acfa-48ce-b195-d60ee65e730e</ProvisioningProfile>
-        <CodesignCertificateName>iPhone Developer: marc hoffman (K2YTD84U6W)</CodesignCertificateName>
+        <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
+        <ProvisioningProfile>4bd0826f-b038-4c46-912a-1dd00b41d5b3</ProvisioningProfile>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
         <Optimize>false</Optimize>
@@ -50,10 +49,10 @@
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
         <CaptureConsoleOutput>False</CaptureConsoleOutput>
         <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>d31fcc9b-2995-438a-ad2a-741d9db5f228</ProvisioningProfile>
-        <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
         <CreateIPA>True</CreateIPA>
         <GenerateDSym>True</GenerateDSym>
+        <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
+        <ProvisioningProfile>4bd0826f-b038-4c46-912a-1dd00b41d5b3</ProvisioningProfile>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <Optimize>False</Optimize>
@@ -72,11 +71,13 @@
     <ItemGroup>
         <Reference Include="CoreGraphics"/>
         <Reference Include="Foundation"/>
-        <Reference Include="libRemObjectsSDK"/>
         <Reference Include="UIKit"/>
         <Reference Include="rtl"/>
         <Reference Include="libNougat"/>
         <Reference Include="CoreFoundation"/>
+        <Reference Include="libSugar"/>
+        <Reference Include="Security"/>
+        <Reference Include="libxml2"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AppDelegate.pas"/>
@@ -86,7 +87,7 @@
         <Compile Include="LoginViewController.pas"/>
         <Compile Include="MasterViewController.pas"/>
         <Compile Include="Program.pas"/>
-        <Compile Include="PushProvider_Intf.pas"/>
+        <None Include="PushProvider_Intf.pas"/>
         <Compile Include="WebViewController.pas"/>
         <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCell.pas"/>
         <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCellView.pas"/>

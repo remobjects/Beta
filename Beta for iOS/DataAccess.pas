@@ -2,9 +2,6 @@
 
 interface
 
-uses
-  RemObjectsSDK;
-
 type
   DataAccess = public class(INSXMLParserDelegate)
   private
@@ -15,12 +12,13 @@ type
     fPushDeviceToken: NSData;
     method setPushDeviceToken(aValue: NSData);
 
-    const PUSH_SERVICE_URL = 'http://beta.remobjects.com:8098/bin';
-
     const API_URL = 'https://secure.remobjects.com/api/';
     const API_GETTOKEN = 'gettoken';
     const API_DOWNLOADS = 'downloads';
     const API_APPID = 'Beta.iOS';
+
+    const PUSH_API_URL = 'http://beta.remobjects.com:8098/api/';
+    const PUSH_API_REGISTERDEVICE = 'registerdevice';
 
     const KEY_USERNAME = 'Username';
     const KEY_TOKEN = 'Token';
@@ -103,7 +101,7 @@ end;
 
 method DataAccess.beginGetDataFromURL(aURL: NSURL) completion(aCompletion: block(aData: NSData; aResponse: NSHTTPURLResponse));
 begin
-  NSLog('beginGetDataFromURL');
+  NSLog('beginGetDataFromURL %@', aURL);
   
   var lRequest := NSURLRequest.requestWithURL(aURL) 
                                cachePolicy(NSURLRequestCachePolicy.NSURLRequestReloadIgnoringLocalAndRemoteCacheData)
@@ -275,20 +273,19 @@ method DataAccess.beginRegisterForPush;
 begin
   if not assigned(fUserToken) or not assigned(fUsername) or not assigned(fPushDeviceToken) then exit; 
 
-  var p := new ApplePushProviderService_AsyncProxy withURL(new NSURL withString(PUSH_SERVICE_URL));
-  p.beginRegisterDevice(fPushDeviceToken, fUsername) startWithBlock(method (aRequest: ROAsyncRequest) begin
+  var lDeviceTokenString := Sugar.Convert.ToHexString(Sugar.Binary(fPushDeviceToken.mutableCopy).ToArray);
 
-      try
-        p.endRegisterDevice(aRequest);
-        //delegate.alertErrorWithTitle('Registered server') message('...');
-        NSLog('Registered with server');
-      except
-        on E: NSException do begin
-          delegate.alertErrorWithTitle('Failed to register with server') message(E.description);
-        end;
-      end;
-
-    end);
+  var lURL := new NSURL withString(PUSH_API_URL+PUSH_API_REGISTERDEVICE+'?username='+fUsername+'&token='+lDeviceTokenString+'&type=iOS');
+  NSLog('%@', lURL);
+  beginGetDataFromURL(lURL) completion(method (aData: NSData; aResponse: NSHTTPURLResponse) begin
+    if assigned(aData) then begin
+      NSLog('response: %@', new NSString withData(aData) encoding(NSStringEncoding.UTF8StringEncoding));
+      NSLog('Registered with server?');
+    end
+    else begin
+      NSLog('aResponse %@', aResponse);
+    end;
+  end);
 end;
 
 method DataAccess.setPushDeviceToken(aValue: NSData);
