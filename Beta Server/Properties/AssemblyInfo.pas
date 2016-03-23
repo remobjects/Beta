@@ -11,8 +11,8 @@ uses
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle('WWDCNotifyServer RemObjects SDK Server')]
-[assembly: AssemblyDescription('Implements the WWDCNotifyServerService Service.')]
+[assembly: AssemblyTitle('RemObjects Everwood Beta Service')]
+[assembly: AssemblyDescription('RemObjects Everwood Beta Service.')]
 [assembly: AssemblyConfiguration('')]
 [assembly: AssemblyCompany('')]
 [assembly: AssemblyProduct('')]

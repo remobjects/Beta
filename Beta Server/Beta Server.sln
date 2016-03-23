@@ -1,0 +1,26 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# RemObjects Fire
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "Beta Server", "Beta Server.elements", "{36699322-22F5-4FEE-B484-653042F48FB8}"
+EndProject
+Project("{656346D9-4656-40DA-A068-22D5425D4639}") = "RemObjects.SDK.Push", "..\..\..\Push\RemObjects.SDK.Push\RemObjects.SDK.Push.elements", "{6EE56252-1979-48FA-8409-3DCED05426C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AnyCPU = Debug|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{36699322-22F5-4FEE-B484-653042F48FB8}.Release|AnyCPU.Build.0 = Release|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{6EE56252-1979-48FA-8409-3DCED05426C3}.Release|AnyCPU.Build.0 = Release|AnyCPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,4 +1,4 @@
-namespace BetaServer;
+﻿namespace BetaServer;
 
 interface
 
@@ -20,29 +20,27 @@ implementation
 [STAThread]
 class method Program.Main(arguments: array of String);
 begin
-  (new BetaServer()).Run(arguments);
-end;
-{
-class method WWDCNotifyServerMain.Main;
-var
-  lServerChannel: IpHttpServerChannel;
-  lMessage: Message;
-begin
-  Console.WriteLine('RemObjects Beta Server Server');
+  var lServer := new ApplicationServer("BetaServer", "RemObjects.Beta", "RemObjects Everwood Beta Service", "RemObjects Everwood Beta Service", []);
+  lServer.NetworkServer.Port := BetaServer.Properties.Settings.Default.ServerPort;
+  var lApiDispatcher: BetaApiDispatcher;
 
-  lServerChannel := new RemObjects.SDK.Server.IpHttpServerChannel();
-  lServerChannel.Port := 8097;
-  lMessage := new RemObjects.SDK.BinMessage();
-
-  lServerChannel.Dispatchers.Add(lMessage.DefaultDispatcherName, lMessage);
-        
-  lServerChannel.Open();
-  try
-    Console.WriteLine('Server is active, press Enter to stop.');
-    Console.ReadLine();
-  finally
-    lServerChannel.Close();
+  lServer.Starting += method begin
+    
+    lApiDispatcher := new BetaApiDispatcher();
+    lApiDispatcher.Server := lServer.NetworkServer.ServerChannel as IHttpServer;
+    lApiDispatcher.Path := '/api/';
+    
+    var lDeviceStoreFile := Path.ChangeExtension(typeOf(self).Assembly.Location, 'devices');
+    PushManager.DeviceManager := new FileDeviceManager(lDeviceStoreFile);
+    PushManager.RequireSession := false;
+    Notifier.Start();
   end;
-end;}
+
+  lServer.Stopped += method begin
+    Notifier.Stop();
+  end;
+
+  lServer.Run(arguments);
+end;
 
 end.
