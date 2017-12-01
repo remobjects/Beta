@@ -136,6 +136,7 @@
         <AppResource Include="Resources\New@3x.png"/>
         <None Include="Resources\Entitlements.entitlements"/>
         <Compile Include="ImageManager.pas"/>
+        <Compile Include="NSDate_Helpers.pas"/>
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Elements\RemObjects.Elements.Nougat.targets"/>
     <PropertyGroup>
