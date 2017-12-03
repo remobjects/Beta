@@ -1,145 +1,145 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="4.0">
-    <PropertyGroup>
-        <RootNamespace>Beta</RootNamespace>
-        <ProjectGuid>480657f7-06ad-4a0c-b214-a9f3bf6bd4e5</ProjectGuid>
-        <OutputType>Executable</OutputType>
-        <AssemblyName>Beta</AssemblyName>
-        <AllowGlobals>False</AllowGlobals>
-        <AllowLegacyWith>False</AllowLegacyWith>
-        <AllowLegacyOutParams>False</AllowLegacyOutParams>
-        <AllowLegacyCreate>False</AllowLegacyCreate>
-        <AllowUnsafeCode>False</AllowUnsafeCode>
-        <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
-        <SDK>iOS</SDK>
-        <CreateAppBundle>True</CreateAppBundle>
-        <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
-        <DeploymentTargetVersion>8.0</DeploymentTargetVersion>
-        <Name>Beta for iOS</Name>
-        <CreateHeaderFile>False</CreateHeaderFile>
-        <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
-        <Architecture>arm64;armv7</Architecture>
-        <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
-        <BundleVersion>1.1.7</BundleVersion>
-        <DefaultUses>UIKit</DefaultUses>
-        <CodesignCertificateName>iPhone Distribution: RemObjects Software (24G43Y5373)</CodesignCertificateName>
-        <EntitlementsFile>.\Resources\Entitlements.entitlements</EntitlementsFile>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <Optimize>false</Optimize>
-        <OutputPath>.\bin\Debug</OutputPath>
-        <DefineConstants>DEBUG;TRACE;</DefineConstants>
-        <GenerateDebugInfo>True</GenerateDebugInfo>
-        <EnableAsserts>True</EnableAsserts>
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-        <CaptureConsoleOutput>False</CaptureConsoleOutput>
-        <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <SimulatorArchitectures>i386</SimulatorArchitectures>
-        <CreateIPA>True</CreateIPA>
-        <GenerateDSym>True</GenerateDSym>
-        <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
-        <ProvisioningProfile>4bd0826f-b038-4c46-912a-1dd00b41d5b3</ProvisioningProfile>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
-        <Optimize>false</Optimize>
-        <OutputPath>.\bin\AdHoc\</OutputPath>
-        <DefineConstants>DEBUG;TRACE;</DefineConstants>
-        <GenerateDebugInfo>True</GenerateDebugInfo>
-        <EnableAsserts>True</EnableAsserts>
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-        <CaptureConsoleOutput>False</CaptureConsoleOutput>
-        <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <CreateIPA>True</CreateIPA>
-        <GenerateDSym>True</GenerateDSym>
-        <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
-        <ProvisioningProfile>4bd0826f-b038-4c46-912a-1dd00b41d5b3</ProvisioningProfile>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <Optimize>False</Optimize>
-        <OutputPath>.\bin\Release</OutputPath>
-        <GenerateDebugInfo>True</GenerateDebugInfo>
-        <EnableAsserts>False</EnableAsserts>
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-        <CaptureConsoleOutput>False</CaptureConsoleOutput>
-        <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
-        <ProvisioningProfile>45d22898-62ba-41a5-8b2e-fe606145b2a4</ProvisioningProfile>
-        <ProvisioningProfileName>Beta/Everwood App Store 2016</ProvisioningProfileName>
-        <CreateIPA>True</CreateIPA>
-        <SimulatorArchitectures>i386</SimulatorArchitectures>
-        <GenerateDSym>True</GenerateDSym>
-    </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="CoreGraphics"/>
-        <Reference Include="Foundation"/>
-        <Reference Include="UIKit"/>
-        <Reference Include="rtl"/>
-        <Reference Include="libNougat"/>
-        <Reference Include="CoreFoundation"/>
-        <Reference Include="libSugar"/>
-        <Reference Include="Security"/>
-        <Reference Include="libxml2"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="AppDelegate.pas"/>
-        <Compile Include="Helpers.pas"/>
-        <Compile Include="DataAccess.pas"/>
-        <Compile Include="DetailViewController.pas"/>
-        <Compile Include="LoginViewController.pas"/>
-        <Compile Include="MasterViewController.pas"/>
-        <Compile Include="Program.pas"/>
-        <None Include="PushProvider_Intf.pas"/>
-        <Compile Include="WebViewController.pas"/>
-        <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCell.pas"/>
-        <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCellView.pas"/>
-        <Compile Include="..\TwinPeaks\iOS\Elements\TPHeaderView.pas"/>
-    </ItemGroup>
-    <ItemGroup>
-        <AppResource Include="Resources\EmptyAppLogo%402x.png"/>
-        <AppResource Include="Resources\EmptyAppLogo.png"/>
-        <AppResource Include="Resources\EmptyAppLogo7%402x.png"/>
-        <AppResource Include="Resources\EmptyAppLogo7.png"/>
-        <AppResource Include="Resources\ChangeLogs.css"/>
-        <AppResource Include="Resources\App Icons\App-120.png"/>
-        <AppResource Include="Resources\App Icons\App-152.png"/>
-        <AppResource Include="Resources\App Icons\App-76.png"/>
-        <Content Include="Resources\Info.plist"/>
-        <AppResource Include="Resources\LoginBackground%402x.jpg"/>
-        <AppResource Include="Resources\LoginBackground.jpg"/>
-        <AppResource Include="Resources\RemObjectsLogo%402x.png"/>
-        <AppResource Include="Resources\RemObjectsLogo.png"/>
-        <AppResource Include="Resources\LoginBackground%402x.png"/>
-        <AppResource Include="Resources\LoginBackground.png"/>
-        <AppResource Include="Resources\New%402x.png"/>
-        <AppResource Include="Resources\New.png"/>
-        <AppResource Include="Resources\App Icons\App-29.png"/>
-        <AppResource Include="Resources\App Icons\App-58.png"/>
-        <AppResource Include="Resources\App Icons\App-72.png"/>
-        <AppResource Include="Resources\App Icons\App-114.png"/>
-        <AppResource Include="Resources\App Icons\App-180.png"/>
-        <AppResource Include="Resources\App Icons\App-167.png"/>
-        <Storyboard Include="Resources\MainStoryboard~iPad.storyboard"/>
-        <Storyboard Include="Resources\MainStoryboard~iPhone.storyboard"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Resources\"/>
-        <Folder Include="Resources\App Icons\"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Xib Include="LoginViewController~ipad.xib">
-            <DependentUpon>LoginViewController.pas</DependentUpon>
-        </Xib>
-        <Xib Include="LoginViewController~iphone.xib">
-            <DependentUpon>LoginViewController.pas</DependentUpon>
-        </Xib>
-        <Storyboard Include="Resources\Launch.storyboard"/>
-        <AppResource Include="Resources\RemObjectsLogo@3x.png"/>
-        <AppResource Include="Resources\New@3x.png"/>
-        <None Include="Resources\Entitlements.entitlements"/>
-        <Compile Include="ImageManager.pas"/>
-        <Compile Include="NSDate_Helpers.pas"/>
-    </ItemGroup>
-    <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Elements\RemObjects.Elements.Nougat.targets"/>
-    <PropertyGroup>
-        <PreBuildEvent/>
-    </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Beta</RootNamespace>
+    <ProjectGuid>480657f7-06ad-4a0c-b214-a9f3bf6bd4e5</ProjectGuid>
+    <OutputType>Executable</OutputType>
+    <AssemblyName>Beta</AssemblyName>
+    <AllowGlobals>False</AllowGlobals>
+    <AllowLegacyWith>False</AllowLegacyWith>
+    <AllowLegacyOutParams>False</AllowLegacyOutParams>
+    <AllowLegacyCreate>False</AllowLegacyCreate>
+    <AllowUnsafeCode>False</AllowUnsafeCode>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <SDK>iOS</SDK>
+    <CreateAppBundle>True</CreateAppBundle>
+    <InfoPListFile>.\Resources\Info.plist</InfoPListFile>
+    <DeploymentTargetVersion>8.0</DeploymentTargetVersion>
+    <Name>Beta for iOS</Name>
+    <CreateHeaderFile>False</CreateHeaderFile>
+    <BundleIdentifier>com.remobjects.Everwood.Beta</BundleIdentifier>
+    <Architecture>arm64;armv7</Architecture>
+    <DeploymentTargetVersionHints>true</DeploymentTargetVersionHints>
+    <BundleVersion>1.1.7</BundleVersion>
+    <DefaultUses>UIKit</DefaultUses>
+    <CodesignCertificateName>iPhone Distribution: RemObjects Software (24G43Y5373)</CodesignCertificateName>
+    <EntitlementsFile>.\Resources\Entitlements.entitlements</EntitlementsFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <GenerateDebugInfo>True</GenerateDebugInfo>
+    <EnableAsserts>True</EnableAsserts>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <CaptureConsoleOutput>False</CaptureConsoleOutput>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <SimulatorArchitectures>i386</SimulatorArchitectures>
+    <CreateIPA>True</CreateIPA>
+    <GenerateDSym>True</GenerateDSym>
+    <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
+    <ProvisioningProfile>4bd0826f-b038-4c46-912a-1dd00b41d5b3</ProvisioningProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'AdHoc' ">
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\AdHoc\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <GenerateDebugInfo>True</GenerateDebugInfo>
+    <EnableAsserts>True</EnableAsserts>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <CaptureConsoleOutput>False</CaptureConsoleOutput>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <CreateIPA>True</CreateIPA>
+    <GenerateDSym>True</GenerateDSym>
+    <ProvisioningProfileName>Beta AdHoc</ProvisioningProfileName>
+    <ProvisioningProfile>4bd0826f-b038-4c46-912a-1dd00b41d5b3</ProvisioningProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <Optimize>False</Optimize>
+    <OutputPath>.\bin\Release</OutputPath>
+    <GenerateDebugInfo>True</GenerateDebugInfo>
+    <EnableAsserts>False</EnableAsserts>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <CaptureConsoleOutput>False</CaptureConsoleOutput>
+    <WarnOnCaseMismatch>True</WarnOnCaseMismatch>
+    <ProvisioningProfile>45d22898-62ba-41a5-8b2e-fe606145b2a4</ProvisioningProfile>
+    <ProvisioningProfileName>Beta/Everwood App Store 2016</ProvisioningProfileName>
+    <CreateIPA>True</CreateIPA>
+    <SimulatorArchitectures>i386</SimulatorArchitectures>
+    <GenerateDSym>True</GenerateDSym>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CoreGraphics" />
+    <Reference Include="Foundation" />
+    <Reference Include="UIKit" />
+    <Reference Include="rtl" />
+    <Reference Include="libToffee" />
+    <Reference Include="CoreFoundation" />
+    <Reference Include="libSugar" />
+    <Reference Include="Security" />
+    <Reference Include="libxml2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppDelegate.pas" />
+    <Compile Include="Helpers.pas" />
+    <Compile Include="DataAccess.pas" />
+    <Compile Include="DetailViewController.pas" />
+    <Compile Include="LoginViewController.pas" />
+    <Compile Include="MasterViewController.pas" />
+    <Compile Include="Program.pas" />
+    <None Include="PushProvider_Intf.pas" />
+    <Compile Include="WebViewController.pas" />
+    <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCell.pas" />
+    <Compile Include="..\TwinPeaks\iOS\Elements\TPBaseCellView.pas" />
+    <Compile Include="..\TwinPeaks\iOS\Elements\TPHeaderView.pas" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppResource Include="Resources\EmptyAppLogo@2x.png" />
+    <AppResource Include="Resources\EmptyAppLogo.png" />
+    <AppResource Include="Resources\EmptyAppLogo7@2x.png" />
+    <AppResource Include="Resources\EmptyAppLogo7.png" />
+    <AppResource Include="Resources\ChangeLogs.css" />
+    <AppResource Include="Resources\App Icons\App-120.png" />
+    <AppResource Include="Resources\App Icons\App-152.png" />
+    <AppResource Include="Resources\App Icons\App-76.png" />
+    <Content Include="Resources\Info.plist" />
+    <AppResource Include="Resources\LoginBackground@2x.jpg" />
+    <AppResource Include="Resources\LoginBackground.jpg" />
+    <AppResource Include="Resources\RemObjectsLogo@2x.png" />
+    <AppResource Include="Resources\RemObjectsLogo.png" />
+    <AppResource Include="Resources\LoginBackground@2x.png" />
+    <AppResource Include="Resources\LoginBackground.png" />
+    <AppResource Include="Resources\New@2x.png" />
+    <AppResource Include="Resources\New.png" />
+    <AppResource Include="Resources\App Icons\App-29.png" />
+    <AppResource Include="Resources\App Icons\App-58.png" />
+    <AppResource Include="Resources\App Icons\App-72.png" />
+    <AppResource Include="Resources\App Icons\App-114.png" />
+    <AppResource Include="Resources\App Icons\App-180.png" />
+    <AppResource Include="Resources\App Icons\App-167.png" />
+    <Storyboard Include="Resources\MainStoryboard~iPad.storyboard" />
+    <Storyboard Include="Resources\MainStoryboard~iPhone.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\App Icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xib Include="LoginViewController~ipad.xib">
+      <DependentUpon>LoginViewController.pas</DependentUpon>
+    </Xib>
+    <Xib Include="LoginViewController~iphone.xib">
+      <DependentUpon>LoginViewController.pas</DependentUpon>
+    </Xib>
+    <Storyboard Include="Resources\Launch.storyboard" />
+    <AppResource Include="Resources\RemObjectsLogo@3x.png" />
+    <AppResource Include="Resources\New@3x.png" />
+    <None Include="Resources\Entitlements.entitlements" />
+    <Compile Include="ImageManager.pas" />
+    <Compile Include="NSDate_Helpers.pas" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\RemObjects Software\Elements\RemObjects.Elements.Toffee.targets" />
+  <PropertyGroup>
+    <PreBuildEvent />
+  </PropertyGroup>
 </Project>
